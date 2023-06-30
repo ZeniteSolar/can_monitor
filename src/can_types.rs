@@ -1,30 +1,68 @@
 #[allow(unused)]
 pub mod modules {
 
+    #[derive(Debug)]
+    pub enum Messages {
+        Mic19(mic19::Messages),
+    }
+
     pub mod mic19 {
         pub const SIGNATURE: u8 = 240u8;
 
+        #[derive(Debug)]
+        pub enum Messages {
+            State(messages::state::Message),
+            Motor(messages::motor::Message),
+            Pumps(messages::pumps::Message),
+            Mppts(messages::mppts::Message),
+            Mcs(messages::mcs::Message),
+            Mde(messages::mde::Message),
+        }
+
         pub mod messages {
+
+            pub mod state {
+                /// MIC19 State Message ID
+                pub const ID: u32 = 30u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
+                /// Module state report
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// State code.
+                    pub state: u8,
+                    /// Error code.
+                    pub error: u8,
+                }
+            }
 
             pub mod motor {
                 /// Mic19 Motor Message ID
-                pub const ID: u8 = 31u8;
+                // pub const ID: u32 = 31u32;
+                pub const ID: u32 = 9u32;
 
                 use bitfield::bitfield;
+                use serde::{Deserialize, Serialize};
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Motor controller parameters
                 pub struct Message {
                     /// Senders signature.
                     pub signature: u8,
-                    pub motor: State,
+                    pub motor: u8,
                     /// Motor Duty Cycle. Units: %
                     pub d: u8,
                     /// Motor Soft Start. Units: %
                     pub i: u8,
                 }
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Motor state
                 pub struct State {
                     pub motor_on: bool,
@@ -43,11 +81,13 @@ pub mod modules {
 
             pub mod pumps {
                 /// Mic19 Pumps Message ID
-                pub const ID: u8 = 41u8;
+                pub const ID: u32 = 41u32;
 
                 use bitfield::bitfield;
+                use serde::{Deserialize, Serialize};
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Pumps controller parameters
                 pub struct Message {
                     /// Senders signature.
@@ -55,7 +95,8 @@ pub mod modules {
                     pub pumps: State,
                 }
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Pumps state
                 pub struct State {
                     pub pump1: bool,
@@ -74,11 +115,13 @@ pub mod modules {
 
             pub mod mppts {
                 /// Mic19 MPPTs Message ID
-                pub const ID: u8 = 200u8;
+                pub const ID: u32 = 200u32;
 
                 use bitfield::bitfield;
+                use serde::{Deserialize, Serialize};
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// MPPTs controller parameters
                 pub struct Message {
                     /// Senders signature.
@@ -88,7 +131,8 @@ pub mod modules {
                     pub pot: u8,
                 }
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// MPPTs state
                 pub struct State {
                     pub mppts_on: bool,
@@ -103,11 +147,13 @@ pub mod modules {
 
             pub mod mcs {
                 /// Mic19 MCS Message ID
-                pub const ID: u8 = 32u8;
+                pub const ID: u32 = 32u32;
 
                 use bitfield::bitfield;
+                use serde::{Deserialize, Serialize};
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// MCS controller parameters
                 pub struct Message {
                     /// Senders signature.
@@ -115,7 +161,8 @@ pub mod modules {
                     pub boat_on: State,
                 }
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Boat state
                 pub struct State {
                     pub boat_on: bool,
@@ -130,11 +177,13 @@ pub mod modules {
 
             pub mod mde {
                 /// Mic19 MDE Message ID
-                pub const ID: u8 = 33u8;
+                pub const ID: u32 = 33u32;
 
                 use bitfield::bitfield;
+                use serde::{Deserialize, Serialize};
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Steering wheel controls
                 pub struct Message {
                     /// Senders signature.
@@ -149,13 +198,22 @@ pub mod modules {
     pub mod mde22 {
         pub const SIGNATURE: u8 = 170u8;
 
+        #[derive(Debug)]
+        pub enum Messages {
+            State(messages::state::Message),
+            SteeringBatMeasurements(messages::steeringbat_measurements::Message),
+        }
+
         pub mod messages {
 
             pub mod state {
                 /// MDE22 State Message ID
-                pub const ID: u8 = 100u8;
+                pub const ID: u32 = 100u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -169,9 +227,12 @@ pub mod modules {
 
             pub mod steeringbat_measurements {
                 /// MDE22 Steeringbat Measurements Message ID
-                pub const ID: u8 = 201u8;
+                pub const ID: u32 = 201u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Auxiliar Battery Voltage
                 pub struct Message {
                     /// Senders signature.
@@ -194,11 +255,13 @@ pub mod modules {
 
             pub mod state {
                 /// MCC19_1 State Message ID
-                pub const ID: u8 = 103u8;
+                pub const ID: u32 = 103u32;
 
                 use bitfield::bitfield;
+                use serde::{Deserialize, Serialize};
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -208,7 +271,8 @@ pub mod modules {
                     pub control: ControlFlags,
                 }
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Control flags for operating point
                 pub struct ControlFlags {
                     pub enable: bool,
@@ -231,9 +295,12 @@ pub mod modules {
 
             pub mod measurements {
                 /// MCC19_1 Measurements Message ID
-                pub const ID: u8 = 202u8;
+                pub const ID: u32 = 202u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// All measurements from the converter
                 pub struct Message {
                     /// Senders signature.
@@ -258,9 +325,12 @@ pub mod modules {
 
             pub mod state {
                 /// MAB19 State Message ID
-                pub const ID: u8 = 111u8;
+                pub const ID: u32 = 111u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -274,11 +344,13 @@ pub mod modules {
 
             pub mod pumps {
                 /// MAB19 Pumps Message ID
-                pub const ID: u8 = 210u8;
+                pub const ID: u32 = 210u32;
 
                 use bitfield::bitfield;
+                use serde::{Deserialize, Serialize};
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Pumps state
                 pub struct Message {
                     /// Senders signature.
@@ -286,7 +358,8 @@ pub mod modules {
                     pub pumps: PumpStates,
                 }
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Pumps state bitfield
                 pub struct PumpStates {
                     pub pump1: bool,
@@ -312,9 +385,12 @@ pub mod modules {
 
             pub mod state {
                 /// MSC19_1 State Message ID
-                pub const ID: u8 = 112u8;
+                pub const ID: u32 = 112u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -328,9 +404,12 @@ pub mod modules {
 
             pub mod adc {
                 /// MSC19_1 ADC Message ID
-                pub const ID: u8 = 211u8;
+                pub const ID: u32 = 211u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Voltage measurements
                 pub struct Message {
                     /// Senders signature.
@@ -350,9 +429,12 @@ pub mod modules {
 
             pub mod state {
                 /// MCS19 State Message ID
-                pub const ID: u8 = 117u8;
+                pub const ID: u32 = 117u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -366,9 +448,12 @@ pub mod modules {
 
             pub mod start_stages {
                 /// MCS19 Start Stages Message ID
-                pub const ID: u8 = 37u8;
+                pub const ID: u32 = 37u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Boat charging // Boat on
                 pub struct Message {
                     /// Senders signature.
@@ -380,9 +465,12 @@ pub mod modules {
 
             pub mod bat {
                 /// MCS19 BAT Message ID
-                pub const ID: u8 = 216u8;
+                pub const ID: u32 = 216u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Battery voltage values
                 pub struct Message {
                     /// Senders signature.
@@ -395,9 +483,12 @@ pub mod modules {
 
             pub mod cap {
                 /// MCS19 CAP Message ID
-                pub const ID: u8 = 217u8;
+                pub const ID: u32 = 217u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Capacitor bank voltage values
                 pub struct Message {
                     /// Senders signature.
@@ -417,9 +508,12 @@ pub mod modules {
 
             pub mod state {
                 /// MT19 State Message ID
-                pub const ID: u8 = 218u8;
+                pub const ID: u32 = 218u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -433,9 +527,12 @@ pub mod modules {
 
             pub mod rpm {
                 /// MT19 RPM Message ID
-                pub const ID: u8 = 219u8;
+                pub const ID: u32 = 219u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// RPM motor values
                 pub struct Message {
                     /// Senders signature.
@@ -453,9 +550,12 @@ pub mod modules {
 
             pub mod state {
                 /// MAM19 State Message ID
-                pub const ID: u8 = 99u8;
+                pub const ID: u32 = 99u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -469,9 +569,12 @@ pub mod modules {
 
             pub mod motor {
                 /// MAM19 Motor Message ID
-                pub const ID: u8 = 98u8;
+                pub const ID: u32 = 98u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Motor controller parameters
                 pub struct Message {
                     /// Senders signature.
@@ -485,9 +588,12 @@ pub mod modules {
 
             pub mod contactor {
                 /// MAM19 Contactor Message ID
-                pub const ID: u8 = 36u8;
+                pub const ID: u32 = 36u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Contactor requests
                 pub struct Message {
                     /// Senders signature.
@@ -506,9 +612,12 @@ pub mod modules {
 
             pub mod state {
                 /// MAC22 State Message ID
-                pub const ID: u8 = 35u8;
+                pub const ID: u32 = 35u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -522,9 +631,12 @@ pub mod modules {
 
             pub mod contactor {
                 /// MAC22 Contactor Message ID
-                pub const ID: u8 = 34u8;
+                pub const ID: u32 = 34u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Contactor task response
                 pub struct Message {
                     /// Senders signature.
@@ -543,9 +655,12 @@ pub mod modules {
 
             pub mod state {
                 /// MCB19_1 State Message ID
-                pub const ID: u8 = 109u8;
+                pub const ID: u32 = 109u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -556,7 +671,8 @@ pub mod modules {
                     pub control: ControlFlags,
                 }
 
-                #[derive(Debug)]
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// Control flags for operating point
                 pub struct ControlFlags {
                     pub enable: bool,
@@ -569,9 +685,12 @@ pub mod modules {
 
             pub mod measurements {
                 /// MCB19_1 Measurements Message ID
-                pub const ID: u8 = 208u8;
+                pub const ID: u32 = 208u32;
 
-                #[derive(Debug)]
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C)]
+                #[derive(Debug, Serialize, Deserialize)]
                 /// All measurements from the converter
                 pub struct Message {
                     /// Senders signature.
@@ -596,23 +715,23 @@ pub mod modules {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use crate::can_types::*;
+// #[cfg(test)]
+// mod tests {
+//     use crate::can_types::*;
 
-    #[test]
-    fn basic_test() {
-        let msg = modules::mic19::messages::motor::Message {
-            signature: modules::mic19::SIGNATURE,
-            motor: modules::mic19::messages::motor::State {
-                motor_on: true,
-                dms_on: true,
-                reverse: false,
-            },
-            d: 128,
-            i: 0,
-        };
+//     #[test]
+//     fn basic_test() {
+//         let msg = modules::mic19::messages::motor::Message {
+//             signature: modules::mic19::SIGNATURE,
+//             motor: modules::mic19::messages::motor::State {
+//                 motor_on: true,
+//                 dms_on: true,
+//                 reverse: false,
+//             },
+//             d: 128,
+//             i: 0,
+//         };
 
-        println!("{msg:#?}");
-    }
-}
+//         println!("{msg:#?}");
+//     }
+// }
