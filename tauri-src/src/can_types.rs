@@ -1,15 +1,18 @@
 #[allow(unused)]
 pub mod modules {
+    use serde::{Deserialize, Serialize};
 
-    #[derive(Debug)]
+    #[derive(Debug, Clone, Serialize, Deserialize)]
     pub enum Messages {
         Mic19(mic19::Messages),
     }
 
     pub mod mic19 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 240u8;
 
-        #[derive(Debug)]
+        #[derive(Debug, Clone, Serialize, Deserialize)]
         pub enum Messages {
             State(messages::state::Message),
             Motor(messages::motor::Message),
@@ -28,7 +31,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -49,7 +52,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Motor controller parameters
                 pub struct Message {
                     /// Senders signature.
@@ -62,7 +65,7 @@ pub mod modules {
                 }
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Motor state
                 pub struct State {
                     pub motor_on: bool,
@@ -87,7 +90,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Pumps controller parameters
                 pub struct Message {
                     /// Senders signature.
@@ -96,7 +99,7 @@ pub mod modules {
                 }
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Pumps state
                 pub struct State {
                     pub pump1: bool,
@@ -121,7 +124,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// MPPTs controller parameters
                 pub struct Message {
                     /// Senders signature.
@@ -132,7 +135,7 @@ pub mod modules {
                 }
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// MPPTs state
                 pub struct State {
                     pub mppts_on: bool,
@@ -153,7 +156,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// MCS controller parameters
                 pub struct Message {
                     /// Senders signature.
@@ -162,7 +165,7 @@ pub mod modules {
                 }
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Boat state
                 pub struct State {
                     pub boat_on: bool,
@@ -183,7 +186,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Steering wheel controls
                 pub struct Message {
                     /// Senders signature.
@@ -196,9 +199,11 @@ pub mod modules {
     }
 
     pub mod mde22 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 170u8;
 
-        #[derive(Debug)]
+        #[derive(Debug, Clone, Serialize, Deserialize)]
         pub enum Messages {
             State(messages::state::Message),
             SteeringBatMeasurements(messages::steeringbat_measurements::Message),
@@ -213,7 +218,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -232,7 +237,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Auxiliar Battery Voltage
                 pub struct Message {
                     /// Senders signature.
@@ -249,6 +254,8 @@ pub mod modules {
     }
 
     pub mod mcc19_1 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 225u8;
 
         pub mod messages {
@@ -261,7 +268,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -272,7 +279,7 @@ pub mod modules {
                 }
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Control flags for operating point
                 pub struct ControlFlags {
                     pub enable: bool,
@@ -300,7 +307,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// All measurements from the converter
                 pub struct Message {
                     /// Senders signature.
@@ -319,6 +326,8 @@ pub mod modules {
     }
 
     pub mod mab19 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 230u8;
 
         pub mod messages {
@@ -330,7 +339,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -350,7 +359,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Pumps state
                 pub struct Message {
                     /// Senders signature.
@@ -359,7 +368,7 @@ pub mod modules {
                 }
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Pumps state bitfield
                 pub struct PumpStates {
                     pub pump1: bool,
@@ -379,6 +388,8 @@ pub mod modules {
     }
 
     pub mod msc19_1 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 250u8;
 
         pub mod messages {
@@ -390,7 +401,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -409,7 +420,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Voltage measurements
                 pub struct Message {
                     /// Senders signature.
@@ -423,6 +434,8 @@ pub mod modules {
     }
 
     pub mod mcs19 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 200u8;
 
         pub mod messages {
@@ -434,7 +447,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -453,7 +466,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Boat charging // Boat on
                 pub struct Message {
                     /// Senders signature.
@@ -470,7 +483,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Battery voltage values
                 pub struct Message {
                     /// Senders signature.
@@ -488,7 +501,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Capacitor bank voltage values
                 pub struct Message {
                     /// Senders signature.
@@ -502,6 +515,8 @@ pub mod modules {
     }
 
     pub mod mt19 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 255u8;
 
         pub mod messages {
@@ -513,7 +528,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -532,7 +547,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// RPM motor values
                 pub struct Message {
                     /// Senders signature.
@@ -544,6 +559,8 @@ pub mod modules {
     }
 
     pub mod mam19 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 190u8;
 
         pub mod messages {
@@ -555,7 +572,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -574,7 +591,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Motor controller parameters
                 pub struct Message {
                     /// Senders signature.
@@ -593,7 +610,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Contactor requests
                 pub struct Message {
                     /// Senders signature.
@@ -606,6 +623,8 @@ pub mod modules {
     }
 
     pub mod mac22 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 180u8;
 
         pub mod messages {
@@ -617,7 +636,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -636,7 +655,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Contactor task response
                 pub struct Message {
                     /// Senders signature.
@@ -649,6 +668,8 @@ pub mod modules {
     }
 
     pub mod mcb19_1 {
+        use serde::{Deserialize, Serialize};
+
         pub const SIGNATURE: u8 = 220u8;
 
         pub mod messages {
@@ -660,7 +681,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
                     /// Senders signature.
@@ -672,7 +693,7 @@ pub mod modules {
                 }
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Control flags for operating point
                 pub struct ControlFlags {
                     pub enable: bool,
@@ -690,7 +711,7 @@ pub mod modules {
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C)]
-                #[derive(Debug, Serialize, Deserialize)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// All measurements from the converter
                 pub struct Message {
                     /// Senders signature.

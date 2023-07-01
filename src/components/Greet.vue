@@ -7,14 +7,7 @@ const output = ref("");
 const outputs = ref([]);
 const inputs = ref([]);
 
-function sendOutput() {
-  console.log("js: front2back: " + output.value)
-  outputs.value.push({ timestamp: Date.now(), message: output.value })
-  invoke('front2back', { message: output.value })
-}
-
-await listen('back2front', (event) => {
-  console.log("js: back2front: " + event)
+await listen('can_message', (event) => {
   let input = event.payload
   inputs.value.push({ timestamp: Date.now(), message: input })
 })
@@ -37,7 +30,7 @@ await listen('back2front', (event) => {
       </ol>
     </div>
     <div style="grid-column: 2; grid-row: 2;">
-      <h3>back2front events</h3>
+      <h3>Can Messages</h3>
       <ol>
         <li v-for="input in inputs">
           {{input}}

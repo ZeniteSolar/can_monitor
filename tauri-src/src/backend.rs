@@ -51,7 +51,7 @@ fn process_frame(frame: CANFrame) -> Result<can_types::modules::Messages> {
         can_types::modules::mic19::messages::motor::ID => {
             read_motor(data, &can_types::modules::mic19::SIGNATURE).map_err(anyhow::Error::from)
         }
-        can_types::modules::mic19::messages::pumps::ID => todo!(),
+        // can_types::modules::mic19::messages::pumps::ID => todo!(),
         _ => Err(anyhow!("Unknown message")),
     }
 }
