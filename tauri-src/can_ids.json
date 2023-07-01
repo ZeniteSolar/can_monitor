@@ -1,0 +1,2481 @@
+{
+    "version": "0.1.2",
+    "modules": [
+        {
+            "name": "GENERIC",
+            "description": "Modulo generico para facilitar implementacoes genericas",
+            "signature": 0,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 50,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 0,
+                    "frame_length": 71
+                },
+                {
+                    "name": "GENERIC",
+                    "description": "Generic topic",
+                    "id": 51,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 0,
+                    "frame_length": 55
+                }
+            ]
+        },
+        {
+            "name": "MIC19",
+            "description": "Modulo de Interface de Controle",
+            "signature": 240,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 30,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 5,
+                    "frame_length": 71
+                },
+                {
+                    "name": "MOTOR",
+                    "description": "Motor controller parameters",
+                    "id": 31,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MOTOR",
+                            "description": "Motor state",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "MOTOR_ON",
+                                "DMS_ON",
+                                "REVERSE",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        {
+                            "name": "D",
+                            "description": "Motor Duty Cycle",
+                            "type": "uint8_t",
+                            "units": "%"
+                        },
+                        {
+                            "name": "I",
+                            "description": "Motor Soft Start",
+                            "type": "uint8_t",
+                            "units": "%"
+                        },
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 50,
+                    "frame_length": 79
+                },
+                {
+                    "name": "PUMPS",
+                    "description": "Pumps controller parameters",
+                    "id": 41,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "PUMPS",
+                            "description": "Pumps state",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "PUMP1",
+                                "PUMP2",
+                                "PUMP3",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 4,
+                    "frame_length": 63
+                },
+                {
+                    "name": "MPPTS",
+                    "description": "Mppts controller parameters",
+                    "id": 200,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MPPTS_ON",
+                            "description": "MPPTs state",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "MPPTS_ON",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        {
+                            "name": "POT",
+                            "description": "MPPTs maximum power limitation",
+                            "type": "uint8_t",
+                            "units": "%"
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 4,
+                    "frame_length": 71
+                },
+                {
+                    "name": "MCS",
+                    "description": "MCS controller parameters",
+                    "id": 32,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "BOAT_ON",
+                            "description": "Boat state",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "BOAT_ON",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 50,
+                    "frame_length": 63
+                },
+                {
+                    "name": "MDE",
+                    "description": "Steereing wheel controls",
+                    "id": 33,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "POSITION_L",
+                            "description": "Steering wheel position, byte LOW",
+                            "type": "uint16_t",
+                            "units": "\u00b0/100"
+                        },
+                        {
+                            "name": "POSITION_H",
+                            "description": "Steering wheel position, byte HIGH",
+                            "type": "uint16_t",
+                            "units": "\u00b0/100"
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 50,
+                    "frame_length": 71
+                }
+            ]
+        },
+        {
+            "name": "MDE22",
+            "description": "Modulo da Dire\u00e7\u00e3o El\u00e9trica",
+            "signature": 170,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 100,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "STEERINGBAT_MEASUREMENTS",
+                    "description": "Auxiliar Battery Voltage",
+                    "id": 201,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "BATVOLTAGE_L",
+                            "description": "Battery Voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "BATVOLTAGE_H",
+                            "description": "Battery Voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "POSITION_L",
+                            "description": "Tail Poisition, byte low",
+                            "type": "uint16_t",
+                            "units": "\u00b0/100"
+                        },
+                        {
+                            "name": "POSITION_H",
+                            "description": "Tail Poisition, byte high",
+                            "type": "uint16_t",
+                            "units": "\u00b0/100"
+                        },
+                        {
+                            "name": "BATCURRENT_L",
+                            "description": "Battery Current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "BATCURRENT_H",
+                            "description": "Battery Current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 103
+                }
+            ]
+        },
+        {
+            "name": "MVC19_1",
+            "description": "Modulo de voltimetro 1",
+            "signature": 210,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 101,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                }
+            ]
+        },
+        {
+            "name": "MVC19_2",
+            "description": "Modulo de voltimetro 2",
+            "signature": 211,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 102,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                }
+            ]
+        },
+        {
+            "name": "MCC19_1",
+            "description": "Modulo controlador de carga",
+            "signature": 225,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 103,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 79
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 202,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_L",
+                            "description": "Average input current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_H",
+                            "description": "Average input current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 30,
+                    "frame_length": 111
+                }
+            ]
+        },
+        {
+            "name": "MCC19_2",
+            "description": "Modulo controlador de carga",
+            "signature": 226,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 104,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 79
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 203,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_L",
+                            "description": "Average input current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_H",
+                            "description": "Average input current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 30,
+                    "frame_length": 111
+                }
+            ]
+        },
+        {
+            "name": "MCC19_3",
+            "description": "Modulo controlador de carga",
+            "signature": 227,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 105,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 79
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 204,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_L",
+                            "description": "Average input current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_H",
+                            "description": "Average input current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 30,
+                    "frame_length": 111
+                }
+            ]
+        },
+        {
+            "name": "MCC19_4",
+            "description": "Modulo controlador de carga",
+            "signature": 228,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 106,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 79
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 205,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_L",
+                            "description": "Average input current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_H",
+                            "description": "Average input current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 30,
+                    "frame_length": 111
+                }
+            ]
+        },
+        {
+            "name": "MCC19_5",
+            "description": "Modulo controlador de carga",
+            "signature": 229,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 107,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 79
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 206,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_L",
+                            "description": "Average input current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_H",
+                            "description": "Average input current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 30,
+                    "frame_length": 111
+                }
+            ]
+        },
+        {
+            "name": "MCC19_6",
+            "description": "Modulo controlador de carga",
+            "signature": 239,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 108,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 79
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 207,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_L",
+                            "description": "Average input current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_H",
+                            "description": "Average input current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 30,
+                    "frame_length": 111
+                }
+            ]
+        },
+        {
+            "name": "MCB19_1",
+            "description": "Modulo de carregamento das baterias auxiliares",
+            "signature": 220,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 109,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 79
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 208,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 10,
+                    "frame_length": 111
+                }
+            ]
+        },
+        {
+            "name": "MCB19_2",
+            "description": "Modulo de carregamento das baterias auxiliares",
+            "signature": 221,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 110,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 79
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 209,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 10,
+                    "frame_length": 111
+                }
+            ]
+        },
+        {
+            "name": "MAC22",
+            "description": "Modulo de Acionamento da Contatora",
+            "signature": 180,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 35,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 5,
+                    "frame_length": 71
+                },
+                {
+                    "name": "CONTACTOR",
+                    "description": "Contactor task response",
+                    "id": 34,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "RESPONSE",
+                            "description": "Contactor task response",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 50,
+                    "frame_length": 63
+                }
+            ]
+        },
+        {
+            "name": "MAM19",
+            "description": "Modulo de Acionamento do Motor",
+            "signature": 190,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 99,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 5,
+                    "frame_length": 71
+                },
+                {
+                    "name": "MOTOR",
+                    "description": "Motor controller parameters",
+                    "id": 98,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "D",
+                            "description": "Motor Duty Cycle",
+                            "type": "uint8_t",
+                            "units": "%"
+                        },
+                        {
+                            "name": "I",
+                            "description": "Motor Soft Start",
+                            "type": "uint8_t",
+                            "units": "%"
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 50,
+                    "frame_length": 71
+                },
+                {
+                    "name": "CONTACTOR",
+                    "description": "Contactor requests",
+                    "id": 36,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "REQUEST",
+                            "description": "Control the Contactor State",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 5,
+                    "frame_length": 63
+                }
+            ]
+        },
+        {
+            "name": "MAB19",
+            "description": "Modulo de Acionamento das Bombas de Porao",
+            "signature": 230,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 111,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 0,
+                    "frame_length": 71
+                },
+                {
+                    "name": "PUMPS",
+                    "description": "Pumps state",
+                    "id": 210,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "PUMPS",
+                            "description": "Pumps state",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "PUMP1",
+                                "PUMP2",
+                                "PUMP3",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 0,
+                    "frame_length": 63
+                }
+            ]
+        },
+        {
+            "name": "MSC19_1",
+            "description": "Main Battery Voltage Sensor",
+            "signature": 250,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 112,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "ADC",
+                    "description": "Voltage measurements",
+                    "id": 211,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_L",
+                            "description": "Average, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "AVG_H",
+                            "description": "Average, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MIN_L",
+                            "description": "Min byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MIN_H",
+                            "description": "Min byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MAX_L",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MAX_H",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 103
+                }
+            ]
+        },
+        {
+            "name": "MSC19_2",
+            "description": "Auxilliary Battery Voltage Sensor",
+            "signature": 251,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 113,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "ADC",
+                    "description": "Voltage measurements",
+                    "id": 212,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_L",
+                            "description": "Average, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "AVG_H",
+                            "description": "Average, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MIN_L",
+                            "description": "Min byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MIN_H",
+                            "description": "Min byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MAX_L",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MAX_H",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 103
+                }
+            ]
+        },
+        {
+            "name": "MSC19_3",
+            "description": "Extra Battery Voltage Sensor",
+            "signature": 252,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 114,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "ADC",
+                    "description": "Voltage measurements",
+                    "id": 213,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_L",
+                            "description": "Average, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "AVG_H",
+                            "description": "Average, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MIN_L",
+                            "description": "Min byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MIN_H",
+                            "description": "Min byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MAX_L",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "MAX_H",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 103
+                }
+            ]
+        },
+        {
+            "name": "MSC19_4",
+            "description": "Main Battery Input Current Sensor",
+            "signature": 253,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 115,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "ADC",
+                    "description": "Current measurements",
+                    "id": 214,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_L",
+                            "description": "Average, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "AVG_H",
+                            "description": "Average, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MIN_L",
+                            "description": "Min byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MIN_H",
+                            "description": "Min byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MAX_L",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MAX_H",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 103
+                }
+            ]
+        },
+        {
+            "name": "MSC19_5",
+            "description": "Main Battery Output Current Sensor",
+            "signature": 254,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 116,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "ADC",
+                    "description": "Current measurements",
+                    "id": 215,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_L",
+                            "description": "Average, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "AVG_H",
+                            "description": "Average, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MIN_L",
+                            "description": "Min byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MIN_H",
+                            "description": "Min byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MAX_L",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MAX_H",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 103
+                }
+            ]
+        },
+        {
+            "name": "MCS19",
+            "description": "Modulo de Carregamento do Sistema",
+            "signature": 200,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 117,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "START_STAGES",
+                    "description": "Boat charging // Boat on",
+                    "id": 37,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MAIN_RELAY",
+                            "description": "Boat on/off",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "MAIN_RELAY",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        {
+                            "name": "CHARGE_RELAY",
+                            "description": "Boat Charging",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "CHARGE_RELAY",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 50,
+                    "frame_length": 71
+                },
+                {
+                    "name": "BAT",
+                    "description": "battery voltage values",
+                    "id": 216,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_L",
+                            "description": "Average, byte low",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_H",
+                            "description": "Average, byte high",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MIN_L",
+                            "description": "Min byte low",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MIN_H",
+                            "description": "Min byte high",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MAX_L",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MAX_H",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 103
+                },
+                {
+                    "name": "CAP",
+                    "description": "capacitor bank voltage values",
+                    "id": 217,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_L",
+                            "description": "Average, byte low",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_H",
+                            "description": "Average, byte high",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MIN_L",
+                            "description": "Min byte low",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MIN_H",
+                            "description": "Min byte high",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MAX_L",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MAX_H",
+                            "description": "Max byte low",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 103
+                }
+            ]
+        },
+        {
+            "name": "MT19",
+            "description": "Modulo Tacometro",
+            "signature": 255,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 218,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 0,
+                    "frame_length": 71
+                },
+                {
+                    "name": "RPM",
+                    "description": "RPM motor values",
+                    "id": 219,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_L",
+                            "description": "RPM Average, byte low",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "AVG_H",
+                            "description": "RPM Average, byte high",
+                            "type": "uint16_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 0,
+                    "frame_length": 71
+                }
+            ]
+        },
+        {
+            "name": "MSWI19",
+            "description": "Modulo de Interface de Controle",
+            "signature": 241,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 9,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 5,
+                    "frame_length": 71
+                },
+                {
+                    "name": "MOTOR",
+                    "description": "Motor controller parameters",
+                    "id": 10,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MOTOR",
+                            "description": "Motor state",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "MOTOR_ON",
+                                "DMS_ON",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        {
+                            "name": "D",
+                            "description": "Motor Duty Cycle",
+                            "type": "uint8_t",
+                            "units": "%"
+                        },
+                        {
+                            "name": "I",
+                            "description": "Motor Soft Start",
+                            "type": "uint8_t",
+                            "units": "%"
+                        },
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 50,
+                    "frame_length": 79
+                },
+                {
+                    "name": "PUMPS",
+                    "description": "Pumps controller parameters",
+                    "id": 220,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "PUMPS",
+                            "description": "Pumps state",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "PUMP1",
+                                "PUMP2",
+                                "PUMP3",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 0,
+                    "frame_length": 63
+                },
+                {
+                    "name": "MPPTS",
+                    "description": "Mppts controller parameters",
+                    "id": 221,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "MPPTS_ON",
+                            "description": "MPPTs state",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "MPPTS_ON",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        {
+                            "name": "POT",
+                            "description": "MPPTs maximum power limitation",
+                            "type": "uint8_t",
+                            "units": "%"
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 0,
+                    "frame_length": 71
+                },
+                {
+                    "name": "MCS",
+                    "description": "MCS controller parameters",
+                    "id": 40,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "BOAT_ON",
+                            "description": "Boat state",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "BOAT_ON",
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 63
+                }
+            ]
+        }
+    ],
+    "bitrate": 500000.0
+}
