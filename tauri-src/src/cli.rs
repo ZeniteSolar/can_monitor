@@ -9,7 +9,7 @@ pub struct Configuration {
     pub can_interface: Option<String>,
 
     /// Sets the output log path (must be a folder)
-    #[arg(short, long, default_value = ".")]
+    #[arg(short, long)]
     pub log_path: std::path::PathBuf,
 
     /// Sets the log file to trace level
