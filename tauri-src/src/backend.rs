@@ -7,8 +7,17 @@ use tokio::sync::mpsc;
 
 use crate::can_types;
 use crate::cli;
+use serde::{Deserialize, Serialize};
 
-pub async fn run_backend(tx: mpsc::Sender<can_types::modules::Messages>) -> Result<()> {
+#[derive(Default, Debug, Clone, Serialize, Deserialize)]
+#[serde_with::skip_serializing_none]
+pub struct BoatData {
+    motor_d: Option<f32>,
+    bat_ii: Option<f32>,
+    bat_io: Option<f32>,
+}
+
+pub async fn run_backend(tx: mpsc::Sender<BoatData>) -> Result<()> {
     loop {
         let interface = match &cli::CONFIGURATION.can_interface {
             Some(interface) => interface.to_owned(),
@@ -42,41 +51,96 @@ pub async fn run_backend(tx: mpsc::Sender<can_types::modules::Messages>) -> Resu
     }
 }
 
-fn process_frame(frame: CANFrame) -> Result<can_types::modules::Messages> {
+fn process_frame(frame: CANFrame) -> Result<BoatData> {
     trace!("Received CAN frame: {frame:?}");
 
     let data = frame.data();
 
     match frame.id() {
         can_types::modules::mic19::messages::motor::ID => {
-            read_motor(data, &can_types::modules::mic19::SIGNATURE).map_err(anyhow::Error::from)
+            read_motor(data).map_err(anyhow::Error::from)
+        }
+        can_types::modules::msc19_4::messages::adc::ID => {
+            read_bat_ii(data).map_err(anyhow::Error::from)
+        }
+        can_types::modules::msc19_5::messages::adc::ID => {
+            read_bat_io(data).map_err(anyhow::Error::from)
         }
         // can_types::modules::mic19::messages::pumps::ID => todo!(),
         _ => Err(anyhow!("Unknown message")),
     }
 }
 
-fn read_motor(
-    data: &[u8],
-    sender_signature: &u8,
-) -> Result<can_types::modules::Messages, ReadMessageError> {
-    trace!("Motor message received, trying to deserialize...: {data:?}");
+fn read_motor(data: &[u8]) -> Result<BoatData, ReadMessageError> {
+    trace!("Message received, trying to deserialize...: {data:?}");
 
     let Ok(message) =
         bincode::deserialize::<can_types::modules::mic19::messages::motor::Message>(data) else {
             return Err(ReadMessageError::DeserializationError);
         };
 
-    let signature = &message.signature;
-    if signature != sender_signature {
+    if message.signature != can_types::modules::mic19::SIGNATURE {
         return Err(ReadMessageError::WrongSignatureError);
     }
 
     debug!("Message read: {message:?}");
 
-    Ok(can_types::modules::Messages::Mic19(
-        can_types::modules::mic19::Messages::Motor(message),
-    ))
+    let boat_data = BoatData {
+        motor_d: Some(100f32 * (message.d as f32) / (u8::MAX as f32)),
+        ..Default::default()
+    };
+
+    debug!("Message sent: {boat_data:?}");
+
+    Ok(boat_data)
+}
+
+fn read_bat_ii(data: &[u8]) -> Result<BoatData, ReadMessageError> {
+    trace!("Message received, trying to deserialize...: {data:?}");
+
+    let Ok(message) =
+        bincode::deserialize::<can_types::modules::msc19_4::messages::adc::Message>(data) else {
+            return Err(ReadMessageError::DeserializationError);
+        };
+
+    if message.signature != can_types::modules::msc19_4::SIGNATURE {
+        return Err(ReadMessageError::WrongSignatureError);
+    }
+
+    debug!("Message read: {message:?}");
+
+    let boat_data = BoatData {
+        bat_ii: Some(100f32 * (message.average as f32) / (u16::MAX as f32)),
+        ..Default::default()
+    };
+
+    debug!("Message sent: {boat_data:?}");
+
+    Ok(boat_data)
+}
+
+fn read_bat_io(data: &[u8]) -> Result<BoatData, ReadMessageError> {
+    trace!("Message received, trying to deserialize...: {data:?}");
+
+    let Ok(message) =
+        bincode::deserialize::<can_types::modules::msc19_5::messages::adc::Message>(data) else {
+            return Err(ReadMessageError::DeserializationError);
+        };
+
+    if message.signature != can_types::modules::msc19_5::SIGNATURE {
+        return Err(ReadMessageError::WrongSignatureError);
+    }
+
+    debug!("Message read: {message:?}");
+
+    let boat_data = BoatData {
+        bat_io: Some(100f32 * (message.average as f32) / (u16::MAX as f32)),
+        ..Default::default()
+    };
+
+    debug!("Message sent: {boat_data:?}");
+
+    Ok(boat_data)
 }
 
 enum ReadMessageError {

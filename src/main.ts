@@ -1,5 +1,9 @@
-import { createApp } from "vue";
-import "./styles.css";
-import App from "./App.vue";
+import { createApp } from "vue"
+import App from "./App.vue"
+import "./styles.css"
+const app = createApp(App);
 
-createApp(App).mount("#app");
+import { vuetify } from './plugins/vuetify'
+app.use(vuetify);
+
+app.mount("#app");

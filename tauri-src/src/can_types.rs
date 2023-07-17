@@ -3,6 +3,7 @@ pub mod modules {
     use serde::{Deserialize, Serialize};
 
     #[derive(Debug, Clone, Serialize, Deserialize)]
+    #[serde(tag = "type", content = "content")]
     pub enum Messages {
         Mic19(mic19::Messages),
     }
@@ -13,6 +14,7 @@ pub mod modules {
         pub const SIGNATURE: u8 = 240u8;
 
         #[derive(Debug, Clone, Serialize, Deserialize)]
+        #[serde(tag = "type", content = "content")]
         pub enum Messages {
             State(messages::state::Message),
             Motor(messages::motor::Message),
@@ -30,7 +32,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -45,40 +47,35 @@ pub mod modules {
 
             pub mod motor {
                 /// Mic19 Motor Message ID
-                // pub const ID: u32 = 31u32;
-                pub const ID: u32 = 9u32;
+                pub const ID: u32 = 31u32;
+                // pub const ID: u32 = 9u32;
 
-                use bitfield::bitfield;
+                // use modular_bitfield::specifiers::*};
+                use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Motor controller parameters
                 pub struct Message {
                     /// Senders signature.
                     pub signature: u8,
-                    pub motor: u8,
+                    /// Motor state flags.
+                    pub motor: State,
                     /// Motor Duty Cycle. Units: %
                     pub d: u8,
                     /// Motor Soft Start. Units: %
                     pub i: u8,
                 }
 
-                #[repr(C)]
-                #[derive(Debug, Clone, Serialize, Deserialize)]
-                /// Motor state
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 pub struct State {
                     pub motor_on: bool,
                     pub dms_on: bool,
                     pub reverse: bool,
-                }
-
-                bitfield! {
-                    struct StateBits(u8);
-                    impl Debug;
-                    motor_on, set_motor_on: 0;
-                    dms_on, set_dms_on: 1;
-                    reverse, set_reverse: 2;
+                    #[skip]
+                    _unused: B5,
                 }
             }
 
@@ -86,10 +83,10 @@ pub mod modules {
                 /// Mic19 Pumps Message ID
                 pub const ID: u32 = 41u32;
 
-                use bitfield::bitfield;
+                use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Pumps controller parameters
                 pub struct Message {
@@ -98,21 +95,15 @@ pub mod modules {
                     pub pumps: State,
                 }
 
-                #[repr(C)]
-                #[derive(Debug, Clone, Serialize, Deserialize)]
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Pumps state
                 pub struct State {
                     pub pump1: bool,
                     pub pump2: bool,
                     pub pump3: bool,
-                }
-
-                bitfield! {
-                    struct StateBits(u8);
-                    impl Debug;
-                    pump1, set_pump1: 0;
-                    pump2, set_pump2: 1;
-                    pump3, set_pump3: 2;
+                    #[skip]
+                    _unused: B5,
                 }
             }
 
@@ -120,10 +111,10 @@ pub mod modules {
                 /// Mic19 MPPTs Message ID
                 pub const ID: u32 = 200u32;
 
-                use bitfield::bitfield;
+                use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// MPPTs controller parameters
                 pub struct Message {
@@ -134,17 +125,13 @@ pub mod modules {
                     pub pot: u8,
                 }
 
-                #[repr(C)]
-                #[derive(Debug, Clone, Serialize, Deserialize)]
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// MPPTs state
                 pub struct State {
                     pub mppts_on: bool,
-                }
-
-                bitfield! {
-                    struct StateBits(u8);
-                    impl Debug;
-                    mppts_on, set_mppts_on: 0;
+                    #[skip]
+                    _unused: B7,
                 }
             }
 
@@ -152,10 +139,10 @@ pub mod modules {
                 /// Mic19 MCS Message ID
                 pub const ID: u32 = 32u32;
 
-                use bitfield::bitfield;
+                use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// MCS controller parameters
                 pub struct Message {
@@ -164,17 +151,13 @@ pub mod modules {
                     pub boat_on: State,
                 }
 
-                #[repr(C)]
-                #[derive(Debug, Clone, Serialize, Deserialize)]
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Boat state
                 pub struct State {
                     pub boat_on: bool,
-                }
-
-                bitfield! {
-                    struct StateBits(u8);
-                    impl Debug;
-                    boat_on, set_boat_on: 0;
+                    #[skip]
+                    _unused: B7,
                 }
             }
 
@@ -182,10 +165,10 @@ pub mod modules {
                 /// Mic19 MDE Message ID
                 pub const ID: u32 = 33u32;
 
-                use bitfield::bitfield;
+                use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Steering wheel controls
                 pub struct Message {
@@ -217,7 +200,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -236,7 +219,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Auxiliar Battery Voltage
                 pub struct Message {
@@ -264,10 +247,10 @@ pub mod modules {
                 /// MCC19_1 State Message ID
                 pub const ID: u32 = 103u32;
 
-                use bitfield::bitfield;
+                use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -278,8 +261,8 @@ pub mod modules {
                     pub control: ControlFlags,
                 }
 
-                #[repr(C)]
-                #[derive(Debug, Clone, Serialize, Deserialize)]
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
                 pub struct ControlFlags {
                     pub enable: bool,
@@ -287,16 +270,8 @@ pub mod modules {
                     pub vo_safe_range: bool,
                     pub vi_stable: bool,
                     pub dt_safe_range: bool,
-                }
-
-                bitfield! {
-                    struct ControlBits(u8);
-                    impl Debug;
-                    enable, set_enable: 0;
-                    vi_safe_range, set_vi_safe_range: 1;
-                    vo_safe_range, set_vo_safe_range: 2;
-                    vi_stable, set_vi_stable: 3;
-                    dt_safe_range, set_dt_safe_range: 4;
+                    #[skip]
+                    _unused: B3,
                 }
             }
 
@@ -306,7 +281,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// All measurements from the converter
                 pub struct Message {
@@ -338,7 +313,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -355,10 +330,10 @@ pub mod modules {
                 /// MAB19 Pumps Message ID
                 pub const ID: u32 = 210u32;
 
-                use bitfield::bitfield;
+                use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Pumps state
                 pub struct Message {
@@ -367,21 +342,15 @@ pub mod modules {
                     pub pumps: PumpStates,
                 }
 
-                #[repr(C)]
-                #[derive(Debug, Clone, Serialize, Deserialize)]
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Pumps state bitfield
                 pub struct PumpStates {
                     pub pump1: bool,
                     pub pump2: bool,
                     pub pump3: bool,
-                }
-
-                bitfield! {
-                    struct PumpBits(u8);
-                    impl Debug;
-                    pump1, set_pump1: 0;
-                    pump2, set_pump2: 1;
-                    pump3, set_pump3: 2;
+                    #[skip]
+                    _unused: B5,
                 }
             }
         }
@@ -391,7 +360,6 @@ pub mod modules {
         use serde::{Deserialize, Serialize};
 
         pub const SIGNATURE: u8 = 250u8;
-
         pub mod messages {
 
             pub mod state {
@@ -400,7 +368,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -419,7 +387,97 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Voltage measurements
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    pub average: u16,
+                    pub min: u16,
+                    pub max: u16,
+                }
+            }
+        }
+    }
+
+    pub mod msc19_4 {
+        use serde::{Deserialize, Serialize};
+
+        pub const SIGNATURE: u8 = 253u8;
+        pub mod messages {
+
+            pub mod state {
+                /// MSC19_4 State Message ID
+                pub const ID: u32 = 115u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Module state report
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// State code
+                    pub state: u8,
+                    /// Error code
+                    pub error: u8,
+                }
+            }
+
+            pub mod adc {
+                /// MSC19_4 ADC Message ID
+                pub const ID: u32 = 214u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Voltage measurements
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    pub average: u16,
+                    pub min: u16,
+                    pub max: u16,
+                }
+            }
+        }
+    }
+
+    pub mod msc19_5 {
+        use serde::{Deserialize, Serialize};
+
+        pub const SIGNATURE: u8 = 254u8;
+        pub mod messages {
+
+            pub mod state {
+                /// MSC19_5 State Message ID
+                pub const ID: u32 = 116u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Module state report
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// State code
+                    pub state: u8,
+                    /// Error code
+                    pub error: u8,
+                }
+            }
+
+            pub mod adc {
+                /// MSC19_5 ADC Message ID
+                pub const ID: u32 = 215u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Voltage measurements
                 pub struct Message {
@@ -446,7 +504,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -465,7 +523,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Boat charging // Boat on
                 pub struct Message {
@@ -482,7 +540,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Battery voltage values
                 pub struct Message {
@@ -500,7 +558,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Capacitor bank voltage values
                 pub struct Message {
@@ -527,7 +585,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -546,7 +604,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// RPM motor values
                 pub struct Message {
@@ -571,7 +629,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -590,7 +648,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Motor controller parameters
                 pub struct Message {
@@ -609,7 +667,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Contactor requests
                 pub struct Message {
@@ -635,7 +693,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -654,7 +712,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Contactor task response
                 pub struct Message {
@@ -680,7 +738,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// Module state report
                 pub struct Message {
@@ -692,8 +750,8 @@ pub mod modules {
                     pub control: ControlFlags,
                 }
 
-                #[repr(C)]
-                #[derive(Debug, Clone, Serialize, Deserialize)]
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
                 /// Control flags for operating point
                 pub struct ControlFlags {
                     pub enable: bool,
@@ -710,7 +768,7 @@ pub mod modules {
 
                 use serde::{Deserialize, Serialize};
 
-                #[repr(C)]
+                #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
                 /// All measurements from the converter
                 pub struct Message {

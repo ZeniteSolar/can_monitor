@@ -2,12 +2,17 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 #[macro_use]
+extern crate lazy_static;
+extern crate modular_bitfield;
+
+#[macro_use]
 mod can_types;
 mod backend;
 mod cli;
 mod logger;
 
 use anyhow::Result;
+use backend::BoatData;
 use tauri::Manager;
 use tokio::sync::mpsc;
 use tracing::*;
@@ -16,7 +21,7 @@ use tracing::*;
 async fn main() -> Result<()> {
     logger::init()?;
 
-    let (tx, rx) = mpsc::channel::<can_types::modules::Messages>(100);
+    let (tx, rx) = mpsc::channel::<BoatData>(100);
     tokio::spawn(backend::run_backend(tx));
 
     tauri::async_runtime::set(tokio::runtime::Handle::current());
@@ -36,7 +41,7 @@ async fn main() -> Result<()> {
 }
 
 async fn send_messages_to_frontend<R: tauri::Runtime>(
-    mut rx: mpsc::Receiver<can_types::modules::Messages>,
+    mut rx: mpsc::Receiver<BoatData>,
     manager: &impl Manager<R>,
 ) {
     loop {
