@@ -18,17 +18,21 @@
 
 <script setup lang="ts">
 import { Event, listen } from '@tauri-apps/api/event'
-import { reactive, ref } from 'vue'
+import { Ref, reactive, ref } from 'vue'
 import { MeasurementCardData } from '../measurement_types'
 import MeasurementCard from './MeasurementCard.vue'
 
 // Getting data from the backend
-const messages = ref([])
+type CanMessage = {
+  timestamp: number,
+  message: string
+}
+const messages: Ref<CanMessage[]> = ref([])
 await listen('can_message', (event: Event<object>) => {
   let message = event.payload
 
   console.log(typeof (message), message)
-  messages.value.unshift({ timestamp: Date.now(), message: message })
+  messages.value.unshift({ timestamp: Date.now(), message: String(message) } as CanMessage)
 
   if (messages.value.length > 10) {
     messages.value.pop()
