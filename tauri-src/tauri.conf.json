@@ -12,11 +12,7 @@
   },
   "tauri": {
     "allowlist": {
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      }
+      "all": true
     },
     "bundle": {
       "active": true,
@@ -32,6 +28,9 @@
     },
     "security": {
       "csp": null
+    },
+    "updater": {
+      "active": false
     },
     "windows": [
       {
