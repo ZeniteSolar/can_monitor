@@ -475,6 +475,116 @@ pub mod modules {
         }
     }
 
+    pub mod msc19_2 {
+        use serde::{Deserialize, Serialize};
+
+        pub const SIGNATURE: u8 = 251u8;
+        pub mod messages {
+
+            pub mod state {
+                /// MSC19_2 State Message ID
+                pub const ID: u32 = 113u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Module state report
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// State code
+                    pub state: u8,
+                    /// Error code
+                    pub error: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
+
+            pub mod adc {
+                /// MSC19_2 ADC Message ID
+                pub const ID: u32 = 212u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Voltage measurements
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    pub average: u16,
+                    pub min: u16,
+                    pub max: u16,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
+        }
+    }
+
+    pub mod msc19_3 {
+        use serde::{Deserialize, Serialize};
+
+        pub const SIGNATURE: u8 = 252u8;
+        pub mod messages {
+
+            pub mod state {
+                /// MSC19_3 State Message ID
+                pub const ID: u32 = 114u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Module state report
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// State code
+                    pub state: u8,
+                    /// Error code
+                    pub error: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
+
+            pub mod adc {
+                /// MSC19_3 ADC Message ID
+                pub const ID: u32 = 213u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Voltage measurements
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    pub average: u16,
+                    pub min: u16,
+                    pub max: u16,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
+        }
+    }
+
     pub mod msc19_4 {
         use serde::{Deserialize, Serialize};
 
