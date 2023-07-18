@@ -6,11 +6,13 @@ extern crate modular_bitfield;
 #[macro_use]
 mod can_types;
 mod backend;
+mod boat_data_types;
 mod cli;
 mod logger;
 
 use anyhow::Result;
-use backend::BoatData;
+
+use boat_data_types::BoatData;
 use tauri::Manager;
 use tokio::sync::mpsc;
 use tracing::*;

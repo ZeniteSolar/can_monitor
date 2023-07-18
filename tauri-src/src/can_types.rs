@@ -2,6 +2,10 @@
 pub mod modules {
     use serde::{Deserialize, Serialize};
 
+    pub trait CanMessageTrait {
+        fn signature(&self) -> u8;
+    }
+
     #[derive(Debug, Clone, Serialize, Deserialize)]
     #[serde(tag = "type", content = "content")]
     pub enum Messages {
@@ -43,6 +47,11 @@ pub mod modules {
                     /// Error code.
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod motor {
@@ -66,6 +75,11 @@ pub mod modules {
                     pub d: u8,
                     /// Motor Soft Start. Units: %
                     pub i: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
 
                 #[bitfield(bytes = 1)]
@@ -93,6 +107,11 @@ pub mod modules {
                     /// Senders signature.
                     pub signature: u8,
                     pub pumps: State,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
 
                 #[bitfield(bytes = 1)]
@@ -124,6 +143,11 @@ pub mod modules {
                     /// MPPTs maximum power limitation. Units: %
                     pub pot: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
 
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
@@ -149,6 +173,11 @@ pub mod modules {
                     /// Senders signature.
                     pub signature: u8,
                     pub boat_on: State,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
 
                 #[bitfield(bytes = 1)]
@@ -176,6 +205,11 @@ pub mod modules {
                     pub signature: u8,
                     /// Steering wheel position, byte HIGH. Units: °/100
                     pub position: u16,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
@@ -211,6 +245,11 @@ pub mod modules {
                     /// Error code.
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod steeringbat_measurements {
@@ -231,6 +270,11 @@ pub mod modules {
                     pub tail_position: u16,
                     /// Battery Current, byte low. Units: A/100
                     pub batcurrent: u16,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
@@ -259,6 +303,11 @@ pub mod modules {
                     /// State code
                     pub state: u8,
                     pub control: ControlFlags,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
 
                 #[bitfield(bytes = 1)]
@@ -296,6 +345,11 @@ pub mod modules {
                     /// Converter's duty cycle. Units: %/255
                     pub dt: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
         }
     }
@@ -324,6 +378,11 @@ pub mod modules {
                     /// Error code
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod pumps {
@@ -340,6 +399,11 @@ pub mod modules {
                     /// Senders signature.
                     pub signature: u8,
                     pub pumps: PumpStates,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
 
                 #[bitfield(bytes = 1)]
@@ -379,6 +443,11 @@ pub mod modules {
                     /// Error code
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod adc {
@@ -396,6 +465,11 @@ pub mod modules {
                     pub average: u16,
                     pub min: u16,
                     pub max: u16,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
@@ -424,6 +498,11 @@ pub mod modules {
                     /// Error code
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod adc {
@@ -441,6 +520,11 @@ pub mod modules {
                     pub average: u16,
                     pub min: u16,
                     pub max: u16,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
@@ -469,6 +553,11 @@ pub mod modules {
                     /// Error code
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod adc {
@@ -486,6 +575,11 @@ pub mod modules {
                     pub average: u16,
                     pub min: u16,
                     pub max: u16,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
@@ -515,6 +609,11 @@ pub mod modules {
                     /// Error code
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod start_stages {
@@ -531,6 +630,11 @@ pub mod modules {
                     pub signature: u8,
                     pub main_relay: bool,
                     pub charge_relay: bool,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
 
@@ -550,6 +654,11 @@ pub mod modules {
                     pub min: u16,
                     pub max: u16,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod cap {
@@ -567,6 +676,11 @@ pub mod modules {
                     pub average: u16,
                     pub min: u16,
                     pub max: u16,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
@@ -596,6 +710,11 @@ pub mod modules {
                     /// Error code
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod rpm {
@@ -611,6 +730,11 @@ pub mod modules {
                     /// Senders signature.
                     pub signature: u8,
                     pub average: u16,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
@@ -640,6 +764,11 @@ pub mod modules {
                     /// Error code
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod motor {
@@ -659,6 +788,11 @@ pub mod modules {
                     /// Motor Soft Start
                     pub soft_start: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod contactor {
@@ -675,6 +809,11 @@ pub mod modules {
                     pub signature: u8,
                     /// Control the Contactor State
                     pub request: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
@@ -704,6 +843,11 @@ pub mod modules {
                     /// Error code
                     pub error: u8,
                 }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
             }
 
             pub mod contactor {
@@ -720,6 +864,11 @@ pub mod modules {
                     pub signature: u8,
                     /// Contactor task response
                     pub response: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
@@ -748,6 +897,11 @@ pub mod modules {
                     pub state: u8,
                     /// Control flags for operating point
                     pub control: ControlFlags,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
 
                 #[repr(C, packed)]
@@ -788,6 +942,11 @@ pub mod modules {
                     pub input_voltage_h: u16,
                     /// Converter's duty cycle
                     pub dt: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
                 }
             }
         }
