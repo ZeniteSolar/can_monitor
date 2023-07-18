@@ -7,6 +7,7 @@ extern crate modular_bitfield;
 mod can_types;
 mod backend;
 mod boat_data_types;
+mod boat_state;
 mod cli;
 mod logger;
 
