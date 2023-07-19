@@ -1,5 +1,5 @@
 <template>
-  <v-card class="ma-0 pa-2" variant="outlined" width="250">
+  <v-card class="ma-0 pa-2" variant="outlined" width="280">
     <v-card-subtitle align="right" class="pt-0 pb-2 text-capitalize">{{ card.description }}</v-card-subtitle>
     <v-card-title align="left" class="text-h4 bg-primary font-weight-medium">{{ card.name }}</v-card-title>
     <v-card-text class="py-0">
@@ -7,7 +7,7 @@
         <v-col class="text-h2 text-right text-no-wrap font-weight-black" cols="9">
           {{ format(card) }}
         </v-col>
-        <v-col class="text-left text-overline ml-4 text-no-wrap">
+        <v-col class="text-left text-overline ml-4 text-no-wrap" cols="1">
           [ {{ card.units }} ]
         </v-col>
       </v-row>
