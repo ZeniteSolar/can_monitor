@@ -6,8 +6,9 @@ use tracing::*;
 use tokio::sync::mpsc;
 
 use crate::boat_data_types::BoatData;
+use crate::boat_state::{BoatStateVariable, BOAT_STATE};
 use crate::can_types::modules;
-use crate::cli;
+use crate::cli::{self, CONFIGURATION};
 
 pub async fn run_backend(tx: mpsc::Sender<BoatData>) -> Result<()> {
     loop {
@@ -19,6 +20,8 @@ pub async fn run_backend(tx: mpsc::Sender<BoatData>) -> Result<()> {
         let mut socket_rx = CANSocket::open(&interface)?;
         debug!("Reading on {interface:?}");
 
+        let mut time = std::time::Instant::now();
+
         while let Some(result) = socket_rx.next().await {
             let frame = match result {
                 Ok(frame) => frame,
@@ -28,13 +31,17 @@ pub async fn run_backend(tx: mpsc::Sender<BoatData>) -> Result<()> {
                 }
             };
 
-            let message = match process_frame(frame) {
-                Ok(message) => message,
-                Err(error) => {
-                    trace!("Failed processing message: {error:?}");
-                    continue;
-                }
-            };
+            if let Err(error) = process_frame(frame) {
+                trace!("Failed processing message: {error:?}");
+                continue;
+            }
+
+            if time.elapsed() < std::time::Duration::from_millis(CONFIGURATION.period) {
+                continue;
+            }
+            time = std::time::Instant::now();
+
+            let message = BOAT_STATE.lock().unwrap().clone().into();
 
             if let Err(error) = tx.send(message).await {
                 error!("Failed sending message: {error:?}");
@@ -43,7 +50,7 @@ pub async fn run_backend(tx: mpsc::Sender<BoatData>) -> Result<()> {
     }
 }
 
-fn process_frame(frame: CANFrame) -> Result<BoatData> {
+fn process_frame(frame: CANFrame) -> Result<()> {
     trace!("Received CAN frame: {frame:?}");
 
     let data = frame.data();
@@ -66,13 +73,13 @@ fn process_frame(frame: CANFrame) -> Result<BoatData> {
     }
 }
 
-fn read_message<T>(data: &[u8], signature: &u8) -> Result<BoatData, ReadMessageError>
+fn read_message<T>(data: &[u8], signature: &u8) -> Result<(), ReadMessageError>
 where
     T: modules::CanMessageTrait
         + serde::Serialize
         + for<'a> serde::Deserialize<'a>
         + std::fmt::Debug
-        + Into<BoatData>,
+        + BoatStateVariable,
 {
     trace!("Message received, trying to deserialize...: {data:?}");
 
@@ -87,9 +94,9 @@ where
 
     debug!("Message read: {message:?}");
 
-    let data = message.into();
+    <T as BoatStateVariable>::update(message);
 
-    Ok(data)
+    Ok(())
 }
 enum ReadMessageError {
     DeserializationError,
