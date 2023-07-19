@@ -31,25 +31,24 @@ const messages: Ref<CanMessage[]> = ref([])
 await listen('can_message', (event: Event<object>) => {
   let message = event.payload
 
-  console.log(typeof (message), message)
-  messages.value.unshift({ timestamp: Date.now(), message: String(message) } as CanMessage)
-
+  // Put message into the debugger
+  messages.value.unshift({ timestamp: Date.now(), message: JSON.parse(JSON.stringify(message)) } as CanMessage)
   if (messages.value.length > 10) {
     messages.value.pop()
   }
 
-  for (const [key, value] of Object.entries(message)) {
-    if (value === null) {
-      continue
+  // Get all boat data and update each card accordingly
+  Object.entries(message).forEach((entry) => {
+    const [key, value] = entry
+
+    if (value !== null) {
+      const card_instance = measurementCards.get(String(key))
+      if (card_instance) {
+        card_instance.value = value
+      }
     }
 
-    const card_instance = measurementCards.get(String(key))
-    console.log(card_instance)
-    if (!card_instance) {
-      return
-    }
-    card_instance.value = value
-  }
+  })
 })
 
 // Mocked backend for development
