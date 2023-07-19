@@ -75,9 +75,25 @@ measurementCards.set("motor_d", new MeasurementCardData(
   100,
   1
 ))
+measurementCards.set("motor_rpm", new MeasurementCardData(
+  "Motor RPM",
+  "Motor RPM",
+  'RPM',
+  0,
+  6000,
+  0
+))
 measurementCards.set("bat_ii", new MeasurementCardData(
   "Bat Ii",
   "Battery Input Current",
+  'A',
+  0,
+  60,
+  1
+))
+measurementCards.set("bat_io", new MeasurementCardData(
+  "Bat Io",
+  "Battery Output Current",
   'A',
   0,
   200,
@@ -90,6 +106,38 @@ measurementCards.set("bat_v", new MeasurementCardData(
   30,
   60,
   2
+))
+measurementCards.set("dir_head_pos", new MeasurementCardData(
+  "Dir H",
+  "Steering Wheel Head Sensor Position",
+  'deg',
+  -135,
+  135,
+  1
+))
+measurementCards.set("dir_tail_pos", new MeasurementCardData(
+  "Dir T",
+  "Steering Wheel Tail Sensor Position",
+  'deg',
+  -135,
+  135,
+  1
+))
+measurementCards.set("dir_bat_v", new MeasurementCardData(
+  "Dir V",
+  "Steering Wheel Battery Voltage",
+  'V',
+  7,
+  15,
+  1
+))
+measurementCards.set("dir_bat_i", new MeasurementCardData(
+  "Dir I",
+  "Steering Wheel Battery Current",
+  'A',
+  0,
+  20,
+  1
 ))
 measurementCards.set("mppts_pi", new MeasurementCardData(
   "MPPTs Pi",
