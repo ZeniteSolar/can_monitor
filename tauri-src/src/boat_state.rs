@@ -12,23 +12,21 @@ lazy_static! {
 pub struct BoatState {
     pub boat_on: bool,
     pub motor_on: bool,
-    pub pump1: bool,
-    pub pump2: bool,
-    pub pump3: bool,
-    // pub mam state
-    // pub MPPTs
-    pub motor_d: Ema<10>,
+    pub pump: [bool; 3],
+    pub motor_d: [Ema<10>; 2],
     pub motor_rpm: Ema<10>,
+    pub mam_state: u8,
     pub bat_v: Ema<10>,
-    pub bat1_v: Ema<10>,
-    pub bat2_v: Ema<10>,
-    pub bat3_v: Ema<10>,
+    pub bat_cell_v: [Ema<10>; 3],
     pub bat_ii: Ema<10>,
     pub bat_io: Ema<10>,
-    pub dir_head_pos: Ema<10>,
+    pub dir_pos: [Ema<10>; 2],
     pub dir_bat_v: Ema<10>,
     pub dir_bat_i: Ema<10>,
-    pub dir_tail_pos: Ema<10>,
+    pub mcc_d: [Ema<10>; 9],
+    pub mcc_ii: [Ema<10>; 9],
+    pub mcc_vi: [Ema<10>; 9],
+    pub mcc_vo: [Ema<10>; 9],
 }
 
 #[derive(Default, Debug, Clone)]

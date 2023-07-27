@@ -43,6 +43,8 @@ pub async fn run_backend(tx: mpsc::Sender<BoatData>) -> Result<()> {
 
             let message = BOAT_STATE.lock().unwrap().clone().into();
 
+            trace!("Sending message: {message:?}");
+
             if let Err(error) = tx.send(message).await {
                 error!("Failed sending message: {error:?}");
             }
@@ -60,6 +62,47 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             modules::mic19::messages::motor::Message,
         >(data, &modules::mic19::SIGNATURE)
         .map_err(anyhow::Error::from),
+        modules::mic19::messages::mde::ID => {
+            read_message::<modules::mic19::messages::mde::Message>(data, &modules::mic19::SIGNATURE)
+                .map_err(anyhow::Error::from)
+        }
+        modules::mic19::messages::mcs::ID => {
+            read_message::<modules::mic19::messages::mcs::Message>(data, &modules::mic19::SIGNATURE)
+                .map_err(anyhow::Error::from)
+        }
+        modules::mic19::messages::pumps::ID => read_message::<
+            modules::mic19::messages::pumps::Message,
+        >(data, &modules::mic19::SIGNATURE)
+        .map_err(anyhow::Error::from),
+        modules::mam19::messages::state::ID => read_message::<
+            modules::mam19::messages::state::Message,
+        >(data, &modules::mam19::SIGNATURE)
+        .map_err(anyhow::Error::from),
+        modules::mam19::messages::motor::ID => read_message::<
+            modules::mam19::messages::motor::Message,
+        >(data, &modules::mam19::SIGNATURE)
+        .map_err(anyhow::Error::from),
+
+        modules::mcs19::messages::bat::ID => {
+            read_message::<modules::mcs19::messages::bat::Message>(data, &modules::mcs19::SIGNATURE)
+                .map_err(anyhow::Error::from)
+        }
+        modules::mt19::messages::rpm::ID => {
+            read_message::<modules::mt19::messages::rpm::Message>(data, &modules::mt19::SIGNATURE)
+                .map_err(anyhow::Error::from)
+        }
+        modules::msc19_1::messages::adc::ID => read_message::<
+            modules::msc19_4::messages::adc::Message,
+        >(data, &modules::msc19_1::SIGNATURE)
+        .map_err(anyhow::Error::from),
+        modules::msc19_2::messages::adc::ID => read_message::<
+            modules::msc19_4::messages::adc::Message,
+        >(data, &modules::msc19_2::SIGNATURE)
+        .map_err(anyhow::Error::from),
+        modules::msc19_3::messages::adc::ID => read_message::<
+            modules::msc19_4::messages::adc::Message,
+        >(data, &modules::msc19_3::SIGNATURE)
+        .map_err(anyhow::Error::from),
         modules::msc19_4::messages::adc::ID => read_message::<
             modules::msc19_4::messages::adc::Message,
         >(data, &modules::msc19_4::SIGNATURE)
@@ -67,6 +110,49 @@ fn process_frame(frame: CANFrame) -> Result<()> {
         modules::msc19_5::messages::adc::ID => read_message::<
             modules::msc19_5::messages::adc::Message,
         >(data, &modules::msc19_5::SIGNATURE)
+        .map_err(anyhow::Error::from),
+        modules::mde22::messages::steeringbat_measurements::ID => {
+            read_message::<modules::mde22::messages::steeringbat_measurements::Message>(
+                data,
+                &modules::mde22::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
+        }
+        modules::mcc19_1::messages::measurements::ID => read_message::<
+            modules::mcc19_1::messages::measurements::Message,
+        >(
+            data, &modules::mcc19_1::SIGNATURE
+        )
+        .map_err(anyhow::Error::from),
+        modules::mcc19_2::messages::measurements::ID => read_message::<
+            modules::mcc19_2::messages::measurements::Message,
+        >(
+            data, &modules::mcc19_2::SIGNATURE
+        )
+        .map_err(anyhow::Error::from),
+        modules::mcc19_3::messages::measurements::ID => read_message::<
+            modules::mcc19_3::messages::measurements::Message,
+        >(
+            data, &modules::mcc19_3::SIGNATURE
+        )
+        .map_err(anyhow::Error::from),
+        modules::mcc19_4::messages::measurements::ID => read_message::<
+            modules::mcc19_4::messages::measurements::Message,
+        >(
+            data, &modules::mcc19_4::SIGNATURE
+        )
+        .map_err(anyhow::Error::from),
+        modules::mcc19_5::messages::measurements::ID => read_message::<
+            modules::mcc19_5::messages::measurements::Message,
+        >(
+            data, &modules::mcc19_5::SIGNATURE
+        )
+        .map_err(anyhow::Error::from),
+        modules::mcc19_6::messages::measurements::ID => read_message::<
+            modules::mcc19_6::messages::measurements::Message,
+        >(
+            data, &modules::mcc19_6::SIGNATURE
+        )
         .map_err(anyhow::Error::from),
         // modules::mic19::messages::pumps::ID => todo!(),
         _ => Err(anyhow!("Unknown message")),

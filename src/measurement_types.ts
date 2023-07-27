@@ -1,4 +1,7 @@
 
+
+type FormatRule = number | "NonZeroAverage" | "Sum"
+
 export class MeasurementCardData {
   name: string
   description: string
@@ -6,15 +9,16 @@ export class MeasurementCardData {
   min: number
   max: number
   precision: number
-  value: number = 0.0
+  data: number[] = [0.0]
+  rule: FormatRule
 
-  constructor(name: string, description: string, units: string, min: number, max: number, precision: number) {
+  constructor(name: string, description: string, units: string, min: number, max: number, precision: number, rule: FormatRule) {
     this.name = name
     this.description = description
     this.units = units
     this.min = min
     this.max = max
     this.precision = precision
-    this.value = 0.0
+    this.rule = rule
   }
 }

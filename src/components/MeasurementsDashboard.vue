@@ -1,12 +1,12 @@
 <template>
   <v-container>
     <v-row no-gutters>
-      <v-col v-for="(card, index) in measurementCards.values()" :key="index" cols="12" md="4" sm="4" align="center">
+      <v-col v-for="(card, index) in measurementCards.values()" :key="index" md="3" align="center">
         <measurement-card :card="card"></measurement-card>
       </v-col>
     </v-row>
 
-    <v-divider class="my-2"></v-divider>
+    <v-divider class="my-4"></v-divider>
 
     <v-card>
       <v-card-title>Can Messages</v-card-title>
@@ -39,32 +39,27 @@ await listen('can_message', (event: Event<object>) => {
 
   // Get all boat data and update each card accordingly
   Object.entries(message).forEach((entry) => {
-    const [key, value] = entry
+    const [key, data] = entry
 
-    if (value !== null) {
+    if (data !== null) {
       const card_instance = measurementCards.get(String(key))
-      if (card_instance) {
-        card_instance.value = value
+      if (card_instance === null || card_instance === undefined) {
+        return
       }
-    }
 
+      if (typeof (data) === "number") {
+        card_instance.data[0] = data
+        return
+      }
+
+      if (Array.isArray(data)) {
+        card_instance.data = data
+        return
+      }
+
+    }
   })
 })
-
-// Mocked backend for development
-// const mockTimer = setInterval(() => {
-//   const measurements = ["bat_ii"]
-//   measurements.forEach((measurement: string): void => {
-//     const card_instance = measurementCards.get(measurement)
-//     if (!card_instance) {
-//       return
-//     }
-//     card_instance.value = (Math.random() * (card_instance.max - card_instance.min)) + card_instance.min
-//   })
-// }, 1000)
-// onBeforeUnmount(async () => {
-//   clearInterval(mockTimer)
-// })
 
 const measurementCards = reactive(new Map<string, MeasurementCardData>)
 measurementCards.set("motor_d", new MeasurementCardData(
@@ -73,7 +68,8 @@ measurementCards.set("motor_d", new MeasurementCardData(
   '%',
   0,
   100,
-  1
+  1,
+  0,
 ))
 measurementCards.set("motor_rpm", new MeasurementCardData(
   "Motor RPM",
@@ -81,47 +77,44 @@ measurementCards.set("motor_rpm", new MeasurementCardData(
   'RPM',
   0,
   6000,
-  0
-))
-measurementCards.set("bat_ii", new MeasurementCardData(
-  "Bat Ii",
-  "Battery Input Current",
-  'A',
   0,
-  60,
-  1
-))
-measurementCards.set("bat_io", new MeasurementCardData(
-  "Bat Io",
-  "Battery Output Current",
-  'A',
   0,
+))
+measurementCards.set("bat_i", new MeasurementCardData(
+  "Bat I",
+  "Battery Current",
+  'A',
+  -200,
   200,
-  1
+  1,
+  0,
 ))
 measurementCards.set("bat_v", new MeasurementCardData(
-  "Bat V",
+  "Bat Cell V",
   "Battery Voltage",
   'V',
   30,
   60,
-  2
+  2,
+  0,
 ))
-measurementCards.set("dir_head_pos", new MeasurementCardData(
+measurementCards.set("bat_cell_v", new MeasurementCardData(
+  "Bat V",
+  "Battery Voltage",
+  'V',
+  10,
+  16,
+  2,
+  'Sum',
+))
+measurementCards.set("dir_pos", new MeasurementCardData(
   "Dir H",
-  "Steering Wheel Head Sensor Position",
+  "Steering Wheel Sensors Position",
   'deg',
   -135,
   135,
-  1
-))
-measurementCards.set("dir_tail_pos", new MeasurementCardData(
-  "Dir T",
-  "Steering Wheel Tail Sensor Position",
-  'deg',
-  -135,
-  135,
-  1
+  1,
+  0,
 ))
 measurementCards.set("dir_bat_v", new MeasurementCardData(
   "Dir V",
@@ -129,7 +122,8 @@ measurementCards.set("dir_bat_v", new MeasurementCardData(
   'V',
   7,
   15,
-  1
+  1,
+  0,
 ))
 measurementCards.set("dir_bat_i", new MeasurementCardData(
   "Dir I",
@@ -137,15 +131,53 @@ measurementCards.set("dir_bat_i", new MeasurementCardData(
   'A',
   0,
   20,
-  1
+  1,
+  0,
 ))
-measurementCards.set("mppts_pi", new MeasurementCardData(
+measurementCards.set("mppt_pi", new MeasurementCardData(
   "MPPTs Pi",
   "MPPTs Input Power",
   'W',
   0,
-  1500,
-  0
+  300,
+  0,
+  'Sum',
+))
+measurementCards.set("mcc_vi", new MeasurementCardData(
+  "MPPT Vi",
+  "MPPT Input Voltage",
+  'V',
+  0,
+  60,
+  2,
+  'NonZeroAverage',
+))
+measurementCards.set("mcc_ii", new MeasurementCardData(
+  "MPPT Ii",
+  "MPPT Input Current",
+  'A',
+  0,
+  15,
+  2,
+  'NonZeroAverage',
+))
+measurementCards.set("mcc_vo", new MeasurementCardData(
+  "MPPT Vo",
+  "MPPT Output Voltage",
+  'V',
+  0,
+  60,
+  1,
+  'NonZeroAverage',
+))
+measurementCards.set("mcc_d", new MeasurementCardData(
+  "MPPT D",
+  "MPPT Duty Cycle",
+  '%',
+  0,
+  100,
+  1,
+  'NonZeroAverage',
 ));
 
 </script>
