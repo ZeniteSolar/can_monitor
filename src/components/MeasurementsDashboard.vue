@@ -19,8 +19,7 @@
 <script setup lang="ts">
 import { Event, listen } from '@tauri-apps/api/event'
 import { Ref, reactive, ref } from 'vue'
-import { MeasurementCardData } from '../measurement_types'
-import MeasurementCard from './MeasurementCard.vue'
+import { GenericCardData } from '../measurement_types'
 
 // Getting data from the backend
 type CanMessage = {
@@ -61,8 +60,8 @@ await listen('can_message', (event: Event<object>) => {
   })
 })
 
-const measurementCards = reactive(new Map<string, MeasurementCardData>)
-measurementCards.set("motor_d", new MeasurementCardData(
+const measurementCards = reactive(new Map<string, GenericCardData>)
+measurementCards.set("motor_d", new GenericCardData(
   "Motor D",
   "ESC PWM Duty-Cycle",
   '%',
@@ -71,7 +70,7 @@ measurementCards.set("motor_d", new MeasurementCardData(
   1,
   0,
 ))
-measurementCards.set("motor_rpm", new MeasurementCardData(
+measurementCards.set("motor_rpm", new GenericCardData(
   "Motor RPM",
   "Motor RPM",
   'RPM',
@@ -80,7 +79,7 @@ measurementCards.set("motor_rpm", new MeasurementCardData(
   0,
   0,
 ))
-measurementCards.set("bat_i", new MeasurementCardData(
+measurementCards.set("bat_i", new GenericCardData(
   "Bat I",
   "Battery Current",
   'A',
@@ -89,7 +88,7 @@ measurementCards.set("bat_i", new MeasurementCardData(
   1,
   0,
 ))
-measurementCards.set("bat_v", new MeasurementCardData(
+measurementCards.set("bat_v", new GenericCardData(
   "Bat Cell V",
   "Battery Voltage",
   'V',
@@ -98,7 +97,7 @@ measurementCards.set("bat_v", new MeasurementCardData(
   2,
   0,
 ))
-measurementCards.set("bat_cell_v", new MeasurementCardData(
+measurementCards.set("bat_cell_v", new GenericCardData(
   "Bat V",
   "Battery Voltage",
   'V',
@@ -107,7 +106,7 @@ measurementCards.set("bat_cell_v", new MeasurementCardData(
   2,
   'Sum',
 ))
-measurementCards.set("dir_pos", new MeasurementCardData(
+measurementCards.set("dir_pos", new GenericCardData(
   "Dir H",
   "Steering Wheel Sensors Position",
   'deg',
@@ -116,7 +115,7 @@ measurementCards.set("dir_pos", new MeasurementCardData(
   1,
   0,
 ))
-measurementCards.set("dir_bat_v", new MeasurementCardData(
+measurementCards.set("dir_bat_v", new GenericCardData(
   "Dir V",
   "Steering Wheel Battery Voltage",
   'V',
@@ -125,7 +124,7 @@ measurementCards.set("dir_bat_v", new MeasurementCardData(
   1,
   0,
 ))
-measurementCards.set("dir_bat_i", new MeasurementCardData(
+measurementCards.set("dir_bat_i", new GenericCardData(
   "Dir I",
   "Steering Wheel Battery Current",
   'A',
@@ -134,7 +133,7 @@ measurementCards.set("dir_bat_i", new MeasurementCardData(
   1,
   0,
 ))
-measurementCards.set("mppt_pi", new MeasurementCardData(
+measurementCards.set("mppt_pi", new GenericCardData(
   "MPPTs Pi",
   "MPPTs Input Power",
   'W',
@@ -143,7 +142,7 @@ measurementCards.set("mppt_pi", new MeasurementCardData(
   0,
   'Sum',
 ))
-measurementCards.set("mcc_vi", new MeasurementCardData(
+measurementCards.set("mcc_vi", new GenericCardData(
   "MPPT Vi",
   "MPPT Input Voltage",
   'V',
@@ -152,7 +151,7 @@ measurementCards.set("mcc_vi", new MeasurementCardData(
   2,
   'NonZeroAverage',
 ))
-measurementCards.set("mcc_ii", new MeasurementCardData(
+measurementCards.set("mcc_ii", new GenericCardData(
   "MPPT Ii",
   "MPPT Input Current",
   'A',
@@ -161,7 +160,7 @@ measurementCards.set("mcc_ii", new MeasurementCardData(
   2,
   'NonZeroAverage',
 ))
-measurementCards.set("mcc_vo", new MeasurementCardData(
+measurementCards.set("mcc_vo", new GenericCardData(
   "MPPT Vo",
   "MPPT Output Voltage",
   'V',
@@ -170,7 +169,7 @@ measurementCards.set("mcc_vo", new MeasurementCardData(
   1,
   'NonZeroAverage',
 ))
-measurementCards.set("mcc_d", new MeasurementCardData(
+measurementCards.set("mcc_d", new GenericCardData(
   "MPPT D",
   "MPPT Duty Cycle",
   '%',

@@ -2,7 +2,7 @@
 
 type FormatRule = number | "NonZeroAverage" | "Sum"
 
-export class MeasurementCardData {
+export class GenericCardData {
   name: string
   description: string
   units: string

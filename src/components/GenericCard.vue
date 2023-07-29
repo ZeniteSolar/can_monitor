@@ -14,16 +14,15 @@
     <v-progress-linear v-for="(_, index) in card.data.values()" :key="index" :model-value="percentage(card, index)"
       color="white" :height="Math.ceil(25 / card.data.length)">
     </v-progress-linear>
-
   </v-card>
 </template>
 
 <script setup lang="ts">
-import { MeasurementCardData } from "../measurement_types"
+import { GenericCardData } from "../measurement_types"
 
 defineProps({
   card: {
-    type: MeasurementCardData,
+    type: GenericCardData,
     required: true,
   },
 })
@@ -38,7 +37,7 @@ const fixate = (value: number, precision: number): string => {
 }
 
 // TODO: handle different data types
-const format = (card: MeasurementCardData): string => {
+const format = (card: GenericCardData): string => {
   switch (card.rule) {
     case 'NonZeroAverage': {
       let avg = computeAverageWithoutZeros(card.data)
@@ -71,7 +70,7 @@ function computeAverageWithoutZeros(numbers: number[]): number {
   return average
 }
 
-const percentage = (card: MeasurementCardData, index: number): number => {
+const percentage = (card: GenericCardData, index: number): number => {
   if (!card) {
     return 0
   }
