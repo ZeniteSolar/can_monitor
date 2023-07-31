@@ -147,6 +147,148 @@
 
         </v-card>
 
+        <!-- MCB -->
+        <v-card class="ma-0 pa-0">
+          <v-card-title class="py-0 mt-0 bg-primary font-weight-black">MCB</v-card-title>
+
+          <!-- DATA -->
+          <v-row class="px-2 ma-0">
+
+            <!-- MCB Vi -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> Vi
+              </v-card-text>
+
+              <v-progress-linear :model-value="measurementCards.get('mcb_vi')!.avg(true)" height="11px"
+                class="pa-0 mb-2 my-1">
+                <template v-slot:default="">
+                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                    {{ format(measurementCards.get('mcb_vi')!.avg(), '00.0') }} {{ measurementCards.get('mcb_vi')!.units
+                    }}
+                  </p>
+                </template>
+              </v-progress-linear>
+
+              <div v-for="(value, index) in measurementCards.get('mcb_vi')?.data" :key="index">
+                <v-progress-linear :model-value="measurementCards.get('mcb_vi')!.item(true, index)" height="11px"
+                  class="pa-0 my-1">
+                  <template v-slot:default="">
+                    <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                      {{ format(value as number, '00.0') }} {{ measurementCards.get('mcb_vi')!.units }}
+                    </p>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </v-col>
+
+            <!-- MCB Io -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> Io </v-card-text>
+
+              <v-progress-linear :model-value="measurementCards.get('mcb_io')!.avg(true)" height="11px"
+                class="pa-0 mb-2 my-1">
+                <template v-slot:default="">
+                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                    {{ format(measurementCards.get('mcb_io')!.avg(), '00.0') }} {{ measurementCards.get('mcb_io')!.units
+                    }}
+                  </p>
+                </template>
+              </v-progress-linear>
+
+              <div v-for="(value, index) in measurementCards.get('mcb_io')?.data" :key="index">
+                <v-progress-linear :model-value="measurementCards.get('mcb_io')!.item(true, index)" height="11px"
+                  class="pa-0 my-1">
+                  <template v-slot:default="">
+                    <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                      {{ format(value as number, '00.0') }} {{ measurementCards.get('mcb_io')!.units }}
+                    </p>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </v-col>
+
+            <!-- MCB Duty Cycle -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> D </v-card-text>
+
+              <v-progress-linear :model-value="measurementCards.get('mcb_d')!.avg(true)" height="11px"
+                class="pa-0 mb-2 my-1">
+                <template v-slot:default="">
+                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                    {{ format(measurementCards.get('mcb_d')!.avg(), '00.0') }} {{ measurementCards.get('mcb_d')!.units
+                    }}
+                  </p>
+                </template>
+              </v-progress-linear>
+
+              <div v-for="(value, index) in measurementCards.get('mcb_d')?.data" :key="index">
+                <v-progress-linear :model-value="measurementCards.get('mcb_d')!.item(true, index)" height="11px"
+                  class="pa-0 my-1">
+                  <template v-slot:default="">
+                    <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                      {{ format(value as number, '00.0') }} {{ measurementCards.get('mcb_d')!.units }}
+                    </p>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </v-col>
+
+            <!-- MCB Vo -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> Vo </v-card-text>
+
+              <v-progress-linear :model-value="measurementCards.get('mcb_vo')!.avg(true)" height="11px"
+                class="pa-0 mb-2 my-1">
+                <template v-slot:default="">
+                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                    {{ format(measurementCards.get('mcb_vo')!.avg(), '00.0') }} {{ measurementCards.get('mcb_vo')!.units
+                    }}
+                  </p>
+                </template>
+              </v-progress-linear>
+
+              <div v-for="(value, index) in measurementCards.get('mcb_vo')?.data" :key="index">
+                <v-progress-linear :model-value="measurementCards.get('mcb_vo')!.item(true, index)" height="11px"
+                  class="pa-0 my-1">
+                  <template v-slot:default="">
+                    <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                      {{ format(value as number, '00.0') }} {{ measurementCards.get('mcb_vo')!.units }}
+                    </p>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </v-col>
+
+            <!-- MCB Po -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> Po </v-card-text>
+
+              <v-progress-linear :model-value="measurementCards.get('mcb_po')!.sum(true)" height="11px"
+                class="pa-0 mb-2 my-1">
+                <template v-slot:default="">
+                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                    {{ format(measurementCards.get('mcb_po')!.sum(), '000') }} {{ measurementCards.get('mcb_po')!.units
+                    }}
+                  </p>
+                </template>
+              </v-progress-linear>
+
+              <div v-for="(value, index) in measurementCards.get('mcb_po')?.data" :key="index">
+                <v-progress-linear :model-value="measurementCards.get('mcb_po')!.item(true, index)" height="11px"
+                  class="pa-0 my-1">
+                  <template v-slot:default="">
+                    <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                      {{ format(value as number, '000') }} {{ measurementCards.get('mcb_po')!.units }}
+                    </p>
+                  </template>
+                </v-progress-linear>
+              </div>
+            </v-col>
+
+          </v-row>
+
+        </v-card>
+
         <!-- SYSTEM STATE -->
         <v-card class="ma-0 pa-0">
           <v-card-title class="py-0 mt-0 bg-primary font-weight-black">STATE</v-card-title>
@@ -362,49 +504,88 @@
 
         </v-card>
 
-        <!-- AUXILIAR BATTERY -->
+        <!-- AUXILIAR BATTERIES -->
         <v-card class="ma-0 pa-0">
-          <v-card-title class="py-0 mt-0 bg-primary font-weight-black">AUX BAT</v-card-title>
+          <v-card-title class="py-0 mt-0 bg-primary font-weight-black">AUX BATS</v-card-title>
 
           <!-- DATA -->
           <v-row class="px-2 ma-0">
 
             <!-- Auxiliar Battery -->
             <v-col class="ma-0 pa-1">
-              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> B </v-card-text>
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> STE </v-card-text>
 
-              <v-progress-linear :model-value="measurementCards.get('aux_bat_v')!.avg(true)" height="11px"
+              <v-progress-linear :model-value="(measurementCards.get('mcb_vo')!.data[0] as number)" height="11px"
                 class="pa-0 mb-2 my-1">
                 <template v-slot:default="">
                   <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('aux_bat_v')!.avg(), '00.00') }} {{
-                      measurementCards.get('aux_bat_v')!.units
+                    {{ format(measurementCards.get('mcb_vo')!.data[0] as number, '00.00') }} {{
+                      measurementCards.get('mcb_vo')!.units
                     }}
                   </p>
                 </template>
               </v-progress-linear>
 
-              <!-- <v-progress-linear :model-value="measurementCards.get('aux_bat_i')!.avg(true)" height="11px"
+              <v-progress-linear :model-value="(measurementCards.get('mcb_io')!.data[0] as number)" height="11px"
                 class="pa-0 mb-2 my-1">
                 <template v-slot:default="">
                   <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('aux_bat_i')!.avg(), '00.00') }} {{
-                      measurementCards.get('aux_bat_i')!.units
+                    {{ format(measurementCards.get('mcb_io')!.data[0] as number, '00.0') }} {{
+                      measurementCards.get('mcb_io')!.units
                     }}
                   </p>
                 </template>
               </v-progress-linear>
 
-              <v-progress-linear :model-value="measurementCards.get('aux_bat_p')!.avg(true)" height="11px"
+              <v-progress-linear :model-value="(measurementCards.get('mcb_po')!.data[0] as number)" height="11px"
                 class="pa-0 mb-2 my-1">
                 <template v-slot:default="">
                   <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('aux_bat_p')!.avg(), '000.0') }} {{
-                      measurementCards.get('aux_bat_p')!.units
+                    {{ format(measurementCards.get('mcb_po')!.data[0] as number, '000.0') }} {{
+                      measurementCards.get('mcb_po')!.units
                     }}
                   </p>
                 </template>
-              </v-progress-linear> -->
+              </v-progress-linear>
+
+            </v-col>
+
+            <!-- Steering Battery -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> AUX </v-card-text>
+
+              <v-progress-linear :model-value="(measurementCards.get('mcb_vo')!.data[1] as number)" height="11px"
+                class="pa-0 mb-2 my-1">
+                <template v-slot:default="">
+                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                    {{ format(measurementCards.get('mcb_vo')!.data[1] as number, '00.00') }} {{
+                      measurementCards.get('mcb_vo')!.units
+                    }}
+                  </p>
+                </template>
+              </v-progress-linear>
+
+              <v-progress-linear :model-value="(measurementCards.get('mcb_io')!.data[1] as number)" height="11px"
+                class="pa-0 mb-2 my-1">
+                <template v-slot:default="">
+                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                    {{ format(measurementCards.get('mcb_io')!.data[1] as number, '00.0') }} {{
+                      measurementCards.get('mcb_io')!.units
+                    }}
+                  </p>
+                </template>
+              </v-progress-linear>
+
+              <v-progress-linear :model-value="(measurementCards.get('mcb_po')!.data[1] as number)" height="11px"
+                class="pa-0 mb-2 my-1">
+                <template v-slot:default="">
+                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
+                    {{ format(measurementCards.get('mcb_po')!.data[1] as number, '000.0') }} {{
+                      measurementCards.get('mcb_po')!.units
+                    }}
+                  </p>
+                </template>
+              </v-progress-linear>
 
             </v-col>
 
@@ -616,6 +797,41 @@ measurementCards.set("dir_bat_p", new GenericCardData(
   0,
   300,
 ))
+measurementCards.set("mcb_po", new GenericCardData(
+  "MCBs Po",
+  "MCBs Output Power",
+  'W',
+  0,
+  300,
+))
+measurementCards.set("mcb_vi", new GenericCardData(
+  "MCB Vi",
+  "MCB Input Voltage",
+  'V',
+  0,
+  60,
+))
+measurementCards.set("mcb_io", new GenericCardData(
+  "MCB Io",
+  "MCB Output Current",
+  'A',
+  0,
+  15,
+))
+measurementCards.set("mcb_vo", new GenericCardData(
+  "MCB Vo",
+  "MCB Output Voltage",
+  'V',
+  0,
+  60,
+))
+measurementCards.set("mcb_d", new GenericCardData(
+  "MCB D",
+  "MCB Duty Cycle",
+  '%',
+  0,
+  100,
+))
 measurementCards.set("mcc_pi", new GenericCardData(
   "MPPTs Pi",
   "MPPTs Input Power",
@@ -650,27 +866,6 @@ measurementCards.set("mcc_d", new GenericCardData(
   '%',
   0,
   100,
-))
-measurementCards.set("aux_bat_v", new GenericCardData(
-  "AUX V",
-  "Auxiliar Battery Voltage",
-  'V',
-  7,
-  15,
-))
-measurementCards.set("aux_bat_i", new GenericCardData(
-  "AUX V",
-  "Auxiliar Battery Voltage",
-  'A',
-  0,
-  20,
-))
-measurementCards.set("aux_bat_p", new GenericCardData(
-  "AUX V",
-  "Auxiliar Battery Voltage",
-  'W',
-  0,
-  200,
 ))
 measurementCards.set("pump", new GenericCardData(
   "BILDGE PUMP",
