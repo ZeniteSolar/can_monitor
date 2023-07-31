@@ -453,9 +453,13 @@
     <v-divider class="my-4"></v-divider>
 
     <v-card>
+      Last message at: {{ last_msg_time }}
+    </v-card>
+
+    <!-- <v-card>
       <v-card-title>Can Messages</v-card-title>
       <v-card-item v-for="( message, index ) in  messages.values() " :key="index"> {{ message }}</v-card-item>
-    </v-card>
+    </v-card> -->
 
   </v-container>
 </template>
@@ -495,26 +499,29 @@ import { Ref, reactive, ref } from 'vue'
 import { GenericCardData } from '../measurement_types'
 
 // Getting data from the backend
-type CanMessage = {
-  timestamp: number,
-  message: string
-}
-const messages: Ref<CanMessage[]> = ref([])
+// type CanMessage = {
+//   timestamp: number,
+//   message: string
+// }
+// const messages: Ref<CanMessage[]> = ref([])
+const last_msg_time: Ref<number | null> = ref(null)
 await listen('can_message', (event: Event<object>) => {
   let message = event.payload
 
   // Put message into the debugger
-  messages.value.unshift({ timestamp: Date.now(), message: JSON.parse(JSON.stringify(message)) } as CanMessage)
-  if (messages.value.length > 10) {
-    messages.value.pop()
-  }
+  // messages.value.unshift({ timestamp: Date.now(), message: JSON.parse(JSON.stringify(message)) } as CanMessage)
+  // if (messages.value.length > 10) {
+  //   messages.value.pop()
+  // }
+
+  last_msg_time.value = Date.now()
 
   // Get all boat data and update each card accordingly
   Object.entries(message).forEach((entry) => {
     const [key, data] = entry
 
     if (data !== null) {
-      const card_instance = measurementCards.get(String(key))
+      const card_instance = measurementCards.get(key)
       if (card_instance === null || card_instance === undefined) {
         return
       }
@@ -538,8 +545,6 @@ await listen('can_message', (event: Event<object>) => {
   })
 })
 
-
-
 const measurementCards = reactive(new Map<string, GenericCardData>)
 measurementCards.set("motor_d", new GenericCardData(
   "Motor D",
@@ -547,8 +552,6 @@ measurementCards.set("motor_d", new GenericCardData(
   '%',
   0,
   100,
-  1,
-  0,
 ))
 measurementCards.set("motor_rpm", new GenericCardData(
   "Motor RPM",
@@ -556,8 +559,6 @@ measurementCards.set("motor_rpm", new GenericCardData(
   'RPM',
   0,
   6000,
-  0,
-  0,
 ))
 measurementCards.set("bat_v", new GenericCardData(
   "Bat Cell V",
@@ -565,8 +566,6 @@ measurementCards.set("bat_v", new GenericCardData(
   'V',
   30,
   60,
-  2,
-  0,
 ))
 measurementCards.set("bat_i", new GenericCardData(
   "Bat I",
@@ -574,8 +573,6 @@ measurementCards.set("bat_i", new GenericCardData(
   'A',
   -200,
   200,
-  1,
-  0,
 ))
 measurementCards.set("bat_p", new GenericCardData(
   "Bat Cell V",
@@ -583,8 +580,6 @@ measurementCards.set("bat_p", new GenericCardData(
   'W',
   -10000,
   10000,
-  0,
-  0,
 ))
 measurementCards.set("bat_cell_v", new GenericCardData(
   "Bat V",
@@ -592,8 +587,6 @@ measurementCards.set("bat_cell_v", new GenericCardData(
   'V',
   10,
   16,
-  2,
-  'Sum',
 ))
 measurementCards.set("dir_pos", new GenericCardData(
   "Dir H",
@@ -601,8 +594,6 @@ measurementCards.set("dir_pos", new GenericCardData(
   '°',
   -135,
   135,
-  1,
-  0,
 ))
 measurementCards.set("dir_bat_v", new GenericCardData(
   "Dir V",
@@ -610,8 +601,6 @@ measurementCards.set("dir_bat_v", new GenericCardData(
   'V',
   7,
   15,
-  1,
-  0,
 ))
 measurementCards.set("dir_bat_i", new GenericCardData(
   "Dir I",
@@ -619,8 +608,6 @@ measurementCards.set("dir_bat_i", new GenericCardData(
   'A',
   0,
   20,
-  1,
-  0,
 ))
 measurementCards.set("dir_bat_p", new GenericCardData(
   "Dir I",
@@ -628,8 +615,6 @@ measurementCards.set("dir_bat_p", new GenericCardData(
   'W',
   0,
   300,
-  0,
-  0,
 ))
 measurementCards.set("mcc_pi", new GenericCardData(
   "MPPTs Pi",
@@ -637,8 +622,6 @@ measurementCards.set("mcc_pi", new GenericCardData(
   'W',
   0,
   300,
-  0,
-  'Sum',
 ))
 measurementCards.set("mcc_vi", new GenericCardData(
   "MPPT Vi",
@@ -646,8 +629,6 @@ measurementCards.set("mcc_vi", new GenericCardData(
   'V',
   0,
   60,
-  2,
-  'NonZeroAverage',
 ))
 measurementCards.set("mcc_ii", new GenericCardData(
   "MPPT Ii",
@@ -655,8 +636,6 @@ measurementCards.set("mcc_ii", new GenericCardData(
   'A',
   0,
   15,
-  2,
-  'NonZeroAverage',
 ))
 measurementCards.set("mcc_vo", new GenericCardData(
   "MPPT Vo",
@@ -664,8 +643,6 @@ measurementCards.set("mcc_vo", new GenericCardData(
   'V',
   0,
   60,
-  1,
-  'NonZeroAverage',
 ))
 measurementCards.set("mcc_d", new GenericCardData(
   "MPPT D",
@@ -673,8 +650,6 @@ measurementCards.set("mcc_d", new GenericCardData(
   '%',
   0,
   100,
-  1,
-  'NonZeroAverage',
 ))
 measurementCards.set("aux_bat_v", new GenericCardData(
   "AUX V",
@@ -682,8 +657,6 @@ measurementCards.set("aux_bat_v", new GenericCardData(
   'V',
   7,
   15,
-  1,
-  0,
 ))
 measurementCards.set("aux_bat_i", new GenericCardData(
   "AUX V",
@@ -691,8 +664,6 @@ measurementCards.set("aux_bat_i", new GenericCardData(
   'A',
   0,
   20,
-  1,
-  0,
 ))
 measurementCards.set("aux_bat_p", new GenericCardData(
   "AUX V",
@@ -700,8 +671,6 @@ measurementCards.set("aux_bat_p", new GenericCardData(
   'W',
   0,
   200,
-  1,
-  0,
 ))
 measurementCards.set("pump", new GenericCardData(
   "BILDGE PUMP",
@@ -709,8 +678,6 @@ measurementCards.set("pump", new GenericCardData(
   '',
   0,
   1,
-  0,
-  0,
 ))
 measurementCards.set("boat_on", new GenericCardData(
   "BOAT ON",
@@ -718,8 +685,6 @@ measurementCards.set("boat_on", new GenericCardData(
   '',
   0,
   1,
-  0,
-  0,
 ))
 measurementCards.set("dms_on", new GenericCardData(
   "DMS ON",
@@ -727,8 +692,6 @@ measurementCards.set("dms_on", new GenericCardData(
   '',
   0,
   1,
-  0,
-  0,
 ))
 measurementCards.set("motor_on", new GenericCardData(
   "MOTOR ON",
@@ -736,8 +699,6 @@ measurementCards.set("motor_on", new GenericCardData(
   '',
   0,
   1,
-  0,
-  0,
 ))
 measurementCards.set("motor_rev", new GenericCardData(
   "MOTOR REVERSE",
@@ -745,8 +706,6 @@ measurementCards.set("motor_rev", new GenericCardData(
   '',
   0,
   1,
-  0,
-  0,
 ))
 measurementCards.set("mam_machine_state", new GenericCardData(
   "MAM MACHINE STATE",
@@ -754,8 +713,6 @@ measurementCards.set("mam_machine_state", new GenericCardData(
   '',
   0,
   1,
-  0,
-  0,
 ))
 
 </script>

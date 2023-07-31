@@ -1,23 +1,17 @@
-type FormatRule = number | "NonZeroAverage" | "Sum"
-
 export class GenericCardData {
   name: string
   description: string
   units: string
   min: number
   max: number
-  precision: number
   data: number[] | boolean[] = []
-  rule: FormatRule
 
-  constructor(name: string, description: string, units: string, min: number, max: number, precision: number, rule: FormatRule) {
+  constructor(name: string, description: string, units: string, min: number, max: number) {
     this.name = name
     this.description = description
     this.units = units
     this.min = min
     this.max = max
-    this.precision = precision
-    this.rule = rule
   }
 
   sum(percentage:boolean=false) {
@@ -63,15 +57,6 @@ export class GenericCardData {
 
 function is_boolean_array(value: unknown): value is boolean[] {
   return Array.isArray(value) && value.every(item => typeof item === "boolean");
-}
-
-export const fixate = (value: number, precision: number): string => {
-    let str = value.toFixed(precision).substring(0, 5)
-    if (str.charAt(str.length - 1) === ".") {
-        str = str.substring(0, str.length - 1)
-    }
-
-    return str
 }
 
 export function computeAverageWithoutZeros(numbers: number[]): number {
