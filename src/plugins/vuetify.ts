@@ -3,7 +3,9 @@ import '@mdi/font/css/materialdesignicons.css'
 import 'vuetify/styles'
 
 import { createVuetify } from 'vuetify'
+import { md3 } from 'vuetify/blueprints'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
+
 
 
 // ref: https://m2.material.io/design/color/dark-theme.html#ui-application
@@ -26,18 +28,19 @@ const deepOcean = {
 
 
 export const vuetify = createVuetify({
-    theme: {
-      defaultTheme: 'deepOcean',
-      themes: {
-        deepOcean,
-      },
+  blueprint: md3,
+  theme: {
+    defaultTheme: 'deepOcean',
+    themes: {
+      deepOcean,
     },
-    // https://pictogrammers.com/library/mdi/
-    icons: {
-      defaultSet: 'mdi',
-      aliases,
-      sets: {
-        mdi,
-      },
+  },
+  // https://pictogrammers.com/library/mdi/
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
     },
-  });
+  },
+});

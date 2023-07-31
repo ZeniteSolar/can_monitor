@@ -8,10 +8,12 @@ use crate::can_types::modules;
 pub struct BoatData {
     boat_on: bool,
     motor_on: bool,
+    motor_rev: bool,
+    dms_on: bool,
     pump: [bool; 3],
     motor_d: [f32; 2],
     motor_rpm: f32,
-    mam_state: u8,
+    mam_machine_state: u8,
     bat_v: f32,
     bat_cell_v: [f32; 3],
     bat_ii: f32,
@@ -64,10 +66,12 @@ impl From<BoatState> for BoatData {
         Self {
             boat_on: value.boat_on,
             motor_on: value.motor_on,
+            motor_rev: value.motor_rev,
+            dms_on: value.dms_on,
             pump: value.pump,
             motor_d,
             motor_rpm: value.motor_rpm.value(),
-            mam_state: value.mam_state,
+            mam_machine_state: value.mam_machine_state,
             bat_v,
             bat_cell_v,
             bat_ii,
@@ -95,6 +99,8 @@ impl BoatStateVariable for modules::mic19::messages::motor::Message {
         boat_state.motor_d[0].update(100f32 * (message.d as f32) / (u8::MAX as f32));
 
         boat_state.motor_on = message.motor.motor_on();
+        boat_state.dms_on = message.motor.dms_on();
+        boat_state.motor_rev = message.motor.reverse();
     }
 }
 
@@ -111,7 +117,7 @@ impl BoatStateVariable for modules::mam19::messages::state::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
-        boat_state.mam_state = message.state;
+        boat_state.mam_machine_state = message.state;
     }
 }
 

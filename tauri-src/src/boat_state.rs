@@ -12,10 +12,12 @@ lazy_static! {
 pub struct BoatState {
     pub boat_on: bool,
     pub motor_on: bool,
+    pub motor_rev: bool,
+    pub dms_on: bool,
     pub pump: [bool; 3],
     pub motor_d: [Ema<10>; 2],
     pub motor_rpm: Ema<10>,
-    pub mam_state: u8,
+    pub mam_machine_state: u8,
     pub bat_v: Ema<10>,
     pub bat_cell_v: [Ema<10>; 3],
     pub bat_ii: Ema<10>,

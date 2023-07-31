@@ -59,7 +59,6 @@ pub mod modules {
                 pub const ID: u32 = 31u32;
                 // pub const ID: u32 = 9u32;
 
-                // use modular_bitfield::specifiers::*};
                 use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
 
@@ -89,7 +88,7 @@ pub mod modules {
                     pub dms_on: bool,
                     pub reverse: bool,
                     #[skip]
-                    _unused: B5,
+                    _unused: specifiers::B5,
                 }
             }
 
@@ -122,7 +121,7 @@ pub mod modules {
                     pub pump2: bool,
                     pub pump3: bool,
                     #[skip]
-                    _unused: B5,
+                    _unused: specifiers::B5,
                 }
             }
 
@@ -155,7 +154,7 @@ pub mod modules {
                 pub struct State {
                     pub mppts_on: bool,
                     #[skip]
-                    _unused: B7,
+                    _unused: specifiers::B7,
                 }
             }
 
@@ -186,7 +185,7 @@ pub mod modules {
                 pub struct State {
                     pub boat_on: bool,
                     #[skip]
-                    _unused: B7,
+                    _unused: specifiers::B7,
                 }
             }
 
@@ -320,7 +319,7 @@ pub mod modules {
                     pub vi_stable: bool,
                     pub dt_safe_range: bool,
                     #[skip]
-                    _unused: B3,
+                    _unused: specifiers::B3,
                 }
             }
 
@@ -394,7 +393,7 @@ pub mod modules {
                     pub vi_stable: bool,
                     pub dt_safe_range: bool,
                     #[skip]
-                    _unused: B3,
+                    _unused: specifiers::B3,
                 }
             }
 
@@ -468,7 +467,7 @@ pub mod modules {
                     pub vi_stable: bool,
                     pub dt_safe_range: bool,
                     #[skip]
-                    _unused: B3,
+                    _unused: specifiers::B3,
                 }
             }
 
@@ -542,7 +541,7 @@ pub mod modules {
                     pub vi_stable: bool,
                     pub dt_safe_range: bool,
                     #[skip]
-                    _unused: B3,
+                    _unused: specifiers::B3,
                 }
             }
 
@@ -616,7 +615,7 @@ pub mod modules {
                     pub vi_stable: bool,
                     pub dt_safe_range: bool,
                     #[skip]
-                    _unused: B3,
+                    _unused: specifiers::B3,
                 }
             }
 
@@ -690,7 +689,7 @@ pub mod modules {
                     pub vi_stable: bool,
                     pub dt_safe_range: bool,
                     #[skip]
-                    _unused: B3,
+                    _unused: specifiers::B3,
                 }
             }
 
@@ -784,7 +783,7 @@ pub mod modules {
                     pub pump2: bool,
                     pub pump3: bool,
                     #[skip]
-                    _unused: B5,
+                    _unused: specifiers::B5,
                 }
             }
         }
@@ -1231,6 +1230,7 @@ pub mod modules {
                 /// MAM19 State Message ID
                 pub const ID: u32 = 99u32;
 
+                use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
 
                 #[repr(C, packed)]
