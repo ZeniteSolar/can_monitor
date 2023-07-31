@@ -91,6 +91,20 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             read_message::<modules::mt19::messages::rpm::Message>(data, &modules::mt19::SIGNATURE)
                 .map_err(anyhow::Error::from)
         }
+
+        modules::mcb19_1::messages::measurements::ID => read_message::<
+            modules::mcb19_1::messages::measurements::Message,
+        >(
+            data, &modules::mcb19_1::SIGNATURE
+        )
+        .map_err(anyhow::Error::from),
+        modules::mcb19_2::messages::measurements::ID => read_message::<
+            modules::mcb19_2::messages::measurements::Message,
+        >(
+            data, &modules::mcb19_2::SIGNATURE
+        )
+        .map_err(anyhow::Error::from),
+
         modules::msc19_1::messages::adc::ID => read_message::<
             modules::msc19_4::messages::adc::Message,
         >(data, &modules::msc19_1::SIGNATURE)
@@ -111,6 +125,7 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             modules::msc19_5::messages::adc::Message,
         >(data, &modules::msc19_5::SIGNATURE)
         .map_err(anyhow::Error::from),
+
         modules::mde22::messages::steeringbat_measurements::ID => {
             read_message::<modules::mde22::messages::steeringbat_measurements::Message>(
                 data,
@@ -118,6 +133,7 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             )
             .map_err(anyhow::Error::from)
         }
+
         modules::mcc19_1::messages::measurements::ID => read_message::<
             modules::mcc19_1::messages::measurements::Message,
         >(
@@ -154,6 +170,25 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             data, &modules::mcc19_6::SIGNATURE
         )
         .map_err(anyhow::Error::from),
+        // modules::mcc19_7::messages::measurements::ID => read_message::<
+        //     modules::mcc19_7::messages::measurements::Message,
+        // >(
+        //     data, &modules::mcc19_7::SIGNATURE
+        // )
+        // .map_err(anyhow::Error::from),
+        // modules::mcc19_8::messages::measurements::ID => read_message::<
+        //     modules::mcc19_8::messages::measurements::Message,
+        // >(
+        //     data, &modules::mcc19_8::SIGNATURE
+        // )
+        // .map_err(anyhow::Error::from),
+        // modules::mcc19_9::messages::measurements::ID => read_message::<
+        //     modules::mcc19_9::messages::measurements::Message,
+        // >(
+        //     data, &modules::mcc19_9::SIGNATURE
+        // )
+        // .map_err(anyhow::Error::from),
+
         // modules::mic19::messages::pumps::ID => todo!(),
         _ => Err(anyhow!("Unknown message")),
     }
