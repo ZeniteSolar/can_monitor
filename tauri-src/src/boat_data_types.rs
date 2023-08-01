@@ -14,6 +14,10 @@ pub struct BoatData {
     motor_d: [f32; 2],
     motor_rpm: f32,
     mam_machine_state: u8,
+    mic_machine_state: u8,
+    mcs_machine_state: u8,
+    mac_machine_state: u8,
+    mde_machine_state: u8,
     bat_v: f32,
     bat_cell_v: [f32; 3],
     bat_ii: f32,
@@ -86,6 +90,10 @@ impl From<BoatState> for BoatData {
             motor_d,
             motor_rpm: value.motor_rpm.value(),
             mam_machine_state: value.mam_machine_state,
+            mic_machine_state: value.mic_machine_state,
+            mcs_machine_state: value.mcs_machine_state,
+            mac_machine_state: value.mac_machine_state,
+            mde_machine_state: value.mde_machine_state,
             bat_v,
             bat_cell_v,
             bat_ii,
@@ -136,6 +144,34 @@ impl BoatStateVariable for modules::mam19::messages::state::Message {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
         boat_state.mam_machine_state = message.state;
+    }
+}
+impl BoatStateVariable for modules::mic19::messages::state::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
+
+        boat_state.mic_machine_state = message.state;
+    }
+}
+impl BoatStateVariable for modules::mcs19::messages::state::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
+
+        boat_state.mcs_machine_state = message.state;
+    }
+}
+impl BoatStateVariable for modules::mac22::messages::state::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
+
+        boat_state.mac_machine_state = message.state;
+    }
+}
+impl BoatStateVariable for modules::mde22::messages::state::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
+
+        boat_state.mde_machine_state = message.state;
     }
 }
 

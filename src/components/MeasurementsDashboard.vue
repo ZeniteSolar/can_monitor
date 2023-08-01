@@ -299,12 +299,60 @@
             <!-- MAM -->
             <v-col class="ma-0 pa-1">
               <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MAM </v-card-text>
-              <v-radio-group :model-value="String(measurementCards.get('mam_machine_state')!.data[0] as number)">
-                <v-radio style="font-size: 12px;" class="text-caption" label="INITIALIZING" color="orange" value="0" />
-                <v-radio style="font-size: 12px;" class="text-caption" label="CONTACTOR" color="orange" value="1" />
-                <v-radio style="font-size: 12px;" class="text-caption" label="IDLE" color="orange" value="2" />
-                <v-radio style="font-size: 12px;" class="text-caption" label="RUNNING" color="green" value="3" />
-                <v-radio style="font-size: 12px;" class="text-caption" label="ERROR" color="red" value="4" />
+              <v-radio-group :model-value="String(measurementCards.get('mam_machine_state')!.data[0] as number)" readonly>
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="INI" color="orange" value="0" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="CON" color="orange" value="1" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="IDL" color="orange" value="2" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="RUN" color="green" value="3" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="ERR" color="red" value="4" />
+              </v-radio-group>
+            </v-col>
+
+            <!-- MIC -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MIC </v-card-text>
+              <v-radio-group :model-value="String(measurementCards.get('mic_machine_state')!.data[0] as number)" readonly>
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="INI" color="orange" value="0" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="IDL" color="orange" value="1" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="RUN" color="green" value="2" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="ERR" color="red" value="3" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="RST" color="red" value="4" />
+              </v-radio-group>
+            </v-col>
+
+            <!-- MCS -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MCS </v-card-text>
+              <v-radio-group :model-value="String(measurementCards.get('mcs_machine_state')!.data[0] as number)" readonly>
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="INI" color="orange" value="0" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="IDL" color="orange" value="1" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="RUN" color="green" value="2" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="ERR" color="red" value="3" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="RST" color="red" value="4" />
+              </v-radio-group>
+            </v-col>
+
+            <!-- MAC -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MAC </v-card-text>
+              <v-radio-group :model-value="String(measurementCards.get('mac_machine_state')!.data[0] as number)" readonly>
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="INI" color="orange" value="0" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="IDL" color="orange" value="1" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="RUN" color="green" value="2" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="ERR" color="red" value="3" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="RST" color="red" value="4" />
+              </v-radio-group>
+            </v-col>
+
+            <!-- MDE -->
+            <v-col class="ma-0 pa-1">
+              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MDE </v-card-text>
+              <v-radio-group :model-value="String(measurementCards.get('mde_machine_state')!.data[0] as number)" readonly>
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="INI" color="orange" value="0" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="IDL" color="orange" value="1" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="RUN" color="green" value="2" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="ERR" color="red" value="3" />
+                <v-radio style="font-size: 10px;" class="text-mono pa-0 ma-0" label="RST" color="red" value="4" />
               </v-radio-group>
             </v-col>
 
@@ -909,5 +957,34 @@ measurementCards.set("mam_machine_state", new GenericCardData(
   0,
   1,
 ))
+measurementCards.set("mic_machine_state", new GenericCardData(
+  "MIC MACHINE STATE",
+  "MIC Machine State",
+  '',
+  0,
+  1,
+))
+measurementCards.set("mcs_machine_state", new GenericCardData(
+  "MCS MACHINE STATE",
+  "MCS Machine State",
+  '',
+  0,
+  1,
+))
+measurementCards.set("mac_machine_state", new GenericCardData(
+  "MAC MACHINE STATE",
+  "MAC Machine State",
+  '',
+  0,
+  1,
+))
+measurementCards.set("mde_machine_state", new GenericCardData(
+  "MDE MACHINE STATE",
+  "MDE Machine State",
+  '',
+  0,
+  1,
+))
+
 
 </script>
