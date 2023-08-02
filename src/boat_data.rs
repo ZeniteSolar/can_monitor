@@ -4,7 +4,6 @@ use crate::boat_state::{BoatState, BoatStateVariable, Ema, BOAT_STATE};
 use crate::can_types::modules;
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
-#[serde_with::skip_serializing_none]
 pub struct BoatData {
     boat_on: bool,
     motor_on: bool,

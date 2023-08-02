@@ -3,15 +3,12 @@ use futures_util::stream::StreamExt;
 use tokio_socketcan::{CANFrame, CANSocket};
 use tracing::*;
 
-use tokio::sync::broadcast;
-
-use crate::boat_data_types::BoatData;
-use crate::boat_state::{BoatStateVariable, BOAT_STATE};
+use crate::boat_state::BoatStateVariable;
 use crate::can_types::modules;
-use crate::cli::{self, CONFIGURATION};
+use crate::cli;
 
 #[instrument(level = "debug")]
-pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
+pub async fn run() -> Result<()> {
     loop {
         let interface = match &cli::CONFIGURATION.can_interface {
             Some(interface) => interface.to_owned(),
@@ -20,8 +17,6 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
 
         let mut socket_rx = CANSocket::open(&interface)?;
         debug!("Reading on {interface:?}");
-
-        let mut time = std::time::Instant::now();
 
         while let Some(result) = socket_rx.next().await {
             let frame = match result {
@@ -35,23 +30,6 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
             if let Err(error) = process_frame(frame) {
                 trace!("Failed processing message: {error:?}");
                 continue;
-            }
-
-            if time.elapsed() < std::time::Duration::from_millis(CONFIGURATION.period) {
-                continue;
-            }
-            time = std::time::Instant::now();
-
-            if tx.receiver_count() == 0 {
-                continue;
-            }
-
-            let message = BOAT_STATE.lock().unwrap().clone().into();
-
-            trace!("Sending message: {message:?}");
-
-            if let Err(error) = tx.send(message) {
-                error!("Failed sending message: {error:?}");
             }
         }
     }

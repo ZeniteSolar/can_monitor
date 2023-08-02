@@ -19,14 +19,6 @@ pub struct Configuration {
     /// Sets the terminal output to verbose level
     #[arg(short, long, default_value_t = false)]
     pub verbose: bool,
-
-    /// Sets the interval time to send data, in milliseconds
-    #[arg(short, long, default_value_t = 1)]
-    pub period: u64,
-
-    /// Sets the server address
-    #[arg(short, long, default_value_t = String::from("0.0.0.0:8080"))]
-    pub address: String,
 }
 
 lazy_static! {
