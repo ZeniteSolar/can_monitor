@@ -9,6 +9,32 @@
 </head>
 
 <body>
+  <style>
+    /* ==UserStyle==
+    @name        Disable All CSS Animations
+    @namespace url(http://www.w3.org/1999/xhtml);
+    @version     1.0.0
+    @description Disable all CSS animations.
+    @license     unlicense
+    ==/UserStyle== */
+    *,
+    *:before,
+    *:after {
+      /*CSS transitions*/
+      -o-transition-property: none !important;
+      -moz-transition-property: none !important;
+      -ms-transition-property: none !important;
+      -webkit-transition-property: none !important;
+      transition-property: none !important;
+
+      /*CSS animations*/
+      -webkit-animation: none !important;
+      -moz-animation: none !important;
+      -o-animation: none !important;
+      -ms-animation: none !important;
+      animation: none !important;
+    }
+  </style>
   <div id="app"></div>
   <script type="module" src="/src/main.ts"></script>
 </body>
