@@ -852,7 +852,7 @@ const parse_canboat_message = (message: object) => {
   last_msg_time.value = Date.now()
 }
 
-const WSAPI = `ws://${window.location.hostname}:8081`
+const WSAPI = `ws://${window.location.hostname}:3001`
 console.log(WSAPI)
 
 class WSConnection {

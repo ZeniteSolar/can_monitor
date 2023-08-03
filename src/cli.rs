@@ -25,7 +25,7 @@ pub struct Configuration {
     pub period: u64,
 
     /// Sets the server address
-    #[arg(short, long, default_value_t = String::from("0.0.0.0:8080"))]
+    #[arg(short, long, default_value_t = String::from("0.0.0.0:3000"))]
     pub address: String,
 }
 

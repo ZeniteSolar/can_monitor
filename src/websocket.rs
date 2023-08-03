@@ -40,7 +40,7 @@ lazy_static! {
     pub static ref MANAGER: Arc<Mutex<Manager>> = Arc::new(Mutex::new(Manager::new()));
 }
 
-pub const DEFAULT_WS_ENDPOINT: &str = "ws://0.0.0.0:8081";
+pub const DEFAULT_WS_ENDPOINT: &str = "ws://0.0.0.0:3001";
 
 #[derive(Debug)]
 pub struct Websocket {
