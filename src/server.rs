@@ -18,7 +18,8 @@ use crate::cli;
 // Start REST API server with the desired address
 pub async fn run() -> Result<()> {
     let server_address = &cli::CONFIGURATION.address;
-    println!("\n\nWeb GUI at: http://{server_address}\n\n");
+    println!("\n\n\t\t Web GUI at:");
+    println!("\t >>> http://{server_address} <<<\n\n");
 
     // Start HTTP server thread
     HttpServer::new(move || {
