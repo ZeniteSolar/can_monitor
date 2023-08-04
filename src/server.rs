@@ -43,15 +43,6 @@ pub async fn run() -> Result<()> {
     .map_err(anyhow::Error::msg)
 }
 
-fn load_file(filename: &str) -> Result<String> {
-    Ok(DIST
-        .get_file(filename)
-        .context("Can't find file")?
-        .contents_utf8()
-        .context("Can't read file as utf-8")?
-        .to_string())
-}
-
 #[api_v2_operation]
 pub fn root(req: HttpRequest) -> HttpResponse {
     let mut filename = req.match_info().query("filename");
@@ -59,21 +50,39 @@ pub fn root(req: HttpRequest) -> HttpResponse {
         filename = "index.html";
     }
 
-    match load_file(filename) {
-        Ok(content) => {
-            let extension = Path::new(&filename)
-                .extension()
-                .and_then(std::ffi::OsStr::to_str)
-                .unwrap_or("");
-            let mime = actix_files::file_extension_to_mime(extension).to_string();
+    let extension = Path::new(&filename)
+        .extension()
+        .and_then(std::ffi::OsStr::to_str)
+        .unwrap_or("");
+    let mime = actix_files::file_extension_to_mime(extension).to_string();
 
-            HttpResponse::Ok().content_type(mime).body(content)
-        }
+    let file = match DIST.get_file(filename).context("Can't find file") {
+        Ok(file) => file,
         Err(error) => {
             error!("Failed loading file {filename:?}: {error}");
-            HttpResponse::NotFound()
+            return HttpResponse::NotFound()
                 .content_type("text/plain")
-                .body("File does not exist")
+                .body("File does not exist");
         }
-    }
+    };
+
+    return match extension {
+        "html" | "js" | "css" => {
+            let body = match file.contents_utf8().context("Can't read file as utf-8") {
+                Ok(body) => body,
+                Err(error) => {
+                    let msg = format!("Failed loading file {filename:?}: {error}");
+                    error!(msg);
+                    return HttpResponse::NotFound()
+                        .content_type("text/plain")
+                        .body(msg);
+                }
+            };
+            HttpResponse::Ok().content_type(mime).body(body)
+        }
+        _ => {
+            let body = file.contents();
+            HttpResponse::Ok().content_type(mime).body(body)
+        }
+    };
 }
