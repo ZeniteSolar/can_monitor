@@ -78,282 +78,109 @@
 
       <!-- p COLUMN -->
       <v-col class="ma-1">
+        <MultiMetricCard
+            :title="'MAIN BAT'"
+            :orientation="Orientation.VERTICAL"
+            :metricsData="[
+              {
+                label: 'BANK',
+                data: [
+                  measurementCards.get('bat_v')?.avg() ?? 0.0,
+                  measurementCards.get('bat_i')?.avg() ?? 0.0,
+                  measurementCards.get('bat_p')?.avg() ?? 0.0,
+                ],
+                units: [
+                  measurementCards.get('bat_v')?.units[0] ?? '',
+                  measurementCards.get('bat_i')?.units[0] ?? '',
+                  measurementCards.get('bat_p')?.units[0] ?? '',
+                ]
+              },
+              {
+                label: 'CELL',
+                data: (measurementCards.get('bat_cell_v')?.data ?? []) as number[],
+                units: (measurementCards.get('bat_cell_v')?.units ?? [] ) as string[],
+              },
+            ]"
+          />
 
-        <!-- BATTERY -->
-        <v-card class="ma-0 pa-0">
-          <v-card-title class="py-0 mt-0 bg-primary font-weight-black">MAIN BAT</v-card-title>
-
-          <!-- DATA -->
-
-          <!-- BATTERY V -->
-          <v-row class="px-2 ma-0">
-            <v-col class="ma-0 pa-1">
-              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> BANK </v-card-text>
-
-              <v-progress-linear :model-value="measurementCards.get('bat_v')!.avg(true)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('bat_v')!.avg(), '00.00') }} {{
-                      measurementCards.get('bat_v')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-              <v-progress-linear :model-value="measurementCards.get('bat_i')!.avg(true)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('bat_i')!.avg(), '000.0') }} {{
-                      measurementCards.get('bat_i')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-              <v-progress-linear :model-value="measurementCards.get('bat_p')!.avg(true)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('bat_p')!.avg(), '00000.0') }} {{
-                      measurementCards.get('bat_p')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-            </v-col>
-          </v-row>
-
-          <!-- BATTERY CELL -->
-          <v-row class="px-2 ma-0">
-            <v-col class="ma-0 pa-1">
-              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> CELL </v-card-text>
-
-              <v-progress-linear :model-value="measurementCards.get('bat_cell_v')!.avg(true)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('bat_cell_v')!.avg(), '00.000') }} {{
-                      measurementCards.get('bat_cell_v')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-              <div v-for="(value, index) in measurementCards.get('bat_cell_v')?.data" :key="index">
-                <v-progress-linear :model-value="measurementCards.get('bat_cell_v')!.item(true, index)" height="11px"
-                  class="pa-0 my-1">
-                  <template v-slot:default="">
-                    <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                      {{ format(value as number, '00.000') }} {{ measurementCards.get('bat_cell_v')!.units }}
-                    </p>
-                  </template>
-                </v-progress-linear>
-              </div>
-
-            </v-col>
-          </v-row>
-
-        </v-card>
-
-        <!-- MOTOR -->
-        <v-card class="ma-0 pa-0">
-          <v-card-title class="py-0 mt-0 bg-primary font-weight-black">MOTOR</v-card-title>
-
-          <!-- DATA -->
-          <v-row class="px-2 ma-0">
-
-            <!-- Motor -->
-            <v-col class="ma-0 pa-1">
-              <div v-for="(value, index) in measurementCards.get('motor_d')?.data" :key="index">
-                <v-progress-linear :model-value="measurementCards.get('motor_d')!.item(true, index)" height="11px"
-                  class="pa-0 my-1">
-                  <template v-slot:default="">
-                    <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                      {{ format(value as number, '00.0') }} {{ measurementCards.get('motor_d')!.units }}
-                    </p>
-                  </template>
-                </v-progress-linear>
-              </div>
-
-              <v-progress-linear :model-value="measurementCards.get('motor_rpm')!.avg(true)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('motor_rpm')!.avg(), '0000.0') }} {{
-                      measurementCards.get('motor_rpm')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-            </v-col>
-
-          </v-row>
-
-        </v-card>
+        <MultiMetricCard
+          :title = "'MOTOR'"
+          :orientation = "Orientation.VERTICAL"
+          :metricsData = "[
+            {
+              label: 'D',
+              data: (measurementCards.get('motor_d')?.data ?? []) as number[],
+              units: (measurementCards.get('motor_d')?.units ?? ['']) as string[]
+            },
+            {
+              label: 'RPM',
+              data: [(measurementCards.get('motor_rpm')?.avg() ?? 0.0)],
+              units: [(measurementCards.get('motor_rpm')?.units ?? [''])[0]],
+            },
+          ]"
+        />
 
       </v-col>
 
       <!-- RIGHT COLUMN -->
       <v-col class="ma-1">
 
-        <!-- STEERING -->
-        <v-card class="ma-0 pa-0">
-          <v-card-title class="py-0 mt-0 bg-primary font-weight-black">STEERING</v-card-title>
-
-          <!-- DATA -->
-          <v-row class="px-2 ma-0">
-
-            <!-- Steering Direction -->
-            <v-col class="ma-0 pa-1">
-              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> D </v-card-text>
-
-              <div v-for="(value, index) in measurementCards.get('dir_pos')?.data" :key="index">
-                <v-progress-linear :model-value="measurementCards.get('dir_pos')!.item(true, index)" height="11px"
-                  class="pa-0 my-1">
-                  <template v-slot:default="">
-                    <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                      {{ format(value as number, '00.0') }} {{ measurementCards.get('dir_pos')!.units }}
-                    </p>
-                  </template>
-                </v-progress-linear>
-              </div>
-            </v-col>
-
-            <!-- Steering Battery -->
-            <v-col class="ma-0 pa-1">
-              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> B </v-card-text>
-
-              <v-progress-linear :model-value="measurementCards.get('dir_bat_v')!.avg(true)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('dir_bat_v')!.avg(), '00.00') }} {{
-                      measurementCards.get('dir_bat_v')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-              <v-progress-linear :model-value="measurementCards.get('dir_bat_i')!.avg(true)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('dir_bat_i')!.avg(), '00.00') }} {{
-                      measurementCards.get('dir_bat_i')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-              <v-progress-linear :model-value="measurementCards.get('dir_bat_p')!.avg(true)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('dir_bat_p')!.avg(), '000.0') }} {{
-                      measurementCards.get('dir_bat_p')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-            </v-col>
-
-          </v-row>
-
-        </v-card>
+        <MultiMetricCard
+          :title="'STEERING'"
+          :metricsData="[
+          {
+            label: 'D',
+            data: (measurementCards.get('dir_pos')?.data ?? []) as number[],
+            units: (measurementCards.get('dir_pos')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'B',
+            data: [
+              measurementCards.get('dir_bat_v')?.avg() ?? 0.0,
+              measurementCards.get('dir_bat_i')?.avg() ?? 0.0,
+              measurementCards.get('dir_bat_p')?.avg() ?? 0.0,
+            ],
+            units: [
+              measurementCards.get('dir_bat_v')?.units[0] ?? '',
+              measurementCards.get('dir_bat_i')?.units[0] ?? '',
+              measurementCards.get('dir_bat_p')?.units[0] ?? '',
+            ]
+          },
+        ]"
+        />
 
         <!-- AUXILIAR BATTERIES -->
-        <v-card class="ma-0 pa-0">
-          <v-card-title class="py-0 mt-0 bg-primary font-weight-black">AUX BATS</v-card-title>
-
-          <!-- DATA -->
-          <v-row class="px-2 ma-0">
-
-            <!-- Auxiliar Battery -->
-            <v-col class="ma-0 pa-1">
-              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> STE </v-card-text>
-
-              <v-progress-linear :model-value="(measurementCards.get('mcb_vo')!.data[0] as number)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('mcb_vo')!.data[0] as number, '00.00') }} {{
-                      measurementCards.get('mcb_vo')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-              <v-progress-linear :model-value="(measurementCards.get('mcb_io')!.data[0] as number)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('mcb_io')!.data[0] as number, '00.0') }} {{
-                      measurementCards.get('mcb_io')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-              <v-progress-linear :model-value="(measurementCards.get('mcb_po')!.data[0] as number)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('mcb_po')!.data[0] as number, '000.0') }} {{
-                      measurementCards.get('mcb_po')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-            </v-col>
-
-            <!-- Steering Battery -->
-            <v-col class="ma-0 pa-1">
-              <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> AUX </v-card-text>
-
-              <v-progress-linear :model-value="(measurementCards.get('mcb_vo')!.data[1] as number)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('mcb_vo')!.data[1] as number, '00.00') }} {{
-                      measurementCards.get('mcb_vo')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-              <v-progress-linear :model-value="(measurementCards.get('mcb_io')!.data[1] as number)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('mcb_io')!.data[1] as number, '00.0') }} {{
-                      measurementCards.get('mcb_io')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-              <v-progress-linear :model-value="(measurementCards.get('mcb_po')!.data[1] as number)" height="11px"
-                class="pa-0 mb-2 my-1">
-                <template v-slot:default="">
-                  <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-                    {{ format(measurementCards.get('mcb_po')!.data[1] as number, '000.0') }} {{
-                      measurementCards.get('mcb_po')!.units
-                    }}
-                  </p>
-                </template>
-              </v-progress-linear>
-
-            </v-col>
-
-          </v-row>
-
-        </v-card>
+        <MultiMetricCard
+          :title="'AUX BATS'"
+          :metricsData="[
+          {
+            label: 'STE',
+            data: [
+              measurementCards.get('mcb_vo')?.data[0] as number,
+              measurementCards.get('mcb_io')?.data[0] as number,
+              measurementCards.get('mcb_po')?.data[0] as number,
+            ],
+            units: [
+              measurementCards.get('mcb_vo')?.units ?? '',
+              measurementCards.get('mcb_io')?.units ?? '',
+              measurementCards.get('mcb_po')?.units ?? '',
+            ]
+          },
+          {
+            label: 'AUX',
+            data: [
+              measurementCards.get('mcb_vo')?.data[1] as number,
+              measurementCards.get('mcb_io')?.data[1] as number,
+              measurementCards.get('mcb_po')?.data[1] as number,
+            ],
+            units: [
+              measurementCards.get('mcb_vo')?.units ?? '',
+              measurementCards.get('mcb_io')?.units ?? '',
+              measurementCards.get('mcb_po')?.units ?? '',
+            ]
+          },
+        ]"
+        />
 
         <!-- SYSTEM CONTROL -->
         <v-card class="ma-0 pa-0">
