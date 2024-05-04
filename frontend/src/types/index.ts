@@ -8,3 +8,9 @@ export interface BoardMetric {
   data: number[];
   units: string[];
 }
+
+export enum Orientation {
+  VERTICAL = 'VERTICAL',
+  HORIZONTAL = 'HORIZONTAL',
+}
+
