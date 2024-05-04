@@ -183,119 +183,18 @@
         />
 
         <!-- SYSTEM CONTROL -->
-        <v-card class="ma-0 pa-0">
-          <v-card-title class="py-0 mt-0 bg-primary font-weight-black">CONTROL</v-card-title>
-
-          <!-- DATA -->
-          <v-row class="px-2 ma-0">
-
-            <!-- System switches -->
-            <v-col class="ma-0 pa-1">
-              <v-switch :true-value="true" :model-value="(measurementCards.get('motor_on')!.data[0] as boolean)"
-                label="Motor" color='red' readonly inset hide-details />
-
-              <v-switch :true-value="true" :model-value="(measurementCards.get('boat_on')!.data[0] as boolean)"
-                label="Boat" color='red' readonly inset hide-details />
-
-              <v-switch :true-value="true" :model-value="(measurementCards.get('dms_on')!.data[0] as boolean)" label="DMS"
-                color='red' readonly inset hide-details />
-
-              <v-switch :true-value="true" :model-value="(measurementCards.get('motor_rev')!.data[0] as boolean)"
-                label="REV" color='red' readonly inset hide-details />
-
-            </v-col>
-
-            <!-- System switches -->
-            <v-col class="ma-0 pa-1">
-              <v-switch v-for="(pump, index) in measurementCards.get('pump')!.data" :key="index" :true-value="true"
-                :model-value="(pump as boolean)" :label="`BP ${index + 1}`" color='red' readonly inset hide-details />
-
-            </v-col>
-
-          </v-row>
-
-        </v-card>
-
-        <!-- SYSTEM ERRORS -->
-        <div v-if="true">
-          <v-card class="ma-0 pa-0">
-            <v-card-title class="py-0 mt-0 bg-primary font-weight-black">ERRORS</v-card-title>
-
-            <!-- DATA -->
-
-            <!-- MAM -->
-            <v-row class="px-2 ma-0 text-mono" style="font-size:10px">
-              <p>MAM [{{
-                measurementCards.get('mam_error_code')!.data[0] }}]:
-                <v-chip :hidden="(measurementCards.get('mam_error_code')!.data[0] as number) !== 0" color="green"
-                  size="x-small" style="px-2">None</v-chip>
-                <v-chip :hidden="(measurementCards.get('mam_error_code')!.data[0] as number) !== 1" color="green"
-                  size="x-small" style="px-2">overcurrent</v-chip>
-                <v-chip :hidden="(measurementCards.get('mam_error_code')!.data[0] as number) !== 2" color="green"
-                  size="x-small" style="px-2">overvoltage</v-chip>
-                <v-chip :hidden="(measurementCards.get('mam_error_code')!.data[0] as number) !== 4" color="green"
-                  size="x-small" style="px-2">overheat</v-chip>
-                <v-chip :hidden="(measurementCards.get('mam_error_code')!.data[0] as number) !== 8" color="green"
-                  size="x-small" style="px-2">fault</v-chip>
-                <v-chip :hidden="(measurementCards.get('mam_error_code')!.data[0] as number) !== 16" color="green"
-                  size="x-small" style="px-2">no canbus</v-chip>
-                <v-chip :hidden="(measurementCards.get('mam_error_code')!.data[0] as number) !== 16" color="green"
-                  size="x-small" style="px-2">no contactor</v-chip>
-              </p>
-            </v-row>
-
-            <!-- MIC -->
-            <v-row class="px-2 ma-0 text-mono" style="font-size:10px">
-              <p>MIC [{{
-                measurementCards.get('mic_error_code')!.data[0] }}]:
-                <v-chip :hidden="(measurementCards.get('mic_error_code')!.data[0] as number) !== 0" color="green"
-                  size="x-small" style="px-2">None</v-chip>
-                <v-chip :hidden="(measurementCards.get('mic_error_code')!.data[0] as number) !== 1" color="red"
-                  size="x-small" style="px-2">no canbus</v-chip>
-              </p>
-            </v-row>
-
-            <!-- MCS -->
-            <v-row class="px-2 ma-0 text-mono" style="font-size:10px">
-              <p>MCS [{{
-                measurementCards.get('mcs_error_code')!.data[0] }}]:
-                <v-chip :hidden="(measurementCards.get('mcs_error_code')!.data[0] as number) !== 0" color="green"
-                  size="x-small" style="px-2">None</v-chip>
-                <v-chip :hidden="(measurementCards.get('mcs_error_code')!.data[0] as number) !== 1" color="red"
-                  size="x-small" style="px-2">no canbus</v-chip>
-                <v-chip :hidden="(measurementCards.get('mcs_error_code')!.data[0] as number) !== 2" color="red"
-                  size="x-small" style="px-2">no charge</v-chip>
-              </p>
-            </v-row>
-
-            <!-- MAC -->
-            <v-row class="px-2 ma-0 text-mono" style="font-size:10px">
-              <p>MAC [{{
-                measurementCards.get('mac_error_code')!.data[0] }}]:
-                <v-chip :hidden="(measurementCards.get('mac_error_code')!.data[0] as number) !== 0" color="green"
-                  size="x-small" style="px-2">None</v-chip>
-                <v-chip :hidden="(measurementCards.get('mac_error_code')!.data[0] as number) !== 1" color="red"
-                  size="x-small" style="px-2">no canbus</v-chip>
-              </p>
-            </v-row>
-
-            <!-- MDE -->
-            <v-row class="px-2 ma-0 text-mono" style="font-size:10px">
-              <p>MDE [{{
-                measurementCards.get('mde_error_code')!.data[0] }}]:
-                <v-chip :hidden="(measurementCards.get('mde_error_code')!.data[0] as number) !== 0" color="green"
-                  size="x-small" style="px-2">None</v-chip>
-                <v-chip :hidden="(measurementCards.get('mde_error_code')!.data[0] as number) !== 1" color="red"
-                  size="x-small" style="px-2">no canbus</v-chip>
-                <v-chip :hidden="(measurementCards.get('mde_error_code')!.data[0] as number) !== 2" color="red"
-                  size="x-small" style="px-2">invalid tail</v-chip>
-                <v-chip :hidden="(measurementCards.get('mde_error_code')!.data[0] as number) !== 4" color="red"
-                  size="x-small" style="px-2">wrong side turn</v-chip>
-              </p>
-            </v-row>
-
-          </v-card>
-        </div>
+        <SwitchDisplay
+          :title="'CONTROL'"
+          :maxLines="4"
+          :data="[
+            { value: measurementCards.get('motor_on')?.data[0] as boolean, label: 'MOTOR' },
+            { value: measurementCards.get('boat_on')?.data[0] as boolean, label: 'BOAT' },
+            { value: measurementCards.get('dms_on')?.data[0] as boolean, label: 'DMS' },
+            { value: measurementCards.get('motor_rev')?.data[0] as boolean, label: 'REV' },
+          ].concat(
+            (measurementCards.get('pump')?.data as boolean[]).map((value, index) => ({ value, label: `BP ${index + 1}` }))
+          )"
+        />
 
       </v-col>
 
@@ -348,6 +247,7 @@ import { reactive, ref, type Ref } from 'vue'
 /* Components */
 import MultiMetricCard from './MultiMetricCard.vue';
 import MultiStateCard from './MultiStateCard.vue';
+import SwitchDisplay from './SwitchCard.vue';
 /* Types */
 import { Orientation } from '@/types/index'
 import { GenericCardData } from '../measurement_types'
