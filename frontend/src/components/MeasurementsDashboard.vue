@@ -62,81 +62,16 @@
         />
 
         <div v-if="true">
-          <!-- SYSTEM STATE -->
-          <v-card class="ma-0 pa-0">
-            <v-card-title class="py-0 mt-0 bg-primary font-weight-black">STATE</v-card-title>
-
-            <!-- DATA -->
-            <v-row class="px-2 ma-0">
-
-              <!-- MAM -->
-              <v-col class="ma-0 pa-1">
-                <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MAM </v-card-text>
-                <v-radio-group :model-value="String(measurementCards.get('mam_machine_state')!.data[0] as number)"
-                  readonly class="text-mono mx-5" style="font-size:10px">
-                  <v-radio color="orange" value="0">INI</v-radio>
-                  <v-radio color="orange" value="1">CON</v-radio>
-                  <v-radio color="orange" value="2">IDL</v-radio>
-                  <v-radio color="green" value="3">RUN</v-radio>
-                  <v-radio color="red" value="4">ERR</v-radio>
-                </v-radio-group>
-              </v-col>
-
-              <!-- MIC -->
-              <v-col class="ma-0 pa-1">
-                <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MIC </v-card-text>
-                <v-radio-group :model-value="String(measurementCards.get('mic_machine_state')!.data[0] as number)"
-                  readonly class="text-mono mx-5" style="font-size:10px">
-                  <v-radio color="orange" value="0">INI</v-radio>
-                  <v-radio color="orange" value="1">IDL</v-radio>
-                  <v-radio color="green" value="2">RUN</v-radio>
-                  <v-radio color="red" value="3">ERR</v-radio>
-                  <v-radio color="red" value="4">RST</v-radio>
-                </v-radio-group>
-              </v-col>
-
-              <!-- MCS -->
-              <v-col class="ma-0 pa-1">
-                <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MCS </v-card-text>
-                <v-radio-group :model-value="String(measurementCards.get('mcs_machine_state')!.data[0] as number)"
-                  readonly class="text-mono mx-5" style="font-size:10px">
-                  <v-radio color="orange" value="0">INI</v-radio>
-                  <v-radio color="orange" value="1">IDL</v-radio>
-                  <v-radio color="green" value="2">RUN</v-radio>
-                  <v-radio color="red" value="3">ERR</v-radio>
-                  <v-radio color="red" value="4">RST</v-radio>
-                </v-radio-group>
-              </v-col>
-
-              <!-- MAC -->
-              <v-col class="ma-0 pa-1">
-                <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MAC </v-card-text>
-                <v-radio-group :model-value="String(measurementCards.get('mac_machine_state')!.data[0] as number)"
-                  readonly class="text-mono mx-5" style="font-size:10px">
-                  <v-radio color="orange" value="0">INI</v-radio>
-                  <v-radio color="orange" value="1">IDL</v-radio>
-                  <v-radio color="green" value="2">RUN</v-radio>
-                  <v-radio color="red" value="3">ERR</v-radio>
-                  <v-radio color="red" value="4">RST</v-radio>
-                </v-radio-group>
-              </v-col>
-
-              <!-- MDE -->
-              <v-col class="ma-0 pa-1">
-                <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MDE </v-card-text>
-                <v-radio-group :model-value="String(measurementCards.get('mde_machine_state')!.data[0] as number)"
-                  readonly class="text-mono mx-5" style="font-size:10px">
-                  <v-radio color="orange" value="0">INI</v-radio>
-                  <v-radio color="orange" value="1">IDL</v-radio>
-                  <v-radio color="green" value="2">RUN</v-radio>
-                  <v-radio color="red" value="3">ERR</v-radio>
-                  <v-radio color="red" value="4">RST</v-radio>
-                </v-radio-group>
-              </v-col>
-
-            </v-row>
-
-          </v-card>
+          <MultiStateCard
+            :title="'STATE'"
+            :stateData="[
+              { label: 'MAM', value: measurementCards.get('mam_machine_state')?.data[0] as number },
+              { label: 'MIC', value: measurementCards.get('mic_machine_state')?.data[0] as number },
+              { label: 'MCS', value: measurementCards.get('mcs_machine_state')?.data[0] as number },
+              { label: 'MAC', value: measurementCards.get('mac_machine_state')?.data[0] as number },
+              { label: 'MDE', value: measurementCards.get('mde_machine_state')?.data[0] as number },
+            ]"
+          />
         </div>
 
       </v-col>
@@ -585,6 +520,7 @@ import { format } from 'numerable'
 import { reactive, ref, type Ref } from 'vue'
 /* Components */
 import MultiMetricCard from './MultiMetricCard.vue';
+import MultiStateCard from './MultiStateCard.vue';
 /* Types */
 import { GenericCardData } from '../measurement_types'
 
