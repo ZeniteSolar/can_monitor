@@ -228,7 +228,6 @@
 :deep(.v-switch--inset .v-switch__track) {
   height: 14px;
   width: 34px;
-  border-radius: 7px;
 }
 
 :deep(.v-switch .v-selection-control) {
@@ -242,101 +241,80 @@
 
 
 <script setup lang="ts">
-import { format } from 'numerable'
-import { reactive, ref, type Ref } from 'vue'
-/* Components */
+import { reactive, ref, onUnmounted, type Ref } from 'vue'
 import MultiMetricCard from './MultiMetricCard.vue';
 import MultiStateCard from './MultiStateCard.vue';
 import SwitchDisplay from './SwitchCard.vue';
-/* Types */
 import { Orientation } from '@/types/index'
 import { GenericCardData } from '../measurement_types'
 
-
-// Getting data from the backend
-// type CanMessage = {
-//   timestamp: number,
-//   message: string
-// }
-// const messages: Ref<CanMessage[]> = ref([])
 const last_msg_time: Ref<number | null> = ref(null)
-
-const parse_canboat_message = (message: object) => {
-  Object.entries(message).forEach((entry) => {
-    const [key, data] = entry
-
-    if (data !== null) {
-      const card_instance = measurementCards.get(key)
-      if (card_instance === null || card_instance === undefined) {
-        return
-      }
-
-      if (typeof (data) === "number") {
-        card_instance.data[0] = data
-        return
-      }
-
-      if (typeof (data) === "boolean") {
-        card_instance.data[0] = data
-        return
-      }
-
-      if (Array.isArray(data)) {
-        card_instance.data = data
-        return
-      }
-
-    }
-  })
-
-  last_msg_time.value = Date.now()
-}
-
-const WSAPI = `ws://${window.location.hostname}:3001`
-console.log(WSAPI)
+const measurementCards = reactive(new Map<string, GenericCardData>())
 
 class WSConnection {
-  socket: WebSocket | null = null
+  socket: WebSocket | null = null;
+  latestMessage: string | null = null;
+  isProcessing: boolean = false;
 
-  constructor() { }
+  constructor(private readonly apiUrl: string) {
+    this.connectWebsocket();
+    setInterval(() => {
+      if (this.latestMessage && !this.isProcessing) {
+        this.isProcessing = true;
+        this.processMessage(this.latestMessage).then(() => {
+          this.isProcessing = false;
+          this.latestMessage = null; // Reset after processing
+        });
+      }
+    }, 100);
+  }
 
   connectWebsocket() {
-    this.socket = new WebSocket(WSAPI)
+    this.socket = new WebSocket(this.apiUrl);
 
-    this.socket.onopen = (event) => {
-      console.log("[open] Websocket connection established", event)
-    }
-
+    this.socket.onopen = () => console.log("[open] Websocket connection established");
     this.socket.onmessage = (event) => {
-      let message = JSON.parse(event.data)
-
-      // Get all boat data and update each card accordingly
-      parse_canboat_message(message)
-    }
-
+      /* Store the latest message */
+      this.latestMessage = event.data;
+    };
     this.socket.onclose = (event) => {
-      if (event.wasClean) {
-        console.log(
-          `[close] Websocket connection closed cleanly, code=${event.code} reason=${event.reason}`
-        )
-      } else {
-        // e.g. server process killed or network down
-        // event.code is usually 1006 in this case
-        console.log("[close] Websocket connection died")
-      }
-      setTimeout(this.connectWebsocket, 4000)
-    }
-
+      console.log(`[close] Websocket connection died, attempting to reconnect...`);
+      setTimeout(() => this.connectWebsocket(), 4000);
+    };
     this.socket.onerror = (error) => {
-      console.log(`[error] Websocket error: ${JSON.stringify(error)}`)
+      console.log(`[error] Websocket error: ${JSON.stringify(error)}`);
+    };
+  }
+
+  async processMessage(data: string) {
+    const message = JSON.parse(data);
+    await parse_canboat_message(message);
+    last_msg_time.value = Date.now();
+  }
+}
+
+const apiUrl = `ws://${window.location.hostname}:3001`;
+const ws = new WSConnection(apiUrl);
+
+async function parse_canboat_message(message: object) {
+  for (const [key, data] of Object.entries(message)) {
+    const card_instance = measurementCards.get(key);
+    if (!card_instance) continue;
+
+    if (typeof data === 'number' || typeof data === 'boolean') {
+      card_instance.data[0] = data;
+    } else if (Array.isArray(data)) {
+      card_instance.data = data;
     }
   }
 }
 
-const ws = new WSConnection()
-ws.connectWebsocket()
+onUnmounted(() => {
+  if (ws.socket) {
+    ws.socket.close();
+  }
+});
 
-const measurementCards = reactive(new Map<string, GenericCardData>)
 measurementCards.set("motor_d", new GenericCardData(
   "Motor D",
   "ESC PWM Duty-Cycle",
