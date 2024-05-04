@@ -7,23 +7,58 @@
 
         <MultiMetricCard
           :title="'MPPT'"
-          :metricsData="{
-            vi: measurementCards.get('mcc_vi')?.data,
-            ii: measurementCards.get('mcc_ii')?.data,
-            d: measurementCards.get('mcc_d')?.data,
-            vo: measurementCards.get('mcc_vo')?.data,
-            po: measurementCards.get('mcc_pi')?.data,
-          }"
+          :metricsData="[
+          {
+            label: 'Vi',
+            data: (measurementCards.get('mcc_vi')?.data ?? []) as number[],
+            units: (measurementCards.get('mcc_vi')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'II',
+            data: (measurementCards.get('mcc_ii')?.data ?? []) as number[],
+            units: (measurementCards.get('mcc_ii')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'Vo',
+            data: (measurementCards.get('mcc_vo')?.data ?? []) as number[],
+            units: (measurementCards.get('mcc_vo')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'Pi',
+            data: (measurementCards.get('mcc_pi')?.data ?? []) as number[],
+            units: (measurementCards.get('mcc_pi')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'D',
+            data: (measurementCards.get('mcc_d')?.data ?? []) as number[],
+            units: (measurementCards.get('mcc_d')?.units ?? ['']) as string[]
+          },
+        ]"
         />
-
         <MultiMetricCard
           :title="'MCB'"
-          :metricsData="{
-            io: measurementCards.get('mcb_io')?.data,
-            d: measurementCards.get('mcb_d')?.data,
-            vo: measurementCards.get('mcb_vo')?.data,
-            po: measurementCards.get('mcb_po')?.data,
-          }"
+          :metricsData="[
+          {
+            label: 'Vi',
+            data: (measurementCards.get('mcb_vi')?.data ?? []) as number[],
+            units: (measurementCards.get('mcb_vi')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'Io',
+            data: (measurementCards.get('mcb_io')?.data ?? []) as number[],
+            units: (measurementCards.get('mcb_io')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'Vo',
+            data: (measurementCards.get('mcb_vo')?.data ?? []) as number[],
+            units: (measurementCards.get('mcb_vo')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'Po',
+            data: (measurementCards.get('mcb_po')?.data ?? []) as number[],
+            units: (measurementCards.get('mcb_po')?.units ?? ['']) as string[]
+          },
+        ]"
         />
 
         <div v-if="true">
