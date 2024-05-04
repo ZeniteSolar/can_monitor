@@ -522,7 +522,9 @@ import { reactive, ref, type Ref } from 'vue'
 import MultiMetricCard from './MultiMetricCard.vue';
 import MultiStateCard from './MultiStateCard.vue';
 /* Types */
+import { Orientation } from '@/types/index'
 import { GenericCardData } from '../measurement_types'
+
 
 // Getting data from the backend
 // type CanMessage = {
