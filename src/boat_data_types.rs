@@ -1,18 +1,81 @@
 use serde::{Deserialize, Serialize};
 
-use crate::boat_state::{BoatState, BoatStateVariable, Ema, BOAT_STATE};
+use crate::boat_state::{BoatState, BoatStateVariable, Sma, BOAT_STATE};
 use crate::can_types::modules;
 
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
-#[serde_with::skip_serializing_none]
+pub struct Wrappedf32Vec {
+    values: Vec<f32>,
+    values_pct: Vec<f32>,
+    sum: f32,
+    sum_pct: f32,
+    avg: f32,
+    avg_pct: f32,
+    units: String,
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize)]
+pub struct Wrappedf32 {
+    value: f32,
+    value_pct: f32,
+    units: String,
+}
+
+impl Wrappedf32Vec {
+    fn new(values: &[f32], units: &str, min: f32, max: f32) -> Self {
+        let len = values.len();
+        let mut sum = 0.0;
+        let mut values_pct = Vec::with_capacity(len);
+
+        for &v in values {
+            sum += v;
+            let pct = 100.0 * (v - min) / (max - min);
+            values_pct.push(pct);
+        }
+
+        let values = values.to_vec();
+        let units = units.to_string();
+
+        let sum_pct = 100.0 * (sum - min) / (max - min);
+        let avg = sum / (len as f32);
+        let avg_pct = 100.0 * (avg - min) / (max - min);
+
+        Self {
+            values,
+            values_pct,
+            sum,
+            sum_pct,
+            avg,
+            avg_pct,
+            units,
+        }
+    }
+}
+
+impl Wrappedf32 {
+    fn new(value: &f32, units: &str, min: f32, max: f32) -> Self {
+        let delta = max - min;
+        let value = value.to_owned();
+        let value_pct = (value - min) / delta;
+        let units = units.to_string();
+
+        Self {
+            value,
+            value_pct,
+            units,
+        }
+    }
+}
+
+#[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub struct BoatData {
     boat_on: bool,
     motor_on: bool,
     motor_rev: bool,
     dms_on: bool,
     pump: [bool; 3],
-    motor_d: [f32; 2],
-    motor_rpm: f32,
+    motor_d: Wrappedf32Vec,
+    motor_rpm: Wrappedf32,
     mam_machine_state: u8,
     mic_machine_state: u8,
     mcs_machine_state: u8,
@@ -23,87 +86,95 @@ pub struct BoatData {
     mcs_error_code: u8,
     mac_error_code: u8,
     mde_error_code: u8,
-    bat_v: f32,
-    bat_cell_v: [f32; 3],
-    bat_ii: f32,
-    bat_io: f32,
-    bat_i: f32,
-    bat_p: f32,
-    dir_bat_v: f32,
-    dir_bat_i: f32,
-    dir_bat_p: f32,
-    dir_pos: [f32; 2],
-    mcb_d: [f32; 2],
-    mcb_vi: [f32; 2],
-    mcb_io: [f32; 2],
-    mcb_vo: [f32; 2],
-    mcb_po: [f32; 2],
-    mcc_d: [f32; 9],
-    mcc_ii: [f32; 9],
-    mcc_vi: [f32; 9],
-    mcc_vo: [f32; 9],
-    mcc_pi: [f32; 9],
+    bat_v: Wrappedf32,
+    bat_cell_v: Wrappedf32Vec,
+    bat_ii: Wrappedf32,
+    bat_io: Wrappedf32,
+    bat_i: Wrappedf32,
+    bat_p: Wrappedf32,
+    dir_bat_v: Wrappedf32,
+    dir_bat_i: Wrappedf32,
+    dir_bat_p: Wrappedf32,
+    dir_pos: Wrappedf32Vec,
+    mcb_d: Wrappedf32Vec,
+    mcb_vi: Wrappedf32Vec,
+    mcb_io: Wrappedf32Vec,
+    mcb_vo: Wrappedf32Vec,
+    mcb_po: Wrappedf32Vec,
+    mcc_d: Wrappedf32Vec,
+    mcc_ii: Wrappedf32Vec,
+    mcc_vi: Wrappedf32Vec,
+    mcc_vo: Wrappedf32Vec,
+    mcc_pi: Wrappedf32Vec,
 }
 
 impl From<BoatState> for BoatData {
-    fn from(value: BoatState) -> Self {
-        let motor_d = value.motor_d.map(Ema::value);
+    fn from(state: BoatState) -> Self {
+        let motor_d = Wrappedf32Vec::new(&state.motor_d.map(Sma::get), "%", 0.0, 100.0);
 
-        let bat_v = value.bat_v.value();
-        let bat_cell_v = value.bat_cell_v.map(Ema::value);
+        let bat_v = Wrappedf32::new(&state.bat_v.get(), "V", 30.0, 60.0);
+        let bat_cell_v = Wrappedf32Vec::new(&state.bat_cell_v.map(Sma::get), "V", 7.0, 16.5);
 
-        let bat_ii = value.bat_ii.value();
-        let bat_io = value.bat_io.value();
-        let bat_i = bat_ii - bat_io;
-        let bat_p = bat_i * bat_v;
+        let bat_ii = Wrappedf32::new(&state.bat_ii.get(), "A", 0.0, 150.0);
+        let bat_io = Wrappedf32::new(&state.bat_io.get(), "A", 0.0, 150.0);
+        let bat_i = Wrappedf32::new(&(bat_ii.value - bat_io.value), "A", -150.0, 150.0);
+        let bat_p = Wrappedf32::new(
+            &(bat_i.value * bat_v.value),
+            "W",
+            -150.0 * 30.0,
+            150.0 * 60.0,
+        );
 
-        let dir_bat_v = value.dir_bat_v.value();
-        let dir_bat_i = value.dir_bat_i.value();
-        let dir_bat_p = dir_bat_v * dir_bat_i;
-        let dir_pos = value.dir_pos.map(Ema::value);
+        let dir_bat_v = Wrappedf32::new(&state.dir_bat_v.get(), "V", 7.0, 16.5);
+        let dir_bat_i = Wrappedf32::new(&state.dir_bat_i.get(), "A", 0.0, 20.0);
+        let dir_bat_p =
+            Wrappedf32::new(&(dir_bat_i.value * dir_bat_v.value), "W", 0.0, 20.0 * 16.5);
+        let dir_pos = Wrappedf32Vec::new(&state.dir_pos.map(Sma::get), "°", -135.0, 135.0);
 
-        let mcb_d = value.mcb_d.map(Ema::value);
-        let mcb_vi = value.mcb_vi.map(Ema::value);
-        let mcb_io = value.mcb_io.map(Ema::value);
-        let mcb_vo = value.mcb_vo.map(Ema::value);
-        let mcb_po: [f32; 2] = mcb_io
+        let mcb_d = Wrappedf32Vec::new(&state.mcb_d.map(Sma::get), "%", 0.0, 100.0);
+        let mcb_vi = Wrappedf32Vec::new(&state.mcb_vi.map(Sma::get), "V", 0.0, 60.0);
+        let mcb_io = state.mcb_io.map(Sma::get);
+        let mcb_vo = state.mcb_vo.map(Sma::get);
+        let mcb_po = mcb_io
             .iter()
-            .zip(mcb_vo)
+            .zip(&mcb_vo)
             .map(|(io, vo)| io * vo)
-            .collect::<Vec<f32>>()
-            .try_into()
-            .unwrap();
+            .collect::<Vec<f32>>();
+        let mcb_io = Wrappedf32Vec::new(&mcb_io, "A", 0.0, 15.0);
+        let mcb_vo = Wrappedf32Vec::new(&mcb_vo, "V", 0.0, 60.0);
+        let mcb_po = Wrappedf32Vec::new(&mcb_po, "W", 0.0, 300.0);
 
-        let mcc_d = value.mcc_d.map(Ema::value);
-        let mcc_ii = value.mcc_ii.map(Ema::value);
-        let mcc_vi = value.mcc_vi.map(Ema::value);
-        let mcc_vo = value.mcc_vo.map(Ema::value);
-        let mcc_pi: [f32; 9] = mcc_ii
+        let mcc_d = Wrappedf32Vec::new(&state.mcc_d.map(Sma::get), "%", 0.0, 100.0);
+        let mcc_ii = state.mcc_ii.map(Sma::get);
+        let mcc_vi = state.mcc_vi.map(Sma::get);
+        let mcc_pi = mcc_ii
             .iter()
-            .zip(mcc_vi)
+            .zip(&mcc_vi)
             .map(|(ii, vi)| ii * vi)
-            .collect::<Vec<f32>>()
-            .try_into()
-            .unwrap();
+            .collect::<Vec<f32>>();
+        let mcc_ii = Wrappedf32Vec::new(&mcc_ii, "A", 0.0, 15.0);
+        let mcc_vi = Wrappedf32Vec::new(&mcc_vi, "V", 0.0, 60.0);
+        let mcc_pi = Wrappedf32Vec::new(&mcc_pi, "W", 0.0, 300.0);
+        let mcc_vo = Wrappedf32Vec::new(&state.mcc_vo.map(Sma::get), "V", 30.0, 60.0);
 
         Self {
-            boat_on: value.boat_on,
-            motor_on: value.motor_on,
-            motor_rev: value.motor_rev,
-            dms_on: value.dms_on,
-            pump: value.pump,
+            boat_on: state.boat_on,
+            motor_on: state.motor_on,
+            motor_rev: state.motor_rev,
+            dms_on: state.dms_on,
+            pump: state.pump,
             motor_d,
-            motor_rpm: value.motor_rpm.value(),
-            mam_machine_state: value.mam_machine_state,
-            mic_machine_state: value.mic_machine_state,
-            mcs_machine_state: value.mcs_machine_state,
-            mac_machine_state: value.mac_machine_state,
-            mde_machine_state: value.mde_machine_state,
-            mam_error_code: value.mam_error_code,
-            mic_error_code: value.mic_error_code,
-            mcs_error_code: value.mcs_error_code,
-            mac_error_code: value.mac_error_code,
-            mde_error_code: value.mde_error_code,
+            motor_rpm: Wrappedf32::new(&state.motor_rpm.get(), "rad/s", 0.0, 4800.0),
+            mam_machine_state: state.mam_machine_state,
+            mic_machine_state: state.mic_machine_state,
+            mcs_machine_state: state.mcs_machine_state,
+            mac_machine_state: state.mac_machine_state,
+            mde_machine_state: state.mde_machine_state,
+            mam_error_code: state.mam_error_code,
+            mic_error_code: state.mic_error_code,
+            mcs_error_code: state.mcs_error_code,
+            mac_error_code: state.mac_error_code,
+            mde_error_code: state.mde_error_code,
             bat_v,
             bat_cell_v,
             bat_ii,
@@ -202,8 +273,7 @@ impl BoatStateVariable for modules::mic19::messages::mde::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
-        boat_state.dir_pos[0]
-            .update((26.392_962_f32 * ((message.position as f32) / 100f32)) - 135f32);
+        boat_state.dir_pos[0].update((270f32 * (message.position as f32) / 1024f32) - 135f32);
     }
 }
 
@@ -285,8 +355,7 @@ impl BoatStateVariable for modules::mde22::messages::steeringbat_measurements::M
             .dir_bat_i
             .update((message.batcurrent as f32) / 100f32);
 
-        boat_state.dir_pos[1]
-            .update((26.392_962_f32 * ((message.tail_position as f32) / 100f32)) - 135f32);
+        boat_state.dir_pos[1].update(((message.tail_position as f32) / 100f32) - 135f32);
     }
 }
 

@@ -15,8 +15,8 @@ pub struct BoatState {
     pub motor_rev: bool,
     pub dms_on: bool,
     pub pump: [bool; 3],
-    pub motor_d: [Ema<10>; 2],
-    pub motor_rpm: Ema<10>,
+    pub motor_d: [Sma<10>; 2],
+    pub motor_rpm: Sma<10>,
     pub mam_machine_state: u8,
     pub mic_machine_state: u8,
     pub mcs_machine_state: u8,
@@ -27,38 +27,38 @@ pub struct BoatState {
     pub mcs_error_code: u8,
     pub mac_error_code: u8,
     pub mde_error_code: u8,
-    pub bat_v: Ema<10>,
-    pub bat_cell_v: [Ema<10>; 3],
-    pub bat_ii: Ema<10>,
-    pub bat_io: Ema<10>,
-    pub dir_pos: [Ema<10>; 2],
-    pub dir_bat_v: Ema<10>,
-    pub dir_bat_i: Ema<10>,
-    pub mcb_vo: [Ema<10>; 2],
-    pub mcb_io: [Ema<10>; 2],
-    pub mcb_vi: [Ema<10>; 2],
-    pub mcb_d: [Ema<10>; 2],
-    pub mcc_d: [Ema<10>; 9],
-    pub mcc_ii: [Ema<10>; 9],
-    pub mcc_vi: [Ema<10>; 9],
-    pub mcc_vo: [Ema<10>; 9],
+    pub bat_v: Sma<10>,
+    pub bat_cell_v: [Sma<10>; 3],
+    pub bat_ii: Sma<10>,
+    pub bat_io: Sma<10>,
+    pub dir_pos: [Sma<10>; 2],
+    pub dir_bat_v: Sma<10>,
+    pub dir_bat_i: Sma<10>,
+    pub mcb_vo: [Sma<10>; 2],
+    pub mcb_io: [Sma<10>; 2],
+    pub mcb_vi: [Sma<10>; 2],
+    pub mcb_d: [Sma<10>; 2],
+    pub mcc_d: [Sma<10>; 9],
+    pub mcc_ii: [Sma<10>; 9],
+    pub mcc_vi: [Sma<10>; 9],
+    pub mcc_vo: [Sma<10>; 9],
 }
 
 #[derive(Default, Debug, Clone)]
-pub struct Ema<const MAX_SAMPLES: usize> {
+pub struct Sma<const MAX_SAMPLES: usize> {
     samples: usize,
     sum: f32,
 }
 
-impl<const MAX_SAMPLES: usize> Ema<MAX_SAMPLES> {
+impl<const MAX_SAMPLES: usize> Sma<MAX_SAMPLES> {
     pub fn update(&mut self, value: f32) {
         if self.samples < MAX_SAMPLES {
             self.samples += 1;
         }
 
-        self.sum += (value - self.sum) / (self.samples as f32);
+        self.sum += (value - self.sum) / self.samples as f32;
     }
-    pub fn value(self) -> f32 {
+    pub fn get(self) -> f32 {
         self.sum
     }
 }
