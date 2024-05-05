@@ -1,4 +1,5 @@
 use anyhow::{anyhow, Result};
+use futures::prelude::sink::SinkExt;
 use futures_util::stream::StreamExt;
 use tokio_socketcan::{CANFrame, CANSocket};
 use tracing::*;
@@ -15,7 +16,14 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
     loop {
         let interface = match &cli::CONFIGURATION.can_interface {
             Some(interface) => interface.to_owned(),
-            None => lookup_can_interface()?,
+            None => match lookup_can_interface() {
+                Ok(interface) => interface,
+                Err(error) => {
+                    warn!("Failed getting the can interface, trying again in 1 second... Reason: {error:?}");
+                    tokio::time::sleep(tokio::time::Duration::from_secs(1)).await;
+                    continue;
+                }
+            },
         };
 
         let mut socket_rx = CANSocket::open(&interface)?;
@@ -23,12 +31,23 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
 
         let mut time = std::time::Instant::now();
 
-        while let Some(result) = socket_rx.next().await {
+        while let Some(result) =
+            match tokio::time::timeout(std::time::Duration::from_secs(1), socket_rx.next()).await {
+                Ok(next) => next,
+                Err(_) => {
+                    debug!("Receiving message timeout, resetting socket connection...");
+                    None
+                }
+            }
+        {
             let frame = match result {
                 Ok(frame) => frame,
                 Err(error) => {
-                    error!("Failed receiving: {error:?}");
-                    continue;
+                    error!(
+                        "Failed receiving from can socket, dropping connection... Reason: {error:?}"
+                    );
+                    let _ = socket_rx.close().await;
+                    break;
                 }
             };
 
@@ -237,10 +256,9 @@ where
 {
     trace!("Message received, trying to deserialize...: {data:?}");
 
-    let Ok(message) =
-        bincode::deserialize::<T>(data) else {
-            return Err(ReadMessageError::DeserializationError);
-        };
+    let Ok(message) = bincode::deserialize::<T>(data) else {
+        return Err(ReadMessageError::DeserializationError);
+    };
 
     if &message.signature() != signature {
         return Err(ReadMessageError::WrongSignatureError);
