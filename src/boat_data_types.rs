@@ -311,7 +311,7 @@ impl BoatStateVariable for modules::mcb19_2::messages::measurements::Message {
     }
 }
 
-impl BoatStateVariable for modules::mcc19_1::messages::measurements::Message {
+impl BoatStateVariable for modules::mcc23_1::messages::measurements::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
@@ -322,7 +322,7 @@ impl BoatStateVariable for modules::mcc19_1::messages::measurements::Message {
     }
 }
 
-impl BoatStateVariable for modules::mcc19_2::messages::measurements::Message {
+impl BoatStateVariable for modules::mcc23_2::messages::measurements::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
@@ -333,7 +333,7 @@ impl BoatStateVariable for modules::mcc19_2::messages::measurements::Message {
     }
 }
 
-impl BoatStateVariable for modules::mcc19_3::messages::measurements::Message {
+impl BoatStateVariable for modules::mcc23_3::messages::measurements::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
@@ -344,7 +344,7 @@ impl BoatStateVariable for modules::mcc19_3::messages::measurements::Message {
     }
 }
 
-impl BoatStateVariable for modules::mcc19_4::messages::measurements::Message {
+impl BoatStateVariable for modules::mcc23_4::messages::measurements::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
@@ -355,7 +355,7 @@ impl BoatStateVariable for modules::mcc19_4::messages::measurements::Message {
     }
 }
 
-impl BoatStateVariable for modules::mcc19_5::messages::measurements::Message {
+impl BoatStateVariable for modules::mcc23_5::messages::measurements::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
@@ -366,7 +366,7 @@ impl BoatStateVariable for modules::mcc19_5::messages::measurements::Message {
     }
 }
 
-impl BoatStateVariable for modules::mcc19_6::messages::measurements::Message {
+impl BoatStateVariable for modules::mcc23_6::messages::measurements::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
@@ -377,35 +377,35 @@ impl BoatStateVariable for modules::mcc19_6::messages::measurements::Message {
     }
 }
 
-// impl BoatStateVariable for modules::mcc19_7::messages::measurements::Message {
-//     fn update(message: Self) {
-//         let mut boat_state = BOAT_STATE.lock().unwrap();
+impl BoatStateVariable for modules::mcc23_7::messages::measurements::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
 
-//         boat_state.mcc_d[6].update(100f32 * (message.dt as f32) / (u8::MAX as f32));
-//         boat_state.mcc_ii[6].update((message.input_current as f32) / 100f32);
-//         boat_state.mcc_vi[6].update((message.input_voltage as f32) / 100f32);
-//         boat_state.mcc_vo[6].update((message.output_voltage as f32) / 100f32);
-//     }
-// }
-//
-// impl BoatStateVariable for modules::mcc19_8::messages::measurements::Message {
-//     fn update(message: Self) {
-//         let mut boat_state = BOAT_STATE.lock().unwrap();
+        boat_state.mcc_d[6].update(100f32 * (message.dt as f32) / (u8::MAX as f32));
+        boat_state.mcc_ii[6].update((message.input_current as f32) / 100f32);
+        boat_state.mcc_vi[6].update((message.input_voltage as f32) / 100f32);
+        boat_state.mcc_vo[6].update((message.output_voltage as f32) / 100f32);
+    }
+}
 
-//         boat_state.mcc_d[7].update(100f32 * (message.dt as f32) / (u8::MAX as f32));
-//         boat_state.mcc_ii[7].update((message.input_current as f32) / 100f32);
-//         boat_state.mcc_vi[7].update((message.input_voltage as f32) / 100f32);
-//         boat_state.mcc_vo[7].update((message.output_voltage as f32) / 100f32);
-//     }
-// }
-//
-// impl BoatStateVariable for modules::mcc19_9::messages::measurements::Message {
-//     fn update(message: Self) {
-//         let mut boat_state = BOAT_STATE.lock().unwrap();
+impl BoatStateVariable for modules::mcc23_8::messages::measurements::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
 
-//         boat_state.mcc_d[8].update(100f32 * (message.dt as f32) / (u8::MAX as f32));
-//         boat_state.mcc_ii[8].update((message.input_current as f32) / 100f32);
-//         boat_state.mcc_vi[8].update((message.input_voltage as f32) / 100f32);
-//         boat_state.mcc_vo[8].update((message.output_voltage as f32) / 100f32);
-//     }
-// }
+        boat_state.mcc_d[7].update(100f32 * (message.dt as f32) / (u8::MAX as f32));
+        boat_state.mcc_ii[7].update((message.input_current as f32) / 100f32);
+        boat_state.mcc_vi[7].update((message.input_voltage as f32) / 100f32);
+        boat_state.mcc_vo[7].update((message.output_voltage as f32) / 100f32);
+    }
+}
+
+impl BoatStateVariable for modules::mcc23_9::messages::measurements::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
+
+        boat_state.mcc_d[8].update(100f32 * (message.dt as f32) / (u8::MAX as f32));
+        boat_state.mcc_ii[8].update((message.input_current as f32) / 100f32);
+        boat_state.mcc_vi[8].update((message.input_voltage as f32) / 100f32);
+        boat_state.mcc_vo[8].update((message.output_voltage as f32) / 100f32);
+    }
+}

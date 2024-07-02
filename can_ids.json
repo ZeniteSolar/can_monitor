@@ -1,5 +1,5 @@
 {
-    "version": "0.1.2",
+    "version": "0.1.10",
     "modules": [
         {
             "name": "GENERIC",
@@ -466,8 +466,8 @@
             ]
         },
         {
-            "name": "MCC19_1",
-            "description": "Modulo controlador de carga",
+            "name": "MCC23_1",
+            "description": "Modulo controlador de carga 1",
             "signature": 225,
             "topics": [
                 {
@@ -510,7 +510,7 @@
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 79
+                    "frame_length": 71
                 },
                 {
                     "name": "MEASUREMENTS",
@@ -566,14 +566,61 @@
                             "units": "%/255"
                         }
                     ],
-                    "frequency": 30,
+                    "frequency": 10,
                     "frame_length": 111
+                },
+                {
+                    "name": "AUX_MEASUREMENTS",
+                    "description": "Auxiliary measurements from the converter",
+                    "id": 225,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MOSFET_TEMP",
+                            "description": "MOSFET temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "DIODE_TEMP",
+                            "description": "Diode temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "ROOM_TEMP",
+                            "description": "Room temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        null,
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 95
                 }
             ]
         },
         {
-            "name": "MCC19_2",
-            "description": "Modulo controlador de carga",
+            "name": "MCC23_2",
+            "description": "Modulo controlador de carga 2",
             "signature": 226,
             "topics": [
                 {
@@ -616,7 +663,7 @@
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 79
+                    "frame_length": 71
                 },
                 {
                     "name": "MEASUREMENTS",
@@ -672,14 +719,61 @@
                             "units": "%/255"
                         }
                     ],
-                    "frequency": 30,
+                    "frequency": 10,
                     "frame_length": 111
+                },
+                {
+                    "name": "AUX_MEASUREMENTS",
+                    "description": "Auxiliary measurements from the converter",
+                    "id": 226,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MOSFET_TEMP",
+                            "description": "MOSFET temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "DIODE_TEMP",
+                            "description": "Diode temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "ROOM_TEMP",
+                            "description": "Room temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        null,
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 95
                 }
             ]
         },
         {
-            "name": "MCC19_3",
-            "description": "Modulo controlador de carga",
+            "name": "MCC23_3",
+            "description": "Modulo controlador de carga 3",
             "signature": 227,
             "topics": [
                 {
@@ -722,7 +816,7 @@
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 79
+                    "frame_length": 71
                 },
                 {
                     "name": "MEASUREMENTS",
@@ -778,14 +872,61 @@
                             "units": "%/255"
                         }
                     ],
-                    "frequency": 30,
+                    "frequency": 10,
                     "frame_length": 111
+                },
+                {
+                    "name": "AUX_MEASUREMENTS",
+                    "description": "Auxiliary measurements from the converter",
+                    "id": 227,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MOSFET_TEMP",
+                            "description": "MOSFET temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "DIODE_TEMP",
+                            "description": "Diode temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "ROOM_TEMP",
+                            "description": "Room temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        null,
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 95
                 }
             ]
         },
         {
-            "name": "MCC19_4",
-            "description": "Modulo controlador de carga",
+            "name": "MCC23_4",
+            "description": "Modulo controlador de carga 4",
             "signature": 228,
             "topics": [
                 {
@@ -828,7 +969,7 @@
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 79
+                    "frame_length": 71
                 },
                 {
                     "name": "MEASUREMENTS",
@@ -884,14 +1025,61 @@
                             "units": "%/255"
                         }
                     ],
-                    "frequency": 30,
+                    "frequency": 10,
                     "frame_length": 111
+                },
+                {
+                    "name": "AUX_MEASUREMENTS",
+                    "description": "Auxiliary measurements from the converter",
+                    "id": 228,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MOSFET_TEMP",
+                            "description": "MOSFET temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "DIODE_TEMP",
+                            "description": "Diode temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "ROOM_TEMP",
+                            "description": "Room temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        null,
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 95
                 }
             ]
         },
         {
-            "name": "MCC19_5",
-            "description": "Modulo controlador de carga",
+            "name": "MCC23_5",
+            "description": "Modulo controlador de carga 5",
             "signature": 229,
             "topics": [
                 {
@@ -934,7 +1122,7 @@
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 79
+                    "frame_length": 71
                 },
                 {
                     "name": "MEASUREMENTS",
@@ -990,15 +1178,62 @@
                             "units": "%/255"
                         }
                     ],
-                    "frequency": 30,
+                    "frequency": 10,
                     "frame_length": 111
+                },
+                {
+                    "name": "AUX_MEASUREMENTS",
+                    "description": "Auxiliary measurements from the converter",
+                    "id": 229,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MOSFET_TEMP",
+                            "description": "MOSFET temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "DIODE_TEMP",
+                            "description": "Diode temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "ROOM_TEMP",
+                            "description": "Room temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        null,
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 95
                 }
             ]
         },
         {
-            "name": "MCC19_6",
-            "description": "Modulo controlador de carga",
-            "signature": 239,
+            "name": "MCC23_6",
+            "description": "Modulo controlador de carga 6",
+            "signature": 230,
             "topics": [
                 {
                     "name": "STATE",
@@ -1040,7 +1275,7 @@
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 79
+                    "frame_length": 71
                 },
                 {
                     "name": "MEASUREMENTS",
@@ -1096,15 +1331,62 @@
                             "units": "%/255"
                         }
                     ],
-                    "frequency": 30,
+                    "frequency": 10,
                     "frame_length": 111
+                },
+                {
+                    "name": "AUX_MEASUREMENTS",
+                    "description": "Auxiliary measurements from the converter",
+                    "id": 230,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MOSFET_TEMP",
+                            "description": "MOSFET temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "DIODE_TEMP",
+                            "description": "Diode temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "ROOM_TEMP",
+                            "description": "Room temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        null,
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 95
                 }
             ]
         },
         {
-            "name": "MCB19_1",
-            "description": "Modulo de carregamento das baterias auxiliares",
-            "signature": 220,
+            "name": "MCC23_7",
+            "description": "Modulo controlador de carga 7",
+            "signature": 231,
             "topics": [
                 {
                     "name": "STATE",
@@ -1146,12 +1428,471 @@
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 79
+                    "frame_length": 71
                 },
                 {
                     "name": "MEASUREMENTS",
                     "description": "All measurements from the converter",
                     "id": 208,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_L",
+                            "description": "Average input current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_H",
+                            "description": "Average input current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 10,
+                    "frame_length": 111
+                },
+                {
+                    "name": "AUX_MEASUREMENTS",
+                    "description": "Auxiliary measurements from the converter",
+                    "id": 231,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MOSFET_TEMP",
+                            "description": "MOSFET temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "DIODE_TEMP",
+                            "description": "Diode temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "ROOM_TEMP",
+                            "description": "Room temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        null,
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 95
+                }
+            ]
+        },
+        {
+            "name": "MCC23_8",
+            "description": "Modulo controlador de carga 8",
+            "signature": 232,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 110,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 209,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_L",
+                            "description": "Average input current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_H",
+                            "description": "Average input current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 10,
+                    "frame_length": 111
+                },
+                {
+                    "name": "AUX_MEASUREMENTS",
+                    "description": "Auxiliary measurements from the converter",
+                    "id": 232,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MOSFET_TEMP",
+                            "description": "MOSFET temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "DIODE_TEMP",
+                            "description": "Diode temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "ROOM_TEMP",
+                            "description": "Room temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        null,
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 95
+                }
+            ]
+        },
+        {
+            "name": "MCC23_9",
+            "description": "Modulo controlador de carga 9",
+            "signature": 233,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 111,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 210,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_L",
+                            "description": "Average output voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "OUTPUT_VOLTAGE_H",
+                            "description": "Average output voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_L",
+                            "description": "Average input current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_CURRENT_H",
+                            "description": "Average input current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_L",
+                            "description": "Average input voltage, byte low",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "INPUT_VOLTAGE_H",
+                            "description": "Average input voltage, byte high",
+                            "type": "uint16_t",
+                            "units": "V/100"
+                        },
+                        {
+                            "name": "DT",
+                            "description": "converter's duty cycle",
+                            "type": "uint8_t",
+                            "units": "%/255"
+                        }
+                    ],
+                    "frequency": 10,
+                    "frame_length": 111
+                },
+                {
+                    "name": "AUX_MEASUREMENTS",
+                    "description": "Auxiliary measurements from the converter",
+                    "id": 233,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_L",
+                            "description": "Average output current, byte low",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "OUTPUT_CURRENT_H",
+                            "description": "Average output current, byte high",
+                            "type": "uint16_t",
+                            "units": "A/100"
+                        },
+                        {
+                            "name": "MOSFET_TEMP",
+                            "description": "MOSFET temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "DIODE_TEMP",
+                            "description": "Diode temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        {
+                            "name": "ROOM_TEMP",
+                            "description": "Room temperature",
+                            "type": "uint8_t",
+                            "units": "\u00b0C"
+                        },
+                        null,
+                        null
+                    ],
+                    "frequency": 10,
+                    "frame_length": 95
+                }
+            ]
+        },
+        {
+            "name": "MCB19_1",
+            "description": "Modulo de carregamento das baterias auxiliares 1",
+            "signature": 220,
+            "topics": [
+                {
+                    "name": "STATE",
+                    "description": "Module state report",
+                    "id": 118,
+                    "bytes": [
+                        {
+                            "name": "SIGNATURE",
+                            "description": "Senders signature",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "STATE",
+                            "description": "State code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
+                            "name": "CONTROL",
+                            "description": "Control flags for operating point",
+                            "type": "bitfield",
+                            "units": "",
+                            "bits": [
+                                "ENABLE",
+                                "VI_SAFE_RANGE",
+                                "VO_SAFE_RANGE",
+                                "VI_STABLE",
+                                "DT_SAFE_RANGE",
+                                null,
+                                null,
+                                null
+                            ]
+                        },
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    "frequency": 1,
+                    "frame_length": 71
+                },
+                {
+                    "name": "MEASUREMENTS",
+                    "description": "All measurements from the converter",
+                    "id": 222,
                     "bytes": [
                         {
                             "name": "SIGNATURE",
@@ -1209,13 +1950,13 @@
         },
         {
             "name": "MCB19_2",
-            "description": "Modulo de carregamento das baterias auxiliares",
+            "description": "Modulo de carregamento das baterias auxiliares 2",
             "signature": 221,
             "topics": [
                 {
                     "name": "STATE",
                     "description": "Module state report",
-                    "id": 110,
+                    "id": 119,
                     "bytes": [
                         {
                             "name": "SIGNATURE",
@@ -1252,12 +1993,12 @@
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 79
+                    "frame_length": 71
                 },
                 {
                     "name": "MEASUREMENTS",
                     "description": "All measurements from the converter",
-                    "id": 209,
+                    "id": 223,
                     "bytes": [
                         {
                             "name": "SIGNATURE",
@@ -1480,12 +2221,12 @@
         {
             "name": "MAB19",
             "description": "Modulo de Acionamento das Bombas de Porao",
-            "signature": 230,
+            "signature": 235,
             "topics": [
                 {
                     "name": "STATE",
                     "description": "Module state report",
-                    "id": 111,
+                    "id": 120,
                     "bytes": [
                         {
                             "name": "SIGNATURE",
@@ -1517,7 +2258,7 @@
                 {
                     "name": "PUMPS",
                     "description": "Pumps state",
-                    "id": 210,
+                    "id": 224,
                     "bytes": [
                         {
                             "name": "SIGNATURE",

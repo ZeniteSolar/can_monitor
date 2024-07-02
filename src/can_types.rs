@@ -279,7 +279,7 @@ pub mod modules {
         }
     }
 
-    pub mod mcc19_1 {
+    pub mod mcc23_1 {
         use serde::{Deserialize, Serialize};
 
         pub const SIGNATURE: u8 = 225u8;
@@ -287,7 +287,7 @@ pub mod modules {
         pub mod messages {
 
             pub mod state {
-                /// MCC19_1 State Message ID
+                /// MCC23_1 State Message ID
                 pub const ID: u32 = 103u32;
 
                 use modular_bitfield::{specifiers::*, *};
@@ -324,7 +324,7 @@ pub mod modules {
             }
 
             pub mod measurements {
-                /// MCC19_1 Measurements Message ID
+                /// MCC23_1 Measurements Message ID
                 pub const ID: u32 = 202u32;
 
                 use serde::{Deserialize, Serialize};
@@ -350,10 +350,38 @@ pub mod modules {
                     }
                 }
             }
+
+            pub mod aux_measurements {
+                /// MCC23_1 Measurements Message ID
+                pub const ID: u32 = 225u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output current. Units: A/100
+                    pub output_currrent: u16,
+                    /// Average MOSFET temperature. Units: °C
+                    pub mosfet_temp: u8,
+                    /// Average Diode temperature. Units: °C
+                    pub diode_temp: u8,
+                    /// Average Room temperature. Units: °C
+                    pub room_temp: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
         }
     }
 
-    pub mod mcc19_2 {
+    pub mod mcc23_2 {
         use serde::{Deserialize, Serialize};
 
         pub const SIGNATURE: u8 = 226u8;
@@ -361,7 +389,7 @@ pub mod modules {
         pub mod messages {
 
             pub mod state {
-                /// MCC19_2 State Message ID
+                /// MCC23_2 State Message ID
                 pub const ID: u32 = 104u32;
 
                 use modular_bitfield::{specifiers::*, *};
@@ -398,7 +426,7 @@ pub mod modules {
             }
 
             pub mod measurements {
-                /// MCC19_2 Measurements Message ID
+                /// MCC23_2 Measurements Message ID
                 pub const ID: u32 = 203u32;
 
                 use serde::{Deserialize, Serialize};
@@ -424,10 +452,38 @@ pub mod modules {
                     }
                 }
             }
+
+            pub mod aux_measurements {
+                /// MCC23_2 Measurements Message ID
+                pub const ID: u32 = 226u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output current. Units: A/100
+                    pub output_currrent: u16,
+                    /// Average MOSFET temperature. Units: °C
+                    pub mosfet_temp: u8,
+                    /// Average Diode temperature. Units: °C
+                    pub diode_temp: u8,
+                    /// Average Room temperature. Units: °C
+                    pub room_temp: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
         }
     }
 
-    pub mod mcc19_3 {
+    pub mod mcc23_3 {
         use serde::{Deserialize, Serialize};
 
         pub const SIGNATURE: u8 = 227u8;
@@ -435,7 +491,7 @@ pub mod modules {
         pub mod messages {
 
             pub mod state {
-                /// MCC19_3 State Message ID
+                /// MCC23_3 State Message ID
                 pub const ID: u32 = 105u32;
 
                 use modular_bitfield::{specifiers::*, *};
@@ -472,7 +528,7 @@ pub mod modules {
             }
 
             pub mod measurements {
-                /// MCC19_3 Measurements Message ID
+                /// MCC23_3 Measurements Message ID
                 pub const ID: u32 = 204u32;
 
                 use serde::{Deserialize, Serialize};
@@ -498,10 +554,38 @@ pub mod modules {
                     }
                 }
             }
+
+            pub mod aux_measurements {
+                /// MCC23_3 Measurements Message ID
+                pub const ID: u32 = 227u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output current. Units: A/100
+                    pub output_currrent: u16,
+                    /// Average MOSFET temperature. Units: °C
+                    pub mosfet_temp: u8,
+                    /// Average Diode temperature. Units: °C
+                    pub diode_temp: u8,
+                    /// Average Room temperature. Units: °C
+                    pub room_temp: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
         }
     }
 
-    pub mod mcc19_4 {
+    pub mod mcc23_4 {
         use serde::{Deserialize, Serialize};
 
         pub const SIGNATURE: u8 = 228u8;
@@ -509,7 +593,7 @@ pub mod modules {
         pub mod messages {
 
             pub mod state {
-                /// MCC19_4 State Message ID
+                /// MCC23_4 State Message ID
                 pub const ID: u32 = 106u32;
 
                 use modular_bitfield::{specifiers::*, *};
@@ -546,7 +630,7 @@ pub mod modules {
             }
 
             pub mod measurements {
-                /// MCC19_4 Measurements Message ID
+                /// MCC23_4 Measurements Message ID
                 pub const ID: u32 = 2054u32;
 
                 use serde::{Deserialize, Serialize};
@@ -572,10 +656,38 @@ pub mod modules {
                     }
                 }
             }
+
+            pub mod aux_measurements {
+                /// MCC23_4 Measurements Message ID
+                pub const ID: u32 = 228u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output current. Units: A/100
+                    pub output_currrent: u16,
+                    /// Average MOSFET temperature. Units: °C
+                    pub mosfet_temp: u8,
+                    /// Average Diode temperature. Units: °C
+                    pub diode_temp: u8,
+                    /// Average Room temperature. Units: °C
+                    pub room_temp: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
         }
     }
 
-    pub mod mcc19_5 {
+    pub mod mcc23_5 {
         use serde::{Deserialize, Serialize};
 
         pub const SIGNATURE: u8 = 229u8;
@@ -583,7 +695,7 @@ pub mod modules {
         pub mod messages {
 
             pub mod state {
-                /// MCC19_5 State Message ID
+                /// MCC23_5 State Message ID
                 pub const ID: u32 = 107u32;
 
                 use modular_bitfield::{specifiers::*, *};
@@ -620,7 +732,7 @@ pub mod modules {
             }
 
             pub mod measurements {
-                /// MCC19_5 Measurements Message ID
+                /// MCC23_5 Measurements Message ID
                 pub const ID: u32 = 206u32;
 
                 use serde::{Deserialize, Serialize};
@@ -646,18 +758,46 @@ pub mod modules {
                     }
                 }
             }
+
+            pub mod aux_measurements {
+                /// MCC23_5 Measurements Message ID
+                pub const ID: u32 = 229u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output current. Units: A/100
+                    pub output_currrent: u16,
+                    /// Average MOSFET temperature. Units: °C
+                    pub mosfet_temp: u8,
+                    /// Average Diode temperature. Units: °C
+                    pub diode_temp: u8,
+                    /// Average Room temperature. Units: °C
+                    pub room_temp: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
         }
     }
 
-    pub mod mcc19_6 {
+    pub mod mcc23_6 {
         use serde::{Deserialize, Serialize};
 
-        pub const SIGNATURE: u8 = 239u8;
+        pub const SIGNATURE: u8 = 230u8;
 
         pub mod messages {
 
             pub mod state {
-                /// MCC19_6 State Message ID
+                /// MCC23_6 State Message ID
                 pub const ID: u32 = 108u32;
 
                 use modular_bitfield::{specifiers::*, *};
@@ -694,8 +834,110 @@ pub mod modules {
             }
 
             pub mod measurements {
-                /// MCC19_6 Measurements Message ID
+                /// MCC23_6 Measurements Message ID
                 pub const ID: u32 = 207u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output voltage. Units: V/100
+                    pub output_voltage: u16,
+                    /// Average input current. Units: A/100
+                    pub input_current: u16,
+                    /// Average input voltage. Units: V/100
+                    pub input_voltage: u16,
+                    /// Converter's duty cycle. Units: %/255``
+                    pub dt: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
+
+            pub mod aux_measurements {
+                /// MCC23_6 Measurements Message ID
+                pub const ID: u32 = 230u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output current. Units: A/100
+                    pub output_currrent: u16,
+                    /// Average MOSFEET temperture. Units: °C
+                    pub mosfet_temp: u8,
+                    /// Average MOSFEET teDiode. Units: °C
+                    pub diode_temp: u8,
+                    /// Converter'Average Room temperature. Units: °C
+                    pub room_temp: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
+        }
+    }
+
+    pub mod mcc23_7 {
+        use serde::{Deserialize, Serialize};
+
+        pub const SIGNATURE: u8 = 231u8;
+
+        pub mod messages {
+
+            pub mod state {
+                /// MCC23_7 State Message ID
+                pub const ID: u32 = 109u32;
+
+                use modular_bitfield::{specifiers::*, *};
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Module state report
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// State code
+                    pub state: u8,
+                    pub control: ControlFlags,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
+                /// Control flags for operating point
+                pub struct ControlFlags {
+                    pub enable: bool,
+                    pub vi_safe_range: bool,
+                    pub vo_safe_range: bool,
+                    pub vi_stable: bool,
+                    pub dt_safe_range: bool,
+                    #[skip]
+                    _unused: specifiers::B3,
+                }
+            }
+
+            pub mod measurements {
+                /// MCC23_7 Measurements Message ID
+                pub const ID: u32 = 208u32;
 
                 use serde::{Deserialize, Serialize};
 
@@ -720,239 +962,249 @@ pub mod modules {
                     }
                 }
             }
+
+            pub mod aux_measurements {
+                /// MCC23_7 Measurements Message ID
+                pub const ID: u32 = 231u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output current. Units: A/100
+                    pub output_currrent: u16,
+                    /// Average MOSFET temperature. Units: °C
+                    pub mosfet_temp: u8,
+                    /// Average Diode temperature. Units: °C
+                    pub diode_temp: u8,
+                    /// Average Room temperature. Units: °C
+                    pub room_temp: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
         }
     }
+    pub mod mcc23_8 {
+        use serde::{Deserialize, Serialize};
 
-    // pub mod mcc19_7 {
-    //     use serde::{Deserialize, Serialize};
+        pub const SIGNATURE: u8 = 232u8;
 
-    //     pub const SIGNATURE: u8 = 239u8;
+        pub mod messages {
 
-    //     pub mod messages {
+            pub mod state {
+                /// MCC23_8 State Message ID
+                pub const ID: u32 = 108u32;
 
-    //         pub mod state {
-    //             /// MCC19_7 State Message ID
-    //             pub const ID: u32 = 108u32;
+                use modular_bitfield::{specifiers::*, *};
+                use serde::{Deserialize, Serialize};
 
-    //             use modular_bitfield::{specifiers::*, *};
-    //             use serde::{Deserialize, Serialize};
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Module state report
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// State code
+                    pub state: u8,
+                    pub control: ControlFlags,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
 
-    //             #[repr(C, packed)]
-    //             #[derive(Debug, Clone, Serialize, Deserialize)]
-    //             /// Module state report
-    //             pub struct Message {
-    //                 /// Senders signature.
-    //                 pub signature: u8,
-    //                 /// State code
-    //                 pub state: u8,
-    //                 pub control: ControlFlags,
-    //             }
-    //             impl crate::can_types::modules::CanMessageTrait for Message {
-    //                 fn signature(&self) -> u8 {
-    //                     self.signature
-    //                 }
-    //             }
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
+                /// Control flags for operating point
+                pub struct ControlFlags {
+                    pub enable: bool,
+                    pub vi_safe_range: bool,
+                    pub vo_safe_range: bool,
+                    pub vi_stable: bool,
+                    pub dt_safe_range: bool,
+                    #[skip]
+                    _unused: specifiers::B3,
+                }
+            }
 
-    //             #[bitfield(bytes = 1)]
-    //             #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
-    //             /// Control flags for operating point
-    //             pub struct ControlFlags {
-    //                 pub enable: bool,
-    //                 pub vi_safe_range: bool,
-    //                 pub vo_safe_range: bool,
-    //                 pub vi_stable: bool,
-    //                 pub dt_safe_range: bool,
-    //                 #[skip]
-    //                 _unused: specifiers::B3,
-    //             }
-    //         }
+            pub mod measurements {
+                /// MCC23_8 Measurements Message ID
+                pub const ID: u32 = 209u32;
 
-    //         pub mod measurements {
-    //             /// MCC19_7 Measurements Message ID
-    //             pub const ID: u32 = 207u32;
+                use serde::{Deserialize, Serialize};
 
-    //             use serde::{Deserialize, Serialize};
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output voltage. Units: V/100
+                    pub output_voltage: u16,
+                    /// Average input current. Units: A/100
+                    pub input_current: u16,
+                    /// Average input voltage. Units: V/100
+                    pub input_voltage: u16,
+                    /// Converter's duty cycle. Units: %/255
+                    pub dt: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
 
-    //             #[repr(C, packed)]
-    //             #[derive(Debug, Clone, Serialize, Deserialize)]
-    //             /// All measurements from the converter
-    //             pub struct Message {
-    //                 /// Senders signature.
-    //                 pub signature: u8,
-    //                 /// Average output voltage. Units: V/100
-    //                 pub output_voltage: u16,
-    //                 /// Average input current. Units: A/100
-    //                 pub input_current: u16,
-    //                 /// Average input voltage. Units: V/100
-    //                 pub input_voltage: u16,
-    //                 /// Converter's duty cycle. Units: %/255
-    //                 pub dt: u8,
-    //             }
-    //             impl crate::can_types::modules::CanMessageTrait for Message {
-    //                 fn signature(&self) -> u8 {
-    //                     self.signature
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    // pub mod mcc19_8 {
-    //     use serde::{Deserialize, Serialize};
+            pub mod aux_measurements {
+                /// MCC23_8 Measurements Message ID
+                pub const ID: u32 = 232u32;
 
-    //     pub const SIGNATURE: u8 = 239u8;
+                use serde::{Deserialize, Serialize};
 
-    //     pub mod messages {
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output current. Units: A/100
+                    pub output_currrent: u16,
+                    /// Average MOSFET temperature. Units: °C
+                    pub mosfet_temp: u8,
+                    /// Average Diode temperature. Units: °C
+                    pub diode_temp: u8,
+                    /// Average Room temperature. Units: °C
+                    pub room_temp: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
+        }
+    }
+    pub mod mcc23_9 {
+        use serde::{Deserialize, Serialize};
 
-    //         pub mod state {
-    //             /// MCC19_8 State Message ID
-    //             pub const ID: u32 = 108u32;
+        pub const SIGNATURE: u8 = 233u8;
 
-    //             use modular_bitfield::{specifiers::*, *};
-    //             use serde::{Deserialize, Serialize};
+        pub mod messages {
 
-    //             #[repr(C, packed)]
-    //             #[derive(Debug, Clone, Serialize, Deserialize)]
-    //             /// Module state report
-    //             pub struct Message {
-    //                 /// Senders signature.
-    //                 pub signature: u8,
-    //                 /// State code
-    //                 pub state: u8,
-    //                 pub control: ControlFlags,
-    //             }
-    //             impl crate::can_types::modules::CanMessageTrait for Message {
-    //                 fn signature(&self) -> u8 {
-    //                     self.signature
-    //                 }
-    //             }
+            pub mod state {
+                /// MCC23_9 State Message ID
+                pub const ID: u32 = 111u32;
 
-    //             #[bitfield(bytes = 1)]
-    //             #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
-    //             /// Control flags for operating point
-    //             pub struct ControlFlags {
-    //                 pub enable: bool,
-    //                 pub vi_safe_range: bool,
-    //                 pub vo_safe_range: bool,
-    //                 pub vi_stable: bool,
-    //                 pub dt_safe_range: bool,
-    //                 #[skip]
-    //                 _unused: specifiers::B3,
-    //             }
-    //         }
+                use modular_bitfield::{specifiers::*, *};
+                use serde::{Deserialize, Serialize};
 
-    //         pub mod measurements {
-    //             /// MCC19_8 Measurements Message ID
-    //             pub const ID: u32 = 207u32;
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Module state report
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// State code
+                    pub state: u8,
+                    pub control: ControlFlags,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
 
-    //             use serde::{Deserialize, Serialize};
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
+                /// Control flags for operating point
+                pub struct ControlFlags {
+                    pub enable: bool,
+                    pub vi_safe_range: bool,
+                    pub vo_safe_range: bool,
+                    pub vi_stable: bool,
+                    pub dt_safe_range: bool,
+                    #[skip]
+                    _unused: specifiers::B3,
+                }
+            }
 
-    //             #[repr(C, packed)]
-    //             #[derive(Debug, Clone, Serialize, Deserialize)]
-    //             /// All measurements from the converter
-    //             pub struct Message {
-    //                 /// Senders signature.
-    //                 pub signature: u8,
-    //                 /// Average output voltage. Units: V/100
-    //                 pub output_voltage: u16,
-    //                 /// Average input current. Units: A/100
-    //                 pub input_current: u16,
-    //                 /// Average input voltage. Units: V/100
-    //                 pub input_voltage: u16,
-    //                 /// Converter's duty cycle. Units: %/255
-    //                 pub dt: u8,
-    //             }
-    //             impl crate::can_types::modules::CanMessageTrait for Message {
-    //                 fn signature(&self) -> u8 {
-    //                     self.signature
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
-    // pub mod mcc19_9 {
-    //     use serde::{Deserialize, Serialize};
+            pub mod measurements {
+                /// MCC23_9 Measurements Message ID
+                pub const ID: u32 = 210u32;
 
-    //     pub const SIGNATURE: u8 = 239u8;
+                use serde::{Deserialize, Serialize};
 
-    //     pub mod messages {
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output voltage. Units: V/100
+                    pub output_voltage: u16,
+                    /// Average input current. Units: A/100
+                    pub input_current: u16,
+                    /// Average input voltage. Units: V/100
+                    pub input_voltage: u16,
+                    /// Converter's duty cycle. Units: %/255
+                    pub dt: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
 
-    //         pub mod state {
-    //             /// MCC19_9 State Message ID
-    //             pub const ID: u32 = 108u32;
+            pub mod aux_measurements {
+                /// MCC23_9 Measurements Message ID
+                pub const ID: u32 = 233u32;
 
-    //             use modular_bitfield::{specifiers::*, *};
-    //             use serde::{Deserialize, Serialize};
+                use serde::{Deserialize, Serialize};
 
-    //             #[repr(C, packed)]
-    //             #[derive(Debug, Clone, Serialize, Deserialize)]
-    //             /// Module state report
-    //             pub struct Message {
-    //                 /// Senders signature.
-    //                 pub signature: u8,
-    //                 /// State code
-    //                 pub state: u8,
-    //                 pub control: ControlFlags,
-    //             }
-    //             impl crate::can_types::modules::CanMessageTrait for Message {
-    //                 fn signature(&self) -> u8 {
-    //                     self.signature
-    //                 }
-    //             }
-
-    //             #[bitfield(bytes = 1)]
-    //             #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
-    //             /// Control flags for operating point
-    //             pub struct ControlFlags {
-    //                 pub enable: bool,
-    //                 pub vi_safe_range: bool,
-    //                 pub vo_safe_range: bool,
-    //                 pub vi_stable: bool,
-    //                 pub dt_safe_range: bool,
-    //                 #[skip]
-    //                 _unused: specifiers::B3,
-    //             }
-    //         }
-
-    //         pub mod measurements {
-    //             /// MCC19_9 Measurements Message ID
-    //             pub const ID: u32 = 207u32;
-
-    //             use serde::{Deserialize, Serialize};
-
-    //             #[repr(C, packed)]
-    //             #[derive(Debug, Clone, Serialize, Deserialize)]
-    //             /// All measurements from the converter
-    //             pub struct Message {
-    //                 /// Senders signature.
-    //                 pub signature: u8,
-    //                 /// Average output voltage. Units: V/100
-    //                 pub output_voltage: u16,
-    //                 /// Average input current. Units: A/100
-    //                 pub input_current: u16,
-    //                 /// Average input voltage. Units: V/100
-    //                 pub input_voltage: u16,
-    //                 /// Converter's duty cycle. Units: %/255
-    //                 pub dt: u8,
-    //             }
-    //             impl crate::can_types::modules::CanMessageTrait for Message {
-    //                 fn signature(&self) -> u8 {
-    //                     self.signature
-    //                 }
-    //             }
-    //         }
-    //     }
-    // }
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// All measurements from the converter
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Average output current. Units: A/100
+                    pub output_currrent: u16,
+                    /// Average MOSFET temperature. Units: °C
+                    pub mosfet_temp: u8,
+                    /// Average Diode temperature. Units: °C
+                    pub diode_temp: u8,
+                    /// Average Room temperature. Units: °C
+                    pub room_temp: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
+        }
+    }
 
     pub mod mab19 {
         use serde::{Deserialize, Serialize};
 
-        pub const SIGNATURE: u8 = 230u8;
+        pub const SIGNATURE: u8 = 235u8;
 
         pub mod messages {
 
             pub mod state {
                 /// MAB19 State Message ID
-                pub const ID: u32 = 111u32;
+                pub const ID: u32 = 120u32;
 
                 use serde::{Deserialize, Serialize};
 
@@ -976,7 +1228,7 @@ pub mod modules {
 
             pub mod pumps {
                 /// MAB19 Pumps Message ID
-                pub const ID: u32 = 210u32;
+                pub const ID: u32 = 224u32;
 
                 use modular_bitfield::{specifiers::*, *};
                 use serde::{Deserialize, Serialize};
@@ -1583,7 +1835,7 @@ pub mod modules {
 
             pub mod state {
                 /// MCB19_1 State Message ID
-                pub const ID: u32 = 109u32;
+                pub const ID: u32 = 118u32;
 
                 use serde::{Deserialize, Serialize};
 
@@ -1618,7 +1870,7 @@ pub mod modules {
 
             pub mod measurements {
                 /// MCB19_1 Measurements Message ID
-                pub const ID: u32 = 208u32;
+                pub const ID: u32 = 222u32;
 
                 use serde::{Deserialize, Serialize};
 
@@ -1654,7 +1906,7 @@ pub mod modules {
 
             pub mod state {
                 /// MCB19_2 State Message ID
-                pub const ID: u32 = 110u32;
+                pub const ID: u32 = 119u32;
 
                 use serde::{Deserialize, Serialize};
 
@@ -1689,7 +1941,7 @@ pub mod modules {
 
             pub mod measurements {
                 /// MCB19_2 Measurements Message ID
-                pub const ID: u32 = 209u32;
+                pub const ID: u32 = 223u32;
 
                 use serde::{Deserialize, Serialize};
 
