@@ -631,7 +631,7 @@ pub mod modules {
 
             pub mod measurements {
                 /// MCC23_4 Measurements Message ID
-                pub const ID: u32 = 2054u32;
+                pub const ID: u32 = 205u32;
 
                 use serde::{Deserialize, Serialize};
 
