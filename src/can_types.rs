@@ -81,6 +81,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 pub struct State {
@@ -113,6 +114,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Pumps state
@@ -148,6 +150,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// MPPTs state
@@ -179,6 +182,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Boat state
@@ -301,6 +305,7 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// Control flags for operating point
                     pub control: ControlFlags,
                 }
                 impl crate::can_types::modules::CanMessageTrait for Message {
@@ -309,6 +314,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
@@ -403,6 +409,7 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// Control flags for operating point
                     pub control: ControlFlags,
                 }
                 impl crate::can_types::modules::CanMessageTrait for Message {
@@ -411,6 +418,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
@@ -505,6 +513,7 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// Control flags for operating point
                     pub control: ControlFlags,
                 }
                 impl crate::can_types::modules::CanMessageTrait for Message {
@@ -513,6 +522,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
@@ -607,6 +617,7 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// Control flags for operating point
                     pub control: ControlFlags,
                 }
                 impl crate::can_types::modules::CanMessageTrait for Message {
@@ -615,6 +626,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
@@ -709,6 +721,7 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// Control flags for operating point
                     pub control: ControlFlags,
                 }
                 impl crate::can_types::modules::CanMessageTrait for Message {
@@ -717,6 +730,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
@@ -811,6 +825,7 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// Control flags for operating point
                     pub control: ControlFlags,
                 }
                 impl crate::can_types::modules::CanMessageTrait for Message {
@@ -819,6 +834,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
@@ -913,6 +929,7 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// Control flags for operating point
                     pub control: ControlFlags,
                 }
                 impl crate::can_types::modules::CanMessageTrait for Message {
@@ -921,6 +938,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
@@ -1014,6 +1032,7 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// Control flags for operating point
                     pub control: ControlFlags,
                 }
                 impl crate::can_types::modules::CanMessageTrait for Message {
@@ -1022,6 +1041,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
@@ -1115,6 +1135,7 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// Control flags for operating point
                     pub control: ControlFlags,
                 }
                 impl crate::can_types::modules::CanMessageTrait for Message {
@@ -1123,6 +1144,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
@@ -1247,6 +1269,7 @@ pub mod modules {
                     }
                 }
 
+                #[repr(C, packed)]
                 #[bitfield(bytes = 1)]
                 #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Pumps state bitfield
@@ -1838,6 +1861,7 @@ pub mod modules {
                 pub const ID: u32 = 118u32;
 
                 use serde::{Deserialize, Serialize};
+                use modular_bitfield::{bitfield, specifiers, BitfieldSpecifier};
 
                 #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1857,7 +1881,8 @@ pub mod modules {
                 }
 
                 #[repr(C, packed)]
-                #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
                 pub struct ControlFlags {
                     pub enable: bool,
@@ -1865,6 +1890,8 @@ pub mod modules {
                     pub vo_safe_range: bool,
                     pub vi_stable: bool,
                     pub dt_safe_range: bool,
+                    #[skip]
+                    _unused: specifiers::B3,
                 }
             }
 
@@ -1909,6 +1936,7 @@ pub mod modules {
                 pub const ID: u32 = 119u32;
 
                 use serde::{Deserialize, Serialize};
+                use modular_bitfield::{bitfield, specifiers, BitfieldSpecifier};
 
                 #[repr(C, packed)]
                 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -1928,7 +1956,8 @@ pub mod modules {
                 }
 
                 #[repr(C, packed)]
-                #[derive(Debug, Clone, Copy, Serialize, Deserialize)]
+                #[bitfield(bytes = 1)]
+                #[derive(Debug, Clone, Copy, BitfieldSpecifier, Serialize, Deserialize)]
                 /// Control flags for operating point
                 pub struct ControlFlags {
                     pub enable: bool,
@@ -1936,6 +1965,8 @@ pub mod modules {
                     pub vo_safe_range: bool,
                     pub vi_stable: bool,
                     pub dt_safe_range: bool,
+                    #[skip]
+                    _unused: specifiers::B3,
                 }
             }
 
