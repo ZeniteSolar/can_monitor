@@ -22,11 +22,15 @@ pub struct BoatState {
     pub mcs_machine_state: u8,
     pub mac_machine_state: u8,
     pub mde_machine_state: u8,
+    pub mcb_machine_state: [u8; 2],
+    pub mcc_machine_state: [u8; 9],
     pub mam_error_code: u8,
     pub mic_error_code: u8,
     pub mcs_error_code: u8,
     pub mac_error_code: u8,
     pub mde_error_code: u8,
+    pub mcb_control: [u8; 2],
+    pub mcc_error_code: [u8; 9],
     pub bat_v: Ema<10>,
     pub bat_cell_v: [Ema<10>; 3],
     pub bat_ii: Ema<10>,
@@ -42,6 +46,7 @@ pub struct BoatState {
     pub mcc_ii: [Ema<10>; 9],
     pub mcc_vi: [Ema<10>; 9],
     pub mcc_vo: [Ema<10>; 9],
+    pub mcc_io: [Ema<10>; 9],
 }
 
 #[derive(Default, Debug, Clone)]
