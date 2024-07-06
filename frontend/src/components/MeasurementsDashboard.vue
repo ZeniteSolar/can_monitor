@@ -5,13 +5,13 @@
       <!-- LEFT COLUMN -->
       <v-col class="ma-1">
 
-        <MultiMetricCard
-          :title="'MPPT'"
-          :metricsData="[
+        <MultiMetricCard :title="'MPPT'" :metricsData="[
           {
             label: 'Vi',
             data: (measurementCards.get('mcc_vi')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_vi')?.units ?? ['']) as string[]
+            units: (measurementCards.get('mcc_vi')?.units ?? ['']) as string[],
+            max: (measurementCards.get('mcc_vi')?.max ?? 0) as number,
+            min: (measurementCards.get('mcc_vi')?.min ?? 0) as number
           },
           {
             label: 'II',
@@ -33,11 +33,8 @@
             data: (measurementCards.get('mcc_d')?.data ?? []) as number[],
             units: (measurementCards.get('mcc_d')?.units ?? ['']) as string[]
           },
-        ]"
-        />
-        <MultiMetricCard
-          :title="'MCB'"
-          :metricsData="[
+        ]" />
+        <MultiMetricCard :title="'MCB'" :metricsData="[
           {
             label: 'Vi',
             data: (measurementCards.get('mcb_vi')?.data ?? []) as number[],
@@ -58,80 +55,68 @@
             data: (measurementCards.get('mcb_po')?.data ?? []) as number[],
             units: (measurementCards.get('mcb_po')?.units ?? ['']) as string[]
           },
-        ]"
-        />
+        ]" />
 
         <div v-if="true">
-          <MultiStateCard
-            :title="'STATE'"
-            :stateData="[
-              { label: 'MAM', value: measurementCards.get('mam_machine_state')?.data[0] as number },
-              { label: 'MIC', value: measurementCards.get('mic_machine_state')?.data[0] as number },
-              { label: 'MCS', value: measurementCards.get('mcs_machine_state')?.data[0] as number },
-              { label: 'MAC', value: measurementCards.get('mac_machine_state')?.data[0] as number },
-              { label: 'MDE', value: measurementCards.get('mde_machine_state')?.data[0] as number },
-            ]"
-          />
+          <MultiStateCard :title="'STATE'" :stateData="[
+            { label: 'MAM', value: measurementCards.get('mam_machine_state')?.data[0] as number },
+            { label: 'MIC', value: measurementCards.get('mic_machine_state')?.data[0] as number },
+            { label: 'MCS', value: measurementCards.get('mcs_machine_state')?.data[0] as number },
+            { label: 'MAC', value: measurementCards.get('mac_machine_state')?.data[0] as number },
+            { label: 'MDE', value: measurementCards.get('mde_machine_state')?.data[0] as number },
+          ]" />
         </div>
 
       </v-col>
 
       <!-- p COLUMN -->
       <v-col class="ma-1">
-        <MultiMetricCard
-            :title="'MAIN BAT'"
-            :orientation="Orientation.VERTICAL"
-            :metricsData="[
-              {
-                label: 'BANK',
-                data: [
-                  measurementCards.get('bat_v')?.avg() ?? 0.0,
-                  measurementCards.get('bat_i')?.avg() ?? 0.0,
-                  measurementCards.get('bat_p')?.avg() ?? 0.0,
-                ],
-                units: [
-                  measurementCards.get('bat_v')?.units[0] ?? '',
-                  measurementCards.get('bat_i')?.units[0] ?? '',
-                  measurementCards.get('bat_p')?.units[0] ?? '',
-                ]
-              },
-              {
-                label: 'CELL',
-                data: (measurementCards.get('bat_cell_v')?.data ?? []) as number[],
-                units: (measurementCards.get('bat_cell_v')?.units ?? [] ) as string[],
-              },
-            ]"
-          />
+        <MultiMetricCard :title="'MAIN BAT'" :orientation="Orientation.VERTICAL" :metricsData="[
+          {
+            label: 'BANK',
+            data: [
+              measurementCards.get('bat_v')?.avg() ?? 0.0,
+              measurementCards.get('bat_i')?.avg() ?? 0.0,
+              measurementCards.get('bat_p')?.avg() ?? 0.0,
+            ],
+            units: [
+              measurementCards.get('bat_v')?.units[0] ?? '',
+              measurementCards.get('bat_i')?.units[0] ?? '',
+              measurementCards.get('bat_p')?.units[0] ?? '',
+            ]
+          },
+          {
+            label: 'CELL',
+            data: (measurementCards.get('bat_cell_v')?.data ?? []) as number[],
+            units: (measurementCards.get('bat_cell_v')?.units ?? []) as string[],
+          },
+        ]" />
 
-        <MultiMetricCard
-          :title = "'MOTOR'"
-          :orientation = "Orientation.VERTICAL"
-          :metricsData = "[
-            {
-              label: 'D',
-              data: (measurementCards.get('motor_d')?.data ?? []) as number[],
-              units: (measurementCards.get('motor_d')?.units ?? ['']) as string[]
-            },
-            {
-              label: 'RPM',
-              data: [(measurementCards.get('motor_rpm')?.avg() ?? 0.0)],
-              units: [(measurementCards.get('motor_rpm')?.units ?? [''])[0]],
-            },
-          ]"
-        />
+        <MultiMetricCard :title="'MOTOR'" :orientation="Orientation.VERTICAL" :metricsData="[
+          {
+            label: 'D',
+            data: (measurementCards.get('motor_d')?.data ?? []) as number[],
+            units: (measurementCards.get('motor_d')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'RPM',
+            data: [(measurementCards.get('motor_rpm')?.avg() ?? 0.0)],
+            units: [(measurementCards.get('motor_rpm')?.units ?? [''])[0]],
+          },
+        ]" />
 
       </v-col>
 
       <!-- RIGHT COLUMN -->
       <v-col class="ma-1">
 
-        <MultiMetricCard
-          :title="'STEERING'"
-          :metricsData="[
+        <MultiMetricCard :title="'STEERING'" :metricsData="[
           {
             label: 'D',
             data: (measurementCards.get('dir_pos')?.data ?? []) as number[],
-            units: (measurementCards.get('dir_pos')?.units ?? ['']) as string[]
+            units: (measurementCards.get('dir_pos')?.units ?? ['']) as string[],
+            min: (measurementCards.get('dir_pos')?.min ?? 100) as number,
+            max: (measurementCards.get('dir_pos')?.max ?? 0) as number,
           },
           {
             label: 'B',
@@ -146,13 +131,10 @@
               measurementCards.get('dir_bat_p')?.units[0] ?? '',
             ]
           },
-        ]"
-        />
+        ]" />
 
         <!-- AUXILIAR BATTERIES -->
-        <MultiMetricCard
-          :title="'AUX BATS'"
-          :metricsData="[
+        <MultiMetricCard :title="'AUX BATS'" :metricsData="[
           {
             label: 'STE',
             data: [
@@ -179,22 +161,17 @@
               measurementCards.get('mcb_po')?.units ?? '',
             ]
           },
-        ]"
-        />
+        ]" />
 
         <!-- SYSTEM CONTROL -->
-        <SwitchDisplay
-          :title="'CONTROL'"
-          :maxLines="4"
-          :data="[
-            { value: measurementCards.get('motor_on')?.data[0] as boolean, label: 'MOTOR' },
-            { value: measurementCards.get('boat_on')?.data[0] as boolean, label: 'BOAT' },
-            { value: measurementCards.get('dms_on')?.data[0] as boolean, label: 'DMS' },
-            { value: measurementCards.get('motor_rev')?.data[0] as boolean, label: 'REV' },
-          ].concat(
-            (measurementCards.get('pump')?.data as boolean[]).map((value, index) => ({ value, label: `BP ${index + 1}` }))
-          )"
-        />
+        <SwitchDisplay :title="'CONTROL'" :maxLines="4" :data="[
+          { value: measurementCards.get('motor_on')?.data[0] as boolean, label: 'MOTOR' },
+          { value: measurementCards.get('boat_on')?.data[0] as boolean, label: 'BOAT' },
+          { value: measurementCards.get('dms_on')?.data[0] as boolean, label: 'DMS' },
+          { value: measurementCards.get('motor_rev')?.data[0] as boolean, label: 'REV' },
+        ].concat(
+          (measurementCards.get('pump')?.data as boolean[]).map((value, index) => ({ value, label: `BP ${index + 1}` }))
+        )" />
 
       </v-col>
 
@@ -293,7 +270,7 @@ class WSConnection {
   }
 }
 
-const apiUrl = `ws://${window.location.hostname}:3001`;
+const apiUrl = `ws://192.168.5.194:3001`;
 const ws = new WSConnection(apiUrl);
 
 async function parse_canboat_message(message: object) {

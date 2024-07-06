@@ -7,6 +7,8 @@ export interface BoardMetric {
   label?: string;
   data: number[];
   units: string[];
+  max?: number;
+  min?: number;
 }
 
 export interface BoardBoolean {

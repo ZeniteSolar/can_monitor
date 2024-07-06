@@ -1,12 +1,12 @@
 <template>
-    <v-card-text v-if="showLabel" align="center" class="font-weight-bold text-caption pa-0 ma-0">{{ label }}</v-card-text>
-    <v-progress-linear :model-value="value" height="11px" class="pa-0 my-1">
+  <v-card-text v-if="showLabel" align="center" class="font-weight-bold text-caption pa-0 ma-0">{{ label }}</v-card-text>
+  <v-progress-linear :model-value=percentage height="30px" class="pa-0 my-1">
     <template v-slot:default>
-      <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px;">
-      {{ formattedValue }} {{ units }}
+      <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px; font-size: 15px !important; ">
+        {{ formattedValue }} {{ units }}
       </p>
     </template>
-    </v-progress-linear>
+  </v-progress-linear>
 </template>
 
 <script setup>
@@ -17,17 +17,33 @@ const props = defineProps({
   label: String,
   value: [Number, String],
   units: String,
+  max: Number,
+  min: Number,
   showLabel: {
     type: Boolean,
     default: true
   }
 });
 
+const percentage = computed(() => {
+  console.log("max: ", props.max)
+  console.log("min: ", props.min)
+  if (typeof (props.value) === 'number')
+    return (100 * (props.value - props.min)) / (props.max - props.min)
+
+  return props.value
+});
+
 const formattedValue = computed(() => format(props.value, '00.0'));
 </script>
 
 <style scoped>
-  .invert {
+.invert {
   mix-blend-mode: difference;
+}
+
+.taller-font {
+  display: inline-block;
+  transform: scaleY(1.5);
 }
 </style>
