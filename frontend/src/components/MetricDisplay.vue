@@ -1,17 +1,28 @@
 <template>
   <v-card-text v-if="showLabel" align="center" class="font-weight-bold text-caption pa-0 ma-0">{{ label }}</v-card-text>
-  <v-progress-linear :model-value=percentage height="30px" class="pa-0 my-1">
+  <v-progress-linear ref="progressLinear" :model-value="percentage" height="25px" class="pa-0 my-1">
     <template v-slot:default>
-      <p class="text-caption invert ma-0" style="padding-bottom: 2px; padding-top: 1px; font-size: 15px !important; ">
-        {{ formattedValue }} {{ units }}
-      </p>
+      <div class="text-container" ref="textContainer">
+        <p class="text-caption invert ma-0" :style="textStyle">
+          {{ formattedValue }} {{ units }}
+        </p>
+      </div>
     </template>
   </v-progress-linear>
 </template>
 
 <script setup>
-import { computed } from 'vue';
-import { format } from 'numerable'
+import { computed, ref, onMounted, watch, nextTick } from 'vue';
+import { format } from 'numerable';
+
+// Helper function for debouncing
+const debounce = (func, wait) => {
+  let timeout;
+  return (...args) => {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+};
 
 const props = defineProps({
   label: String,
@@ -25,25 +36,66 @@ const props = defineProps({
   }
 });
 
-const percentage = computed(() => {
-  console.log("max: ", props.max)
-  console.log("min: ", props.min)
-  if (typeof (props.value) === 'number')
-    return (100 * (props.value - props.min)) / (props.max - props.min)
+const progressLinear = ref(null);
+const textContainer = ref(null);
+const textStyle = ref({ fontSize: '14px !important' });
 
-  return props.value
+const percentage = computed(() => {
+  if (typeof props.value === 'number')
+    return (100 * (props.value - props.min)) / (props.max - props.min);
+  return props.value;
 });
 
 const formattedValue = computed(() => format(props.value, '00.0'));
+
+const adjustFontSize = async () => {
+  await nextTick(); // wait for DOM update
+  if (progressLinear.value && textContainer.value) {
+    const containerWidth = progressLinear.value.$el.clientWidth;
+    const containerHeight = progressLinear.value.$el.clientHeight;
+    let fontSize = 14; // initial font size
+    const minFontSize = 8;
+    const maxFontSize = 30; // maximum font size to increase to
+
+    // Decrease font size if text is overflowing width or height
+    while ((textContainer.value.scrollWidth > containerWidth || textContainer.value.scrollHeight > containerHeight) && fontSize > minFontSize) {
+      fontSize -= 1;
+      textStyle.value = { fontSize: `${fontSize}px !important` };
+      await nextTick(); // wait for DOM update
+    }
+
+    // Increase font size if there is more space
+    while ((textContainer.value.scrollWidth < containerWidth && textContainer.value.scrollHeight < containerHeight) && fontSize < maxFontSize) {
+      fontSize += 1;
+      textStyle.value = { fontSize: `${fontSize}px !important` };
+      await nextTick(); // wait for DOM update
+
+      // Stop if increasing the font size causes overflow
+      if (textContainer.value.scrollWidth > containerWidth || textContainer.value.scrollHeight > containerHeight) {
+        fontSize -= 1;
+        textStyle.value = { fontSize: `${fontSize}px !important` };
+        break;
+      }
+    }
+  }
+};
+
+// Debounced version of adjustFontSize
+const debouncedAdjustFontSize = debounce(adjustFontSize, 300);
+
+onMounted(debouncedAdjustFontSize);
+watch(() => [props.value], debouncedAdjustFontSize);
 </script>
 
 <style scoped>
 .invert {
   mix-blend-mode: difference;
 }
-
-.taller-font {
-  display: inline-block;
-  transform: scaleY(1.5);
+.text-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
 }
 </style>

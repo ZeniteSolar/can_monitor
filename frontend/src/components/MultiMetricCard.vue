@@ -8,8 +8,12 @@
           }}</v-card-text>
 
         <div v-for="(value, idx) in metric.data" :key="`${metric.label}-${idx}`">
-          <MetricDisplay :value="value" :units="metric.units[idx] || metric.units[0]" :max="metric.max"
-            :min="metric.min" />
+          <MetricDisplay
+            :value="value"
+            :units="metric.units[idx] || metric.units[0]"
+            :max="Array.isArray(metric.max) ? metric.max[idx] : metric.max"
+            :min="Array.isArray(metric.min) ? metric.min[idx] : metric.min"
+          /> 
         </div>
       </v-col>
     </component>

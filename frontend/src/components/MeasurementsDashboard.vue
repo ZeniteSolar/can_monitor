@@ -10,50 +10,66 @@
             label: 'Vi',
             data: (measurementCards.get('mcc_vi')?.data ?? []) as number[],
             units: (measurementCards.get('mcc_vi')?.units ?? ['']) as string[],
-            max: (measurementCards.get('mcc_vi')?.max ?? 0) as number,
+            max: (measurementCards.get('mcc_vi')?.max ?? 100) as number,
             min: (measurementCards.get('mcc_vi')?.min ?? 0) as number
           },
           {
             label: 'II',
             data: (measurementCards.get('mcc_ii')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_ii')?.units ?? ['']) as string[]
+            units: (measurementCards.get('mcc_ii')?.units ?? ['']) as string[],
+            max: (measurementCards.get('mcc_ii')?.max ?? 100) as number,
+            min: (measurementCards.get('mcc_ii')?.min ?? 0) as number
           },
           {
             label: 'Vo',
             data: (measurementCards.get('mcc_vo')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_vo')?.units ?? ['']) as string[]
+            units: (measurementCards.get('mcc_vo')?.units ?? ['']) as string[],
+            max: (measurementCards.get('mcc_vo')?.max ?? 100) as number,
+            min: (measurementCards.get('mcc_vo')?.min ?? 0) as number
           },
           {
             label: 'Pi',
             data: (measurementCards.get('mcc_pi')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_pi')?.units ?? ['']) as string[]
+            units: (measurementCards.get('mcc_pi')?.units ?? ['']) as string[],
+            max: (measurementCards.get('mcc_pi')?.max ?? 100) as number,
+            min: (measurementCards.get('mcc_pi')?.min ?? 0) as number
           },
           {
             label: 'D',
             data: (measurementCards.get('mcc_d')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_d')?.units ?? ['']) as string[]
+            units: (measurementCards.get('mcc_d')?.units ?? ['']) as string[],
+            max: (measurementCards.get('mcc_d')?.max ?? 100) as number,
+            min: (measurementCards.get('mcc_d')?.min ?? 0) as number
           },
         ]" />
         <MultiMetricCard :title="'MCB'" :metricsData="[
           {
             label: 'Vi',
             data: (measurementCards.get('mcb_vi')?.data ?? []) as number[],
-            units: (measurementCards.get('mcb_vi')?.units ?? ['']) as string[]
+            units: (measurementCards.get('mcb_vi')?.units ?? ['']) as string[],
+            max: (measurementCards.get('mcb_vi')?.max ?? 100) as number,
+            min: (measurementCards.get('mcb_vi')?.min ?? 0) as number
           },
           {
             label: 'Io',
             data: (measurementCards.get('mcb_io')?.data ?? []) as number[],
-            units: (measurementCards.get('mcb_io')?.units ?? ['']) as string[]
+            units: (measurementCards.get('mcb_io')?.units ?? ['']) as string[],
+            max: (measurementCards.get('mcb_io')?.max ?? 100) as number,
+            min: (measurementCards.get('mcb_io')?.min ?? 0) as number
           },
           {
             label: 'Vo',
             data: (measurementCards.get('mcb_vo')?.data ?? []) as number[],
-            units: (measurementCards.get('mcb_vo')?.units ?? ['']) as string[]
+            units: (measurementCards.get('mcb_vo')?.units ?? ['']) as string[],
+            max: (measurementCards.get('mcb_vo')?.max ?? 100) as number,
+            min: (measurementCards.get('mcb_vo')?.min ?? 0) as number
           },
           {
             label: 'Po',
             data: (measurementCards.get('mcb_po')?.data ?? []) as number[],
-            units: (measurementCards.get('mcb_po')?.units ?? ['']) as string[]
+            units: (measurementCards.get('mcb_po')?.units ?? ['']) as string[],
+            max: (measurementCards.get('mcb_po')?.max ?? 100) as number,
+            min: (measurementCards.get('mcb_po')?.min ?? 0) as number
           },
         ]" />
 
@@ -83,12 +99,24 @@
               measurementCards.get('bat_v')?.units[0] ?? '',
               measurementCards.get('bat_i')?.units[0] ?? '',
               measurementCards.get('bat_p')?.units[0] ?? '',
-            ]
+            ],
+            max: [
+              (measurementCards.get('bat_v')?.max ?? 100) as number,
+              (measurementCards.get('bat_i')?.max ?? 100) as number,
+              (measurementCards.get('bat_p')?.max ?? 100) as number,
+            ],
+            min: [
+              (measurementCards.get('bat_v')?.min ?? 0) as number,
+              (measurementCards.get('bat_i')?.min ?? 0) as number,
+              (measurementCards.get('bat_p')?.min ?? 0) as number,
+            ],
           },
           {
             label: 'CELL',
             data: (measurementCards.get('bat_cell_v')?.data ?? []) as number[],
             units: (measurementCards.get('bat_cell_v')?.units ?? []) as string[],
+            max: (measurementCards.get('bat_cell_v')?.max ?? 100) as number,
+            min: (measurementCards.get('bat_cell_v')?.min ?? 0) as number,
           },
         ]" />
 
@@ -96,12 +124,16 @@
           {
             label: 'D',
             data: (measurementCards.get('motor_d')?.data ?? []) as number[],
-            units: (measurementCards.get('motor_d')?.units ?? ['']) as string[]
+            units: (measurementCards.get('motor_d')?.units ?? ['']) as string[],
+            max: (measurementCards.get('motor_d')?.max ?? 100) as number,
+            min: (measurementCards.get('motor_d')?.min ?? 0) as number,
           },
           {
             label: 'RPM',
             data: [(measurementCards.get('motor_rpm')?.avg() ?? 0.0)],
             units: [(measurementCards.get('motor_rpm')?.units ?? [''])[0]],
+            max: [(measurementCards.get('motor_rpm')?.max ?? 100) as number],
+            min: [(measurementCards.get('motor_rpm')?.min ?? 0) as number],
           },
         ]" />
 
@@ -129,7 +161,17 @@
               measurementCards.get('dir_bat_v')?.units[0] ?? '',
               measurementCards.get('dir_bat_i')?.units[0] ?? '',
               measurementCards.get('dir_bat_p')?.units[0] ?? '',
-            ]
+            ],
+            max: [
+              (measurementCards.get('dir_bat_v')?.max ?? 100) as number,
+              (measurementCards.get('dir_bat_i')?.max ?? 100) as number,
+              (measurementCards.get('dir_bat_p')?.max ?? 100) as number,
+            ],
+            min: [
+              (measurementCards.get('dir_bat_v')?.min ?? 0) as number,
+              (measurementCards.get('dir_bat_i')?.min ?? 0) as number,
+              (measurementCards.get('dir_bat_p')?.min ?? 0) as number,
+            ],
           },
         ]" />
 
@@ -146,7 +188,17 @@
               measurementCards.get('mcb_vo')?.units ?? '',
               measurementCards.get('mcb_io')?.units ?? '',
               measurementCards.get('mcb_po')?.units ?? '',
-            ]
+            ],
+            max: [
+              (measurementCards.get('mcb_vo')?.max ?? 100) as number,
+              (measurementCards.get('mcb_io')?.max ?? 100) as number,
+              (measurementCards.get('mcb_po')?.max ?? 100) as number,
+            ],
+            min: [
+              (measurementCards.get('mcb_vo')?.min ?? 0) as number,
+              (measurementCards.get('mcb_io')?.min ?? 0) as number,
+              (measurementCards.get('mcb_po')?.min ?? 0) as number,
+            ],
           },
           {
             label: 'AUX',
@@ -159,7 +211,17 @@
               measurementCards.get('mcb_vo')?.units ?? '',
               measurementCards.get('mcb_io')?.units ?? '',
               measurementCards.get('mcb_po')?.units ?? '',
-            ]
+            ],
+            max: [
+              (measurementCards.get('mcb_vo')?.max ?? 100) as number,
+              (measurementCards.get('mcb_io')?.max ?? 100) as number,
+              (measurementCards.get('mcb_po')?.max ?? 100) as number,
+            ],
+            min: [
+              (measurementCards.get('mcb_vo')?.min ?? 0) as number,
+              (measurementCards.get('mcb_io')?.min ?? 0) as number,
+              (measurementCards.get('mcb_po')?.min ?? 0) as number,
+            ],
           },
         ]" />
 
@@ -270,7 +332,7 @@ class WSConnection {
   }
 }
 
-const apiUrl = `ws://192.168.5.194:3001`;
+const apiUrl = `ws://localhost:3001`;
 const ws = new WSConnection(apiUrl);
 
 async function parse_canboat_message(message: object) {
