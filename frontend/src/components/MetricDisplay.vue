@@ -1,6 +1,6 @@
 <template>
   <v-card-text v-if="showLabel" align="center" class="font-weight-bold text-caption pa-0 ma-0">{{ label }}</v-card-text>
-  <v-progress-linear ref="progressLinear" :model-value="percentage" height="25px" class="pa-0 my-1">
+  <v-progress-linear ref="progressLinear" :model-value="percentage" height="35px" class="pa-0 my-1">
     <template v-slot:default>
       <div class="text-container" ref="textContainer">
         <p class="text-caption invert ma-0" :style="textStyle">
@@ -12,7 +12,7 @@
 </template>
 
 <script setup>
-import { computed, ref, onMounted, watch, nextTick } from 'vue';
+import { computed, ref, onMounted, watch, nextTick, onBeforeUnmount } from 'vue';
 import { format } from 'numerable';
 
 // Helper function for debouncing
@@ -80,11 +80,19 @@ const adjustFontSize = async () => {
   }
 };
 
-// Debounced version of adjustFontSize
-const debouncedAdjustFontSize = debounce(adjustFontSize, 300);
+// Debounced version of adjustFontSize with 250ms interval
+const debouncedAdjustFontSize = debounce(adjustFontSize, 1000);
 
-onMounted(debouncedAdjustFontSize);
-watch(() => [props.value], debouncedAdjustFontSize);
+onMounted(() => {
+  adjustFontSize();
+  const intervalId = setInterval(adjustFontSize, 10000);
+
+  onBeforeUnmount(() => {
+    clearInterval(intervalId);
+  });
+});
+
+watch(() => props.value, debouncedAdjustFontSize);
 </script>
 
 <style scoped>
