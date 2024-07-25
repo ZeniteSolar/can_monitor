@@ -1,6 +1,6 @@
 <template>
   <v-card-text v-if="showLabel" align="center" class="font-weight-bold text-caption pa-0 ma-0">{{ label }}</v-card-text>
-  <v-progress-linear ref="progressLinear" :model-value="percentage" height="35px" class="pa-0 my-1">
+  <v-progress-linear ref="progressLinear" :model-value="percentage" height="30px" class="pa-0 my-1">
     <template v-slot:default>
       <div class="text-container" ref="textContainer">
         <p class="text-caption invert ma-0" :style="textStyle">
