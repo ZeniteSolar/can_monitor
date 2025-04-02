@@ -5,7 +5,7 @@
       <!-- LEFT COLUMN -->
       <v-col class="ma-1">
 
-        <MultiMetricCard
+        <!--<MultiMetricCard
           :title="'MPPT'"
           :metricsData="[
           {
@@ -34,7 +34,7 @@
             units: (measurementCards.get('mcc_d')?.units ?? ['']) as string[]
           },
         ]"
-        />
+        />-->
         <MultiMetricCard
           :title="'MCB'"
           :metricsData="[
@@ -420,7 +420,7 @@ measurementCards.set("mcb_d", new GenericCardData(
   0,
   100,
 ))
-measurementCards.set("mcc_pi", new GenericCardData(
+/*measurementCards.set("mcc_pi", new GenericCardData(
   "MPPTs Pi",
   "MPPTs Input Power",
   'W',
@@ -454,7 +454,7 @@ measurementCards.set("mcc_d", new GenericCardData(
   '%',
   0,
   100,
-))
+))*/
 measurementCards.set("pump", new GenericCardData(
   "BILDGE PUMP",
   "Bildge Pump Status",
