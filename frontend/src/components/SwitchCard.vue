@@ -25,7 +25,7 @@
 </template>
 <script setup lang="ts">
 import { defineProps, computed } from 'vue';
-import { BoardBoolean } from '@/types/index';
+import type { BoardBoolean } from '@/types/index';
 
 const props = defineProps<{
   title: string,
