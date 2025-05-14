@@ -18,8 +18,13 @@ async fn main() -> Result<()> {
     logger::init()?;
 
     let tx = websocket::MANAGER.lock().unwrap().get_sender();
-    tokio::spawn(can::run(tx));
-    tokio::spawn(websocket::run());
 
+    if !cli::CONFIGURATION.no_can {
+        tokio::spawn(can::run(tx));
+    } else {
+        println!("🚧 CAN interface disabled by --no-can flag (running in simulation mode)");
+    }
+
+    tokio::spawn(websocket::run());
     server::run().await
 }

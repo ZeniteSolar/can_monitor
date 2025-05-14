@@ -27,6 +27,10 @@ pub struct Configuration {
     /// Sets the server address
     #[arg(short, long, default_value_t = String::from("0.0.0.0:3000"))]
     pub address: String,
+
+    /// Skips CAN interface initialization (for local dev)
+    #[arg(long, default_value_t = false)]
+    pub no_can: bool,
 }
 
 lazy_static! {

@@ -59,7 +59,6 @@ pub async fn run() -> Result<()> {
     };
 
     debug!("Starting Signalling server on {endpoint:?}...");
-
     Websocket::runner(endpoint.clone()).await
 }
 
@@ -75,7 +74,6 @@ impl Websocket {
 
         let addr = format!("{host}:{port}").parse::<SocketAddr>()?;
 
-        // Create the event loop and TCP listener we'll accept connections on.
         let listener = TcpListener::bind(&addr).await?;
         debug!("Signalling server: listening on: {addr:?}");
 
@@ -105,8 +103,7 @@ impl Websocket {
 
     #[instrument(level = "debug")]
     async fn handle_connection(peer: SocketAddr, stream: TcpStream) -> tungstenite::Result<()> {
-        let (mut ws_sender, mut _ws_receiver) = match tokio_tungstenite::accept_async(stream).await
-        {
+        let (mut ws_sender, mut ws_receiver) = match tokio_tungstenite::accept_async(stream).await {
             Ok(result) => result.split(),
             Err(error) => {
                 error!("Failed to accept websocket connection. Reason: {error:?}");
@@ -118,11 +115,38 @@ impl Websocket {
 
         let mut data_receiver = MANAGER.lock().unwrap().get_receiver();
 
-        // Sender task, which receives from the mpsc channel
+        /// --- START NEW: receive task for mock clients like Python ---
+        let tx = MANAGER.lock().unwrap().get_sender();
+
+        let receive_task = tokio::spawn(async move {
+            while let Some(msg) = ws_receiver.next().await {
+                match msg {
+                    Ok(tungstenite::Message::Text(text)) => {
+                        match serde_json::from_str::<BoatData>(&text) {
+                            Ok(data) => {
+                                if let Err(err) = tx.send(data) {
+                                    error!("Failed to broadcast received BoatData: {err:?}");
+                                }
+                            }
+                            Err(err) => {
+                                warn!("Invalid BoatData JSON received: {err:?}");
+                            }
+                        }
+                    }
+                    Ok(_) => {} // Ignore non-text messages
+                    Err(e) => {
+                        error!("WebSocket error from client: {e:?}");
+                        break;
+                    }
+                }
+            }
+        });
+        /// --- END NEW ---
+
+        /// Existing sender loop: broadcast BoatData to frontend
         while let Ok(message) = data_receiver.recv().await {
             trace!("Sending..: {message:#?}");
 
-            // Transform our Protocol into a tungstenite's Message
             let message: tungstenite::Message = match message.try_into() {
                 Ok(message) => message,
                 Err(error) => {
@@ -146,7 +170,6 @@ impl Websocket {
         }
 
         info!("Websocket closed.");
-
         Ok(())
     }
 }
@@ -157,9 +180,7 @@ impl TryFrom<tungstenite::Message> for BoatData {
     #[instrument(level = "trace")]
     fn try_from(value: tungstenite::Message) -> Result<Self, Self::Error> {
         let msg = value.to_text()?;
-
         let protocol = serde_json::from_str::<BoatData>(msg)?;
-
         Ok(protocol)
     }
 }
@@ -170,9 +191,6 @@ impl TryInto<tungstenite::Message> for BoatData {
     #[instrument(level = "trace", skip(self))]
     fn try_into(self) -> Result<tungstenite::Message, Self::Error> {
         let json_str = serde_json::to_string(&self)?;
-
-        let msg = tungstenite::Message::Text(json_str);
-
-        Ok(msg)
+        Ok(tungstenite::Message::Text(json_str))
     }
 }
