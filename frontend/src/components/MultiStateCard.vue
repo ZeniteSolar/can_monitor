@@ -1,6 +1,12 @@
 <template>
   <v-card class="ma-0 pa-0">
-    <v-card-title class="py-0 mt-0 bg-primary font-weight-black">{{ title }}</v-card-title>
+    <v-card-title
+  :class="['py-0 mt-0  font-weight-black', titleColor ?? 'bg-primary text-black']"
+  :style="titleColor?.includes('text-black') ? 'color: black !important;' : ''"
+>
+  {{ title }}
+</v-card-title>
+
     <v-row class="px-2 ma-0">
       <template v-for="(state, index) in stateData" :key="index">
         <StateDisplayMam
@@ -28,6 +34,7 @@
 
   const props = defineProps<{
     title: string;
+    titleColor?: string
     stateData: BoardState[];
   }>();
 
