@@ -5,6 +5,7 @@
       <!-- LEFT COLUMN -->
       <v-col class="ma-1">
 
+        <!-- MPPT -->
         <!--<MultiMetricCard
           :title="'MPPT'"
           :metricsData="[
@@ -35,8 +36,11 @@
           },
         ]"
         />-->
+        
+        <!-- MCB - STEERING BATTERY -->
         <MultiMetricCard
-          :title="'MCB'"
+          :title="'MCB - STEERING BATTERY'"
+          :titleColor="'bg-primary'"
           :metricsData="[
           {
             label: 'Vi',
@@ -62,8 +66,10 @@
         />
 
         <div v-if="true">
+          <!-- MODULES STATE -->
           <MultiStateCard
-            :title="'STATE'"
+            :title="'MODULES STATE'"
+            :titleColor="'bg-primary text-white'"
             :stateData="[
               { label: 'MAM', value: measurementCards.get('mam_machine_state')?.data[0] as number },
               { label: 'MIC', value: measurementCards.get('mic_machine_state')?.data[0] as number },
@@ -78,80 +84,11 @@
 
       <!-- p COLUMN -->
       <v-col class="ma-1">
-        <MultiMetricCard
-            :title="'MAIN BAT'"
-            :orientation="Orientation.VERTICAL"
-            :metricsData="[
-              {
-                label: 'BANK',
-                data: [
-                  measurementCards.get('bat_v')?.avg() ?? 0.0,
-                  measurementCards.get('bat_i')?.avg() ?? 0.0,
-                  measurementCards.get('bat_p')?.avg() ?? 0.0,
-                ],
-                units: [
-                  measurementCards.get('bat_v')?.units[0] ?? '',
-                  measurementCards.get('bat_i')?.units[0] ?? '',
-                  measurementCards.get('bat_p')?.units[0] ?? '',
-                ]
-              },
-              {
-                label: 'CELL',
-                data: (measurementCards.get('bat_cell_v')?.data ?? []) as number[],
-                units: (measurementCards.get('bat_cell_v')?.units ?? [] ) as string[],
-              },
-            ]"
-          />
-
-        <MultiMetricCard
-          :title = "'MOTOR'"
-          :orientation = "Orientation.VERTICAL"
-          :metricsData = "[
-            {
-              label: 'D',
-              data: (measurementCards.get('motor_d')?.data ?? []) as number[],
-              units: (measurementCards.get('motor_d')?.units ?? ['']) as string[]
-            },
-            {
-              label: 'RPM',
-              data: [(measurementCards.get('motor_rpm')?.avg() ?? 0.0)],
-              units: [(measurementCards.get('motor_rpm')?.units ?? [''])[0]],
-            },
-          ]"
-        />
-
-      </v-col>
-
-      <!-- RIGHT COLUMN -->
-      <v-col class="ma-1">
-
-        <MultiMetricCard
-          :title="'STEERING'"
-          :metricsData="[
-          {
-            label: 'D',
-            data: (measurementCards.get('dir_pos')?.data ?? []) as number[],
-            units: (measurementCards.get('dir_pos')?.units ?? ['']) as string[]
-          },
-          {
-            label: 'B',
-            data: [
-              measurementCards.get('dir_bat_v')?.avg() ?? 0.0,
-              measurementCards.get('dir_bat_i')?.avg() ?? 0.0,
-              measurementCards.get('dir_bat_p')?.avg() ?? 0.0,
-            ],
-            units: [
-              measurementCards.get('dir_bat_v')?.units[0] ?? '',
-              measurementCards.get('dir_bat_i')?.units[0] ?? '',
-              measurementCards.get('dir_bat_p')?.units[0] ?? '',
-            ]
-          },
-        ]"
-        />
 
         <!-- AUXILIAR BATTERIES -->
         <MultiMetricCard
           :title="'AUX BATS'"
+          :titleColor="'bg-secondary text-black'"
           :metricsData="[
           {
             label: 'STE',
@@ -182,9 +119,87 @@
         ]"
         />
 
-        <!-- SYSTEM CONTROL -->
+        <!-- Main Battery -->
+        <MultiMetricCard
+            :title="'MAIN BATTERY'"
+            :titleColor="'bg-secondary text-black'"
+            :orientation="Orientation.VERTICAL"
+            :metricsData="[
+              {
+                label: 'BANK',
+                data: [
+                  measurementCards.get('bat_v')?.avg() ?? 0.0,
+                  measurementCards.get('bat_i')?.avg() ?? 0.0,
+                  measurementCards.get('bat_p')?.avg() ?? 0.0,
+                ],
+                units: [
+                  measurementCards.get('bat_v')?.units[0] ?? '',
+                  measurementCards.get('bat_i')?.units[0] ?? '',
+                  measurementCards.get('bat_p')?.units[0] ?? '',
+                ]
+              },
+              {
+                label: 'CELL',
+                data: (measurementCards.get('bat_cell_v')?.data ?? []) as number[],
+                units: (measurementCards.get('bat_cell_v')?.units ?? [] ) as string[],
+              },
+            ]"
+        />
+
+      </v-col>
+
+      <!-- CONTROL COLUMN -->
+      <v-col class="ma-1">
+
+        <!-- STEERING -->
+        <MultiMetricCard
+          :title="'STEERING'"
+          :titleColor="'bg-terciary text-white'"
+          :metricsData="[
+          {
+            label: 'D',
+            data: (measurementCards.get('dir_pos')?.data ?? []) as number[],
+            units: (measurementCards.get('dir_pos')?.units ?? ['']) as string[]
+          },
+          {
+            label: 'B',
+            data: [
+              measurementCards.get('dir_bat_v')?.avg() ?? 0.0,
+              measurementCards.get('dir_bat_i')?.avg() ?? 0.0,
+              measurementCards.get('dir_bat_p')?.avg() ?? 0.0,
+            ],
+            units: [
+              measurementCards.get('dir_bat_v')?.units[0] ?? '',
+              measurementCards.get('dir_bat_i')?.units[0] ?? '',
+              measurementCards.get('dir_bat_p')?.units[0] ?? '',
+            ]
+          },
+        ]"
+        />
+
+        <!-- MOTOR -->
+        <MultiMetricCard
+          :title = "'MOTOR'"
+          :titleColor="'bg-terciary text-white'"
+          :orientation = "Orientation.VERTICAL"
+          :metricsData = "[
+            {
+              label: 'D',
+              data: (measurementCards.get('motor_d')?.data ?? []) as number[],
+              units: (measurementCards.get('motor_d')?.units ?? ['']) as string[]
+            },
+            {
+              label: 'RPM',
+              data: [(measurementCards.get('motor_rpm')?.avg() ?? 0.0)],
+              units: [(measurementCards.get('motor_rpm')?.units ?? [''])[0]],
+            },
+          ]"
+        />
+
+        <!-- CONTROL KEYS -->
         <SwitchDisplay
           :title="'CONTROL'"
+          :titleColor="'bg-terciary text-white'"
           :maxLines="4"
           :data="[
             { value: measurementCards.get('motor_on')?.data[0] as boolean, label: 'MOTOR' },
