@@ -9,44 +9,47 @@ import * as directives from 'vuetify/directives'
 import { aliases, mdi } from 'vuetify/iconsets/mdi'
 import 'vuetify/styles'
 
-// ref: https://m2.material.io/design/color/dark-theme.html#ui-application
-// https://material-theme.com/docs/reference/color-palette/
-const deepOcean = {
-    dark: true,
-    colors: {
-        background: '#0F111A',
-        surface: '#181A1F',
-        primary: '#ffcb6b',
-        'primary-darken-1': '#f78c6c',
-        secondary: '#89ddff',
-        'secondary-darken-1': '#717CB4',
-        error: '#ff5370',
-        info: '#89ddff',
-        success: '#c3e88d',
-        warning: '#f78c6c',
-    },
-}
+// helper to read CSS vars from :root in App.vue
+function getVar(name: string): string { 
+  return getComputedStyle(document.documentElement) 
+    .getPropertyValue(name).trim(); 
+} 
 
+const ZeniteTheme = {
+  dark: false,
+  colors: {
+    background: getVar('--zenite-background'),
+    'on-background': getVar('--zenite-on-background'),
+    surface: getVar('--zenite-surface'),
+    primary: getVar('--zenite-primary'),
+    'primary-darken-1': getVar('--zenite-primary-darken-1'),
+    secondary: getVar('--zenite-secondary'),
+    'secondary-darken-1': getVar('--zenite-secondary-darken-1'),
+    terciary: getVar('--zenite-terciary'),
+    error: getVar('--zenite-error'),
+    info: getVar('--zenite-info'),
+    success: getVar('--zenite-success'),
+    warning: getVar('--zenite-warning'),
+  }
+} 
 
 export const vuetify = createVuetify({
-    components,
-    directives,
-    blueprint: md3,
-    theme: {
-        defaultTheme: 'deepOcean',
-        themes: {
-            deepOcean,
-        },
+  components,
+  directives,
+  blueprint: md3,
+  theme: {
+    defaultTheme: 'ZeniteTheme',
+    themes: {
+      ZeniteTheme,
     },
-    // https://pictogrammers.com/library/mdi/
-    icons: {
-        defaultSet: 'mdi',
-        aliases,
-        sets: {
-            mdi,
-        },
+  },
+  icons: {
+    defaultSet: 'mdi',
+    aliases,
+    sets: {
+      mdi,
     },
+  },
 })
-
 
 createApp(App).use(vuetify).mount('#app')
