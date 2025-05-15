@@ -1,6 +1,6 @@
 <template>
   <v-col class="ma-0 pa-1">
-  <v-card-text align="center" class="font-weight-bold text-caption pa-0 ma-0"> MAM </v-card-text>
+  <v-card-text align="center" class="text-mono font-weight-bold text-caption pa-0 ma-0"> MAM </v-card-text>
   <v-radio-group :model-value="formattedValue"
     readonly class="text-mono mx-5" style="font-size:10px">
     <v-radio color="orange" value="0">INI</v-radio>
