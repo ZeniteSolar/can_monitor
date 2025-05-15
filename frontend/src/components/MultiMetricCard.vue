@@ -1,10 +1,15 @@
 <template>
   <v-card class="ma-0 pa-0">
-    <v-card-title class="py-0 mt-0 bg-primary font-weight-black">{{ title }}</v-card-title>
+    <v-card-title
+  :class="['py-0 mt-0 font-weight-black', titleColor ?? 'bg-primary text-black']"
+  :style="titleColor?.includes('text-black') ? 'color: black !important;' : ''"
+>
+  {{ title }}
+</v-card-title>
     <component :is="orientation === 'VERTICAL' ? 'v-col' : 'v-row'" class="px-2 ma-0 ma-0 pa-1" >
     <v-col class="ma-0 pa-1" v-for="(metric, index) in metricsData" :key="index">
       
-      <v-card-text v-if="metric.label" align="center" class="font-weight-bold text-caption pa-0 ma-0">{{ metric.label }}</v-card-text>
+      <v-card-text v-if="metric.label" align="center" class="text-mono font-weight-bold text-caption pa-0 ma-0">{{ metric.label }}</v-card-text>
 
       <div v-for="(value, idx) in metric.data" :key="`${metric.label}-${idx}`">
       <MetricDisplay
@@ -27,8 +32,9 @@
   
   const props = defineProps<{
     title: String,
+    titleColor?: string
     orientation?: Orientation,
-    metricsData: BoardMetric[]
+    metricsData: BoardMetric[],
   }>();
 
   const metricsData = computed(() => {
