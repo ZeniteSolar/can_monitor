@@ -45,8 +45,8 @@ async def send_mock_boat_data():
                 "mcb_error_code": [0, 0],
                 "mcc_error_code": [0]*9,
 
-                "bat_v": 12.8 + 0.2 * sin_wave,
-                "bat_cell_v": [4.1 + 0.05 * sin_wave, 4.2, 4.3],
+                "bat_v": 3.8 + 0.2 * sin_wave,
+                "bat_cell_v": [12.5, 12.2, 12.7],
                 "bat_ii": 3.0 + 0.5 * cos_wave,
                 "bat_io": 1.0 + 0.1 * sin_wave,
                 "bat_i": 3.5 + 0.3 * cos_wave,
