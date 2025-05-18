@@ -121,30 +121,54 @@
 
         <!-- Main Battery -->
         <MultiMetricCard
-            :title="'MAIN BATTERY'"
-            :titleColor="'bg-secondary text-black'"
-            :orientation="Orientation.VERTICAL"
-            :metricsData="[
-              {
-                label: 'BANK',
-                data: [
-                  measurementCards.get('bat_v')?.avg() ?? 0.0,
-                  measurementCards.get('bat_i')?.avg() ?? 0.0,
-                  measurementCards.get('bat_p')?.avg() ?? 0.0,
-                ],
-                units: [
-                  measurementCards.get('bat_v')?.units[0] ?? '',
-                  measurementCards.get('bat_i')?.units[0] ?? '',
-                  measurementCards.get('bat_p')?.units[0] ?? '',
-                ]
-              },
-              {
-                label: 'CELL',
-                data: (measurementCards.get('bat_cell_v')?.data ?? []) as number[],
-                units: (measurementCards.get('bat_cell_v')?.units ?? [] ) as string[],
-              },
-            ]"
-        />
+  :title="'MAIN BATTERY'"
+  :titleColor="'bg-secondary text-black'"
+  :orientation="Orientation.VERTICAL"
+  :metricsData="[
+    {
+  label: 'BANK',
+  data: (() => {
+    const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
+    const cells = raw
+      .filter((v): v is number => typeof v === 'number')
+      .slice(0, 2);
+
+    if (cells.length === 2) {
+      cells.push((cells[0] + cells[1]) / 2);
+    }
+
+    const voltage = cells.reduce((sum: number, v: number) => sum + v, 0);
+
+    return [
+      voltage,
+      measurementCards.get('bat_i')?.avg() ?? 0.0,
+      measurementCards.get('bat_p')?.avg() ?? 0.0,
+    ];
+  })(),
+  units: [
+    measurementCards.get('bat_v')?.units?.[0] ?? '',
+    measurementCards.get('bat_i')?.units?.[0] ?? '',
+    measurementCards.get('bat_p')?.units?.[0] ?? '',
+  ]
+},
+{
+  label: 'CELL',
+  data: (() => {
+    const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
+    const safe = raw
+      .filter((v): v is number => typeof v === 'number')
+      .slice(0, 2);
+
+    return safe.length === 2 ? [...safe, (safe[0] + safe[1]) / 2] : safe;
+  })(),
+  units: (() => {
+    const u = measurementCards.get('bat_cell_v')?.units;
+    return Array.isArray(u) ? u : u ? [u] : [];
+  })()
+},
+  ]"
+/>
+
 
       </v-col>
 
