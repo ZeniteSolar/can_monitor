@@ -121,47 +121,6 @@ pub mod mde22 {
     }
 }
 
-pub mod mcc19_1 {
-    use serde::{Deserialize, Serialize};
-
-    #[derive(Debug, Clone, Serialize, Deserialize)]
-    pub enum Data {
-        State(state::Data),
-        Measurements(measurements::Data),
-    }
-
-    pub mod state {
-        use serde::{Deserialize, Serialize};
-
-        #[derive(Debug, Clone, Serialize, Deserialize)]
-        pub struct Data {
-            state: u8,
-            control: ControlFlags,
-        }
-
-        #[derive(Debug, Clone, Serialize, Deserialize)]
-        pub struct ControlFlags {
-            enable: bool,
-            vi_safe_range: bool,
-            vo_safe_range: bool,
-            vi_stable: bool,
-            dt_safe_range: bool,
-        }
-    }
-
-    pub mod measurements {
-        use serde::{Deserialize, Serialize};
-
-        #[derive(Debug, Clone, Serialize, Deserialize)]
-        pub struct Data {
-            output_voltage: f32,
-            input_current: f32,
-            input_voltage: f32,
-            duty_cycle: f32,
-        }
-    }
-}
-
 pub mod mab19 {
     use serde::{Deserialize, Serialize};
 

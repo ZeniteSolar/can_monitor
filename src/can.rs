@@ -186,60 +186,6 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             .map_err(anyhow::Error::from)
         }
 
-        // MCC
-        modules::mcc23_1::messages::measurements::ID => read_message::<
-            modules::mcc23_1::messages::measurements::Message,
-        >(
-            data, &modules::mcc23_1::SIGNATURE
-        )
-        .map_err(anyhow::Error::from),
-        modules::mcc23_2::messages::measurements::ID => read_message::<
-            modules::mcc23_2::messages::measurements::Message,
-        >(
-            data, &modules::mcc23_2::SIGNATURE
-        )
-        .map_err(anyhow::Error::from),
-        modules::mcc23_3::messages::measurements::ID => read_message::<
-            modules::mcc23_3::messages::measurements::Message,
-        >(
-            data, &modules::mcc23_3::SIGNATURE
-        )
-        .map_err(anyhow::Error::from),
-        modules::mcc23_4::messages::measurements::ID => read_message::<
-            modules::mcc23_4::messages::measurements::Message,
-        >(
-            data, &modules::mcc23_4::SIGNATURE
-        )
-        .map_err(anyhow::Error::from),
-        modules::mcc23_5::messages::measurements::ID => read_message::<
-            modules::mcc23_5::messages::measurements::Message,
-        >(
-            data, &modules::mcc23_5::SIGNATURE
-        )
-        .map_err(anyhow::Error::from),
-        modules::mcc23_6::messages::measurements::ID => read_message::<
-            modules::mcc23_6::messages::measurements::Message,
-        >(
-            data, &modules::mcc23_6::SIGNATURE
-        )
-        .map_err(anyhow::Error::from),
-        modules::mcc23_7::messages::measurements::ID => read_message::<
-            modules::mcc23_7::messages::measurements::Message,
-        >(
-            data, &modules::mcc23_7::SIGNATURE
-        )
-        .map_err(anyhow::Error::from),
-        modules::mcc23_8::messages::measurements::ID => read_message::<
-            modules::mcc23_8::messages::measurements::Message,
-        >(
-            data, &modules::mcc23_8::SIGNATURE
-        )
-        .map_err(anyhow::Error::from),
-        modules::mcc23_9::messages::measurements::ID => read_message::<
-            modules::mcc23_9::messages::measurements::Message,
-        >(
-            data, &modules::mcc23_9::SIGNATURE
-        )
         .map_err(anyhow::Error::from),
         msg => Err(anyhow!("Unknown message: {msg:?}")),
     }
