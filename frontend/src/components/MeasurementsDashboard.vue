@@ -5,43 +5,8 @@
       <!-- LEFT COLUMN -->
       <v-col class="ma-1">
 
-        <!-- MPPT -->
-        <!--<MultiMetricCard
-          :title="'MPPT'"
-          :metricsData="[
-          {
-            label: 'Vi',
-            data: (measurementCards.get('mcc_vi')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_vi')?.units ?? ['']) as string[]
-          },
-          {
-            label: 'II',
-            data: (measurementCards.get('mcc_ii')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_ii')?.units ?? ['']) as string[]
-          },
-          {
-            label: 'Vo',
-            data: (measurementCards.get('mcc_vo')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_vo')?.units ?? ['']) as string[]
-          },
-          {
-            label: 'Pi',
-            data: (measurementCards.get('mcc_pi')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_pi')?.units ?? ['']) as string[]
-          },
-          {
-            label: 'D',
-            data: (measurementCards.get('mcc_d')?.data ?? []) as number[],
-            units: (measurementCards.get('mcc_d')?.units ?? ['']) as string[]
-          },
-        ]"
-        />-->
-        
         <!-- MCB - STEERING BATTERY -->
-        <MultiMetricCard
-          :title="'MCB - STEERING BATTERY'"
-          :titleColor="'bg-primary'"
-          :metricsData="[
+        <MultiMetricCard :title="'MCB - STEERING BATTERY'" :titleColor="'bg-primary'" :metricsData="[
           {
             label: 'Vi',
             data: (measurementCards.get('mcb_vi')?.data ?? []) as number[],
@@ -62,22 +27,17 @@
             data: (measurementCards.get('mcb_po')?.data ?? []) as number[],
             units: (measurementCards.get('mcb_po')?.units ?? ['']) as string[]
           },
-        ]"
-        />
+        ]" />
 
         <div v-if="true">
           <!-- MODULES STATE -->
-          <MultiStateCard
-            :title="'MODULES STATE'"
-            :titleColor="'bg-primary text-white'"
-            :stateData="[
-              { label: 'MAM', value: measurementCards.get('mam_machine_state')?.data[0] as number },
-              { label: 'MIC', value: measurementCards.get('mic_machine_state')?.data[0] as number },
-              { label: 'MCS', value: measurementCards.get('mcs_machine_state')?.data[0] as number },
-              { label: 'MAC', value: measurementCards.get('mac_machine_state')?.data[0] as number },
-              { label: 'MDE', value: measurementCards.get('mde_machine_state')?.data[0] as number },
-            ]"
-          />
+          <MultiStateCard :title="'MODULES STATE'" :titleColor="'bg-primary text-white'" :stateData="[
+            { label: 'MAM', value: measurementCards.get('mam_machine_state')?.data[0] as number },
+            { label: 'MIC', value: measurementCards.get('mic_machine_state')?.data[0] as number },
+            { label: 'MCS', value: measurementCards.get('mcs_machine_state')?.data[0] as number },
+            { label: 'MAC', value: measurementCards.get('mac_machine_state')?.data[0] as number },
+            { label: 'MDE', value: measurementCards.get('mde_machine_state')?.data[0] as number },
+          ]" />
         </div>
 
       </v-col>
@@ -86,10 +46,7 @@
       <v-col class="ma-1">
 
         <!-- AUXILIAR BATTERIES -->
-        <MultiMetricCard
-          :title="'AUX BATS'"
-          :titleColor="'bg-secondary text-black'"
-          :metricsData="[
+        <MultiMetricCard :title="'AUX BATS'" :titleColor="'bg-secondary text-black'" :metricsData="[
           {
             label: 'STE',
             data: [
@@ -116,97 +73,80 @@
               measurementCards.get('mcb_po')?.units ?? '',
             ]
           },
-        ]"
-        />
+        ]" />
 
         <!-- Main Battery -->
-        <MultiMetricCard
-  :title="'MAIN BATTERY'"
-  :titleColor="'bg-secondary text-black'"
-  :orientation="Orientation.VERTICAL"
-  :metricsData="[
-    {
-  label: 'BANK',
-  data: (() => {
-    const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
-    const cells = raw
-      .filter((v): v is number => typeof v === 'number')
-      .slice(0, 2);
+        <MultiMetricCard :title="'MAIN BATTERY'" :titleColor="'bg-secondary text-black'"
+          :orientation="Orientation.VERTICAL" :metricsData="[
+            {
+              label: 'BANK',
+              data: (() => {
+                const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
+                const cells = raw
+                  .filter((v): v is number => typeof v === 'number')
+                  .slice(0, 2);
 
-    if (cells.length === 2) {
-      cells.push((cells[0] + cells[1]) / 2);
-    }
+                if (cells.length === 2) {
+                  cells.push((cells[0] + cells[1]) / 2);
+                }
 
-    const voltage = cells.reduce((sum: number, v: number) => sum + v, 0);
+                const voltage = cells.reduce((sum: number, v: number) => sum + v, 0);
 
-    return [
-      voltage,
-      measurementCards.get('bat_i')?.avg() ?? 0.0,
-      measurementCards.get('bat_p')?.avg() ?? 0.0,
-    ];
-  })(),
-  units: [
-    measurementCards.get('bat_v')?.units?.[0] ?? '',
-    measurementCards.get('bat_i')?.units?.[0] ?? '',
-    measurementCards.get('bat_p')?.units?.[0] ?? '',
-  ]
-},
-{
-  label: 'CELL',
-  data: (() => {
-    const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
-    const safe = raw
-      .filter((v): v is number => typeof v === 'number')
-      .slice(0, 2);
+                return [
+                  voltage,
+                  measurementCards.get('bat_i')?.avg() ?? 0.0,
+                  measurementCards.get('bat_p')?.avg() ?? 0.0,
+                ];
+              })(),
+              units: [
+                measurementCards.get('bat_v')?.units?.[0] ?? '',
+                measurementCards.get('bat_i')?.units?.[0] ?? '',
+                measurementCards.get('bat_p')?.units?.[0] ?? '',
+              ]
+            },
+            {
+              label: 'CELL',
+              data: (() => {
+                const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
+                const safe = raw
+                  .filter((v): v is number => typeof v === 'number')
+                  .slice(0, 2);
 
-    return safe.length === 2 ? [...safe, (safe[0] + safe[1]) / 2] : safe;
-  })(),
-  units: (() => {
-    const u = measurementCards.get('bat_cell_v')?.units;
-    return Array.isArray(u) ? u : u ? [u] : [];
-  })()
-},
-  ]"
-/>
+                return safe.length === 2 ? [...safe, (safe[0] + safe[1]) / 2] : safe;
+              })(),
+              units: (() => {
+                const u = measurementCards.get('bat_cell_v')?.units;
+                return Array.isArray(u) ? u : u ? [u] : [];
+              })()
+            },
+          ]" />
 
+        <!-- STEERING/ -->
+        <SteeringCard :title="'STEERING'" :titleColor="'bg-secondary text-black'" 
+        :angle="steeringAngle" :tailAngle="tailAngle" :metricsData="[
+          {
+            label: 'B',
+            data: [
+              measurementCards.get('dir_bat_v')?.avg() ?? 0,
+              measurementCards.get('dir_bat_i')?.avg() ?? 0,
+              measurementCards.get('dir_bat_p')?.avg() ?? 0
+            ],
+            units: [
+              measurementCards.get('dir_bat_v')?.units[0] ?? '',
+              measurementCards.get('dir_bat_i')?.units[0] ?? '',
+              measurementCards.get('dir_bat_p')?.units[0] ?? ''
+            ]
+          }
+        ]" />
 
       </v-col>
 
       <!-- CONTROL COLUMN -->
       <v-col class="ma-1">
 
-        <!-- STEERING -->
-        <MultiMetricCard
-          :title="'STEERING'"
-          :titleColor="'bg-terciary text-white'"
-          :metricsData="[
-          {
-            label: 'D',
-            data: (measurementCards.get('dir_pos')?.data ?? []) as number[],
-            units: (measurementCards.get('dir_pos')?.units ?? ['']) as string[]
-          },
-          {
-            label: 'B',
-            data: [
-              measurementCards.get('dir_bat_v')?.avg() ?? 0.0,
-              measurementCards.get('dir_bat_i')?.avg() ?? 0.0,
-              measurementCards.get('dir_bat_p')?.avg() ?? 0.0,
-            ],
-            units: [
-              measurementCards.get('dir_bat_v')?.units[0] ?? '',
-              measurementCards.get('dir_bat_i')?.units[0] ?? '',
-              measurementCards.get('dir_bat_p')?.units[0] ?? '',
-            ]
-          },
-        ]"
-        />
-
         <!-- MOTOR -->
-        <MultiMetricCard
-          :title = "'MOTOR'"
-          :titleColor="'bg-terciary text-white'"
-          :orientation = "Orientation.VERTICAL"
-          :metricsData = "[
+        <MultiMetricCard :title="'MOTOR'" :titleColor="'bg-terciary text-white'" :orientation="Orientation.VERTICAL"
+          :metricsData="[
             {
               label: 'D',
               data: (measurementCards.get('motor_d')?.data ?? []) as number[],
@@ -217,23 +157,17 @@
               data: [(measurementCards.get('motor_rpm')?.avg() ?? 0.0)],
               units: [(measurementCards.get('motor_rpm')?.units ?? [''])[0]],
             },
-          ]"
-        />
+          ]" />
 
         <!-- CONTROL KEYS -->
-        <SwitchDisplay
-          :title="'CONTROL'"
-          :titleColor="'bg-terciary text-white'"
-          :maxLines="4"
-          :data="[
-            { value: measurementCards.get('motor_on')?.data[0] as boolean, label: 'MOTOR' },
-            { value: measurementCards.get('boat_on')?.data[0] as boolean, label: 'BOAT' },
-            { value: measurementCards.get('dms_on')?.data[0] as boolean, label: 'DMS' },
-            { value: measurementCards.get('motor_rev')?.data[0] as boolean, label: 'REV' },
-          ].concat(
-            (measurementCards.get('pump')?.data as boolean[]).map((value, index) => ({ value, label: `BP ${index + 1}` }))
-          )"
-        />
+        <SwitchDisplay :title="'CONTROL'" :titleColor="'bg-terciary text-white'" :maxLines="4" :data="[
+          { value: measurementCards.get('motor_on')?.data[0] as boolean, label: 'MOTOR' },
+          { value: measurementCards.get('boat_on')?.data[0] as boolean, label: 'BOAT' },
+          { value: measurementCards.get('dms_on')?.data[0] as boolean, label: 'DMS' },
+          { value: measurementCards.get('motor_rev')?.data[0] as boolean, label: 'REV' },
+        ].concat(
+          (measurementCards.get('pump')?.data as boolean[]).map((value, index) => ({ value, label: `BP ${index + 1}` }))
+        )" />
 
       </v-col>
 
@@ -280,15 +214,27 @@
 
 
 <script setup lang="ts">
-import { reactive, ref, onUnmounted, type Ref } from 'vue'
+import { reactive, ref, onUnmounted, type Ref, computed } from 'vue'
 import MultiMetricCard from './MultiMetricCard.vue';
 import MultiStateCard from './MultiStateCard.vue';
 import SwitchDisplay from './SwitchCard.vue';
+import SteeringCard from './SteeringCard.vue';
 import { Orientation } from '@/types/index'
 import { GenericCardData } from '../measurement_types'
 
 const last_msg_time: Ref<number | null> = ref(null)
 const measurementCards = reactive(new Map<string, GenericCardData>())
+
+// pull a single angle number out of the array
+const steeringAngle = computed(() => {
+  const value = measurementCards.get('dir_pos')?.data[0];
+  return typeof value === 'number' ? value : 0;
+});
+
+const tailAngle = computed(() => {
+  const value = measurementCards.get('dir_pos')?.data[1];
+  return typeof value === 'number' ? value : 0;
+});
 
 class WSConnection {
   socket: WebSocket | null = null;
@@ -459,41 +405,6 @@ measurementCards.set("mcb_d", new GenericCardData(
   0,
   100,
 ))
-/*measurementCards.set("mcc_pi", new GenericCardData(
-  "MPPTs Pi",
-  "MPPTs Input Power",
-  'W',
-  0,
-  300,
-))
-measurementCards.set("mcc_vi", new GenericCardData(
-  "MPPT Vi",
-  "MPPT Input Voltage",
-  'V',
-  0,
-  60,
-))
-measurementCards.set("mcc_ii", new GenericCardData(
-  "MPPT Ii",
-  "MPPT Input Current",
-  'A',
-  0,
-  15,
-))
-measurementCards.set("mcc_vo", new GenericCardData(
-  "MPPT Vo",
-  "MPPT Output Voltage",
-  'V',
-  0,
-  60,
-))
-measurementCards.set("mcc_d", new GenericCardData(
-  "MPPT D",
-  "MPPT Duty Cycle",
-  '%',
-  0,
-  100,
-))*/
 measurementCards.set("pump", new GenericCardData(
   "BILDGE PUMP",
   "Bildge Pump Status",
