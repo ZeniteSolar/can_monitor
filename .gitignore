@@ -1,5 +1,6 @@
 /target
 /Cargo.lock
+/node_modules
+/package-lock.json
 *.log.*
-node_modules/
 can_monitor.service
