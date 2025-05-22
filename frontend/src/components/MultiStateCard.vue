@@ -7,7 +7,7 @@
   {{ title }}
 </v-card-title>
 
-    <v-row class="px-2 ma-0">
+    <v-row class="px-2 ma-0 text-left ui-font" justify="center">
       <template v-for="(state, index) in stateData" :key="index">
         <StateDisplayMam
           v-if="state.label === 'MAM'"
@@ -41,4 +41,7 @@
 </script>
 
 <style scoped>
+  .data-font {
+    font-family: var(--zenite-ui-font) !important;
+  }
 </style>
