@@ -20,6 +20,7 @@ async def send_mock_boat_data():
             t = time.time() - start_time
             # Oscillating value with noise
             sin_wave = math.sin(t)
+            sin_wave_smooth = math.sin(100*t)
             cos_wave = math.cos(t)
 
             mock_data = {
@@ -32,14 +33,13 @@ async def send_mock_boat_data():
                 "motor_d": [abs(sin_wave), abs(cos_wave)],
                 "motor_rpm": 1500 + 200 * sin_wave,
 
-                "mam_machine_state": int(t) % 3,
-                "mic_machine_state": int(t / 2) % 3,
-                "mcs_machine_state": int(t / 3) % 3,
-                "mac_machine_state": 1,
-                "mde_machine_state": 1,
+                "mam_machine_state": int(t / 3) % 5,
+                "mic_machine_state": int(t / 2) % 5,
+                "mcs_machine_state": int(t / 3) % 5,
+                "mac_machine_state": int(t / 4) % 4,
+                "mde_machine_state": int(t / 5) % 4,
 
                 "mcb_machine_state": [int(t) % 2, (int(t / 2) + 1) % 2],
-                "mcc_machine_state": [(int(t + i) % 3) for i in range(9)],
 
                 "mam_error_code": 0,
                 "mic_error_code": 0,
@@ -47,7 +47,6 @@ async def send_mock_boat_data():
                 "mac_error_code": 0,
                 "mde_error_code": 0,
                 "mcb_error_code": [0, 0],
-                "mcc_error_code": [0]*9,
 
                 "bat_v": 3.8 + 0.2 * sin_wave,
                 "bat_cell_v": [12.5, 12.2, 12.7],
@@ -59,7 +58,7 @@ async def send_mock_boat_data():
                 "dir_bat_v": 13.0 + 0.1 * sin_wave,
                 "dir_bat_i": 2.0 + 0.1 * cos_wave,
                 "dir_bat_p": 25 + 2 * sin_wave,
-                "dir_pos": [45 + 15 * sin_wave, 0.0],
+                "dir_pos": [0 + 15 * sin_wave, 15 * cos_wave],
 
                 "mcb_d": [0.1 + 0.05 * sin_wave, 0.2 + 0.05 * cos_wave],
                 "mcb_vi": [12.5 + 0.1 * cos_wave, 12.6],
@@ -67,13 +66,6 @@ async def send_mock_boat_data():
                 "mcb_vo": [11.8 + 0.1 * cos_wave, 11.9],
                 "mcb_po": [13.0 + 0.5 * sin_wave, 14.0],
 
-                "mcc_d": [0.1 + 0.01 * math.sin(t + i) for i in range(9)],
-                "mcc_ii": [0.2 + 0.01 * math.cos(t + i) for i in range(9)],
-                "mcc_vi": [12.0 + 0.1 * math.sin(t + i) for i in range(9)],
-                "mcc_io": [1.0 + 0.1 * math.cos(t + i) for i in range(9)],
-                "mcc_vo": [11.5 + 0.1 * math.sin(t + i) for i in range(9)],
-                "mcc_pi": [2.4 + 0.1 * math.cos(t + i) for i in range(9)],
-                "mcc_po": [3.6 + 0.1 * math.sin(t + i) for i in range(9)],
             }
 
             await ws.send(json.dumps(mock_data))
