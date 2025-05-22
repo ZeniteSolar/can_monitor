@@ -4,9 +4,13 @@ import json
 import math
 import time
 import random
+import sys
+
+# Get IP from argument or use default
+ip = sys.argv[1] if len(sys.argv) > 1 else "localhost"
+uri = f"ws://{ip}:3001"
 
 async def send_mock_boat_data():
-    uri = "ws://localhost:3001"
     start_time = time.time()
 
     async with websockets.connect(uri, ping_interval=None) as ws:

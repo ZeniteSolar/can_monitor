@@ -115,7 +115,7 @@ impl Websocket {
 
         let mut data_receiver = MANAGER.lock().unwrap().get_receiver();
 
-        /// --- START NEW: receive task for mock clients like Python ---
+        // --- START NEW: receive task for mock clients like Python ---
         let tx = MANAGER.lock().unwrap().get_sender();
 
         let receive_task = tokio::spawn(async move {
@@ -141,9 +141,9 @@ impl Websocket {
                 }
             }
         });
-        /// --- END NEW ---
+        // --- END NEW ---
 
-        /// Existing sender loop: broadcast BoatData to frontend
+        // Existing sender loop: broadcast BoatData to frontend
         while let Ok(message) = data_receiver.recv().await {
             trace!("Sending..: {message:#?}");
 
