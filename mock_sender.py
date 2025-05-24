@@ -70,6 +70,6 @@ async def send_mock_boat_data():
 
             await ws.send(json.dumps(mock_data))
             print("✅ Sent mock BoatData frame")
-            await asyncio.sleep(1)
+            await asyncio.sleep(0.05)
 
 asyncio.run(send_mock_boat_data())
