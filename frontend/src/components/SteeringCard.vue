@@ -9,34 +9,67 @@
 
     <!-- SVG container: simplified stern box + circle + dual pointer arrows -->
     <v-card-text class="d-flex justify-center pa-0">
-      <svg width="300" height="150" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
-        <!-- 0. Rectangle container: orange fill with black outline -->
+      <svg width="400" height="150" viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg">
+        <!-- SVG mask: punch circle hole through rectangle to reveal card background -->
+        <mask id="rectMask">
+          <!-- solid rectangle area -->
+          <rect x="-75" y="0" width="345" height="140" fill="white" />
+          <!-- hole where circle is: black blocks rectangle -->
+          <circle cx="100" cy="0" r="100" fill="black" />
+        </mask>
+
+        <!-- 0. Rectangle container: orange fill with black outline and rounded corners, masked -->
         <rect
-          x="-45"
+          x="-75"
           y="0"
-          width="295"
-          height="120"
+          width="345"
+          height="140"
+          rx="10"
+          ry="10"
           fill="orange"
           stroke="black"
           stroke-width="2"
+          mask="url(#rectMask)"
         />
-        <!-- 1. Stern section semicircle: radius 100, pivot at (100,0) -->
+        <!-- 1. Stern section semicircle outline: no fill, just stroke -->
         <circle
           cx="100"
           cy="0"
           r="100"
-          fill="lightblue"
+          fill="none"
           stroke="black"
           stroke-width="2"
           vector-effect="non-scaling-stroke"
         />
+        <!-- 1b. White label box between semicircle and rectangle bottom -->
+        <rect
+          x="50"
+          y="105"
+          width="100"
+          height="30"
+          rx="5"
+          ry="5"
+          fill="white"
+          stroke="black"
+          stroke-width="1"
+        />
+        <text
+          x="100"
+          y="125"
+          text-anchor="middle"
+          fill="black"
+          font-family="sans-serif"
+          font-size="16"
+        >
+          Guarapuvu II
+        </text>
 
         <!-- 2a. Helm pointer: grey triangle, length 100px -->
         <polygon
           points="95,0 105,0 100,100"
           fill="red"
           stroke="red"
-          stroke-width="3"
+          stroke-width="2"
           stroke-linejoin="round"
           :transform="`rotate(${props.angle} 100 0)`"
           vector-effect="non-scaling-stroke"
