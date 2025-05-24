@@ -6,7 +6,7 @@
       <v-col class="ma-1">
 
         <!-- MCB - STEERING BATTERY -->
-        <MultiMetricCard :title="'MCB - STEERING BATTERY'" :titleColor="'bg-primary'" :metricsData="[
+        <MultiMetricCard :title="'MCB - BATERIA DIREÇÃO'" :titleColor="'bg-primary'" :metricsData="[
           {
             label: 'Vi',
             data: (measurementCards.get('mcb_vi')?.data ?? []) as number[],
@@ -31,7 +31,7 @@
 
         <div v-if="true">
           <!-- MODULES STATE -->
-          <MultiStateCard :title="'MODULES STATE'" :titleColor="'bg-primary text-white'" :stateData="[
+          <MultiStateCard :title="'ESTADO DOS MÓDULOS'" :titleColor="'bg-primary text-white'" :stateData="[
             { label: 'MAM', value: measurementCards.get('mam_machine_state')?.data[0] as number },
             { label: 'MIC', value: measurementCards.get('mic_machine_state')?.data[0] as number },
             { label: 'MCS', value: measurementCards.get('mcs_machine_state')?.data[0] as number },
@@ -46,9 +46,9 @@
       <v-col class="ma-1">
 
         <!-- AUXILIAR BATTERIES -->
-        <MultiMetricCard :title="'AUX BATS'" :titleColor="'bg-secondary text-black'" :metricsData="[
+        <MultiMetricCard :title="'BATERIAS AUXILIARES'" :titleColor="'bg-secondary text-black'" :metricsData="[
           {
-            label: 'STE',
+            label: 'DIREÇÃO',
             data: [
               measurementCards.get('mcb_vo')?.data[0] as number,
               measurementCards.get('mcb_io')?.data[0] as number,
@@ -61,7 +61,7 @@
             ]
           },
           {
-            label: 'AUX',
+            label: 'AUXILIAR',
             data: [
               measurementCards.get('mcb_vo')?.data[1] as number,
               measurementCards.get('mcb_io')?.data[1] as number,
@@ -76,10 +76,10 @@
         ]" />
 
         <!-- Main Battery -->
-        <MultiMetricCard :title="'MAIN BATTERY'" :titleColor="'bg-secondary text-black'"
+        <MultiMetricCard :title="'BATERIA PRINCIPAL'" :titleColor="'bg-secondary text-black'"
           :orientation="Orientation.VERTICAL" :metricsData="[
             {
-              label: 'BANK',
+              label: 'TOTAL',
               data: (() => {
                 const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
                 const cells = raw
@@ -105,7 +105,7 @@
               ]
             },
             {
-              label: 'CELL',
+              label: 'CELULAS',
               data: (() => {
                 const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
                 const safe = raw
@@ -122,7 +122,7 @@
           ]" />
 
         <!-- STEERING/ -->
-        <SteeringCard :title="'STEERING'" :titleColor="'bg-secondary text-black'" 
+        <SteeringCard :title="'DIREÇÃO'" :titleColor="'bg-secondary text-black'" 
         :angle="steeringAngle" :tailAngle="tailAngle" :metricsData="[
           {
             label: 'B',
@@ -160,7 +160,7 @@
           ]" />
 
         <!-- CONTROL KEYS -->
-        <SwitchDisplay :title="'CONTROL'" :titleColor="'bg-terciary text-white'" :maxLines="4" :data="[
+        <SwitchDisplay :title="'CONTROLE'" :titleColor="'bg-terciary text-white'" :maxLines="4" :data="[
           { value: measurementCards.get('motor_on')?.data[0] as boolean, label: 'MOTOR' },
           { value: measurementCards.get('boat_on')?.data[0] as boolean, label: 'BOAT' },
           { value: measurementCards.get('dms_on')?.data[0] as boolean, label: 'DMS' },
