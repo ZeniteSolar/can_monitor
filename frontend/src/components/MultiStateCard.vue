@@ -65,12 +65,23 @@ const props = defineProps<{
 
 // Track previous state values in a reactive map
 const prevStates = ref<Record<string, number>>({});
-watch(
+  watch(
   () => props.stateData,
   (newList, oldList = [] as typeof props.stateData) => {
     newList.forEach(({ label, value }) => {
-      prevStates.value[label] =
-        oldList.find(item => item.label === label)?.value ?? value;
+      // On first run (oldList empty), seed prevStates to the current value
+      if (oldList.length === 0) {
+        prevStates.value[label] = value;
+      } else {
+        // Find the previous value for this label
+        const oldItem = oldList.find(item => item.label === label);
+        const oldValue = oldItem?.value ?? prevStates.value[label];
+
+        // Only update prevStates if the state really changed
+        if (value !== oldValue) {
+          prevStates.value[label] = oldValue!;
+        }
+      }
     });
   },
   { immediate: true, deep: true }
