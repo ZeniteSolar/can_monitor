@@ -22,7 +22,7 @@ async def send_mock_boat_data():
             sin_wave = math.sin(t)
             sin_wave_smooth = math.sin(100*t)
             cos_wave = math.cos(t)
-
+            
             mock_data = {
                 "boat_on": True,
                 "motor_on": t % 20 < 10,  # on for 10s, off for 10s
@@ -33,20 +33,21 @@ async def send_mock_boat_data():
                 "motor_d": [abs(sin_wave), abs(cos_wave)],
                 "motor_rpm": 1500 + 200 * sin_wave,
 
-                "mam_machine_state": int(t / 3) % 5,
-                "mic_machine_state": int(t / 2) % 5,
-                "mcs_machine_state": int(t / 3) % 5,
-                "mac_machine_state": int(t / 4) % 4,
-                "mde_machine_state": int(t / 5) % 4,
+                "mic_machine_state": int(t) % 5,
+                "mcs_machine_state": int(t) % 5,
+                "mam_machine_state": int(t) % 5,
+                "mac_machine_state": int(t) % 5,
+                "msc_machine_state": [int(t) % 5, int(t) % 5, int(t) % 5],
+                "mcb_machine_state": [int(t) % 5, int(t) % 5],
+                "mde_machine_state": int(t) % 5,
 
-                "mcb_machine_state": [int(t) % 2, (int(t / 2) + 1) % 2],
-
-                "mam_error_code": 0,
-                "mic_error_code": 0,
-                "mcs_error_code": 0,
-                "mac_error_code": 0,
-                "mde_error_code": 0,
-                "mcb_error_code": [0, 0],
+                "mic_error_code": int(t) % 8,
+                "mcs_error_code": int(t+1) % 8,
+                "mam_error_code": int(t+2) % 8,
+                "mac_error_code": int(t+3) % 8,
+                "msc_error_code": [1, 2, 3],
+                "mcb_error_code": [1, 2],
+                "mde_error_code": int(t+5) % 8,
 
                 "bat_v": 3.8 + 0.2 * sin_wave,
                 "bat_cell_v": [12.5, 12.2, 12.7],
