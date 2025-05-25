@@ -15,7 +15,9 @@ use anyhow::Result;
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    logger::init()?;
+    if !cli::CONFIGURATION.no_log {
+        logger::init()?;
+    }
 
     let tx = websocket::MANAGER.lock().unwrap().get_sender();
 
