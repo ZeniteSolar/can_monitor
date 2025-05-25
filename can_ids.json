@@ -1,5 +1,5 @@
 {
-    "version": "0.1.10",
+    "version": "0.1.11",
     "modules": [
         {
             "name": "GENERIC",
@@ -1865,6 +1865,12 @@
                             "units": ""
                         },
                         {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
                             "name": "CONTROL",
                             "description": "Control flags for operating point",
                             "type": "bitfield",
@@ -1883,11 +1889,10 @@
                         null,
                         null,
                         null,
-                        null,
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 71
+                    "frame_length": 79
                 },
                 {
                     "name": "MEASUREMENTS",
@@ -1971,6 +1976,12 @@
                             "units": ""
                         },
                         {
+                            "name": "ERROR",
+                            "description": "Error code",
+                            "type": "uint8_t",
+                            "units": ""
+                        },
+                        {
                             "name": "CONTROL",
                             "description": "Control flags for operating point",
                             "type": "bitfield",
@@ -1989,11 +2000,10 @@
                         null,
                         null,
                         null,
-                        null,
                         null
                     ],
                     "frequency": 1,
-                    "frame_length": 71
+                    "frame_length": 79
                 },
                 {
                     "name": "MEASUREMENTS",
@@ -2978,7 +2988,7 @@
                         null,
                         null
                     ],
-                    "frequency": 0,
+                    "frequency": 1,
                     "frame_length": 71
                 },
                 {
@@ -3010,7 +3020,7 @@
                         null,
                         null
                     ],
-                    "frequency": 0,
+                    "frequency": 10,
                     "frame_length": 71
                 }
             ]
@@ -3133,7 +3143,7 @@
                         null,
                         null
                     ],
-                    "frequency": 0,
+                    "frequency": 1,
                     "frame_length": 63
                 },
                 {
@@ -3175,7 +3185,7 @@
                         null,
                         null
                     ],
-                    "frequency": 0,
+                    "frequency": 1,
                     "frame_length": 71
                 },
                 {
