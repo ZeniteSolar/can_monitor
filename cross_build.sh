@@ -20,19 +20,21 @@ REMOTE_PATH="~/$BINARY_NAME"
 # Build
 echo "📦 Building for target: $TARGET..."
 cross build --release --target=$TARGET
-echo "✅ Build complete. Binary at: $BUILD_DIR/$BINARY_NAME"
+echo "Build complete. Binary at: $BUILD_DIR/$BINARY_NAME"
 
-# Deploy
-echo "📤 Deploying to $REMOTE_USER@$REMOTE_HOST..."
-scp "$BUILD_DIR/$BINARY_NAME" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
+# Stop service
+echo "Stop service on Pi..."
+if ssh $REMOTE_USER@$REMOTE_HOST 'sudo systemctl stop simple_can_monitor.service'; then
+  echo "Service stopped successfully."
+  # Deploy
+  echo "Removing binary"
+  ssh $REMOTE_USER@$REMOTE_HOST "rm $REMOTE_PATH"
+  echo "Deploying to $REMOTE_USER@$REMOTE_HOST..."
+  scp "$BUILD_DIR/$BINARY_NAME" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
 
-# Restart service
-# echo "🚀 Restarting service on Pi..."
-# if ssh $REMOTE_USER@$REMOTE_HOST 'sudo systemctl restart simple_can_monitor.service'; then
-#   echo "✅ Service restarted successfully."
-# else
-#   echo "❌ Failed to restart service."
-#   exit 1
-# fi
+else
+  echo "❌ Failed to stop service."
+  exit 1
+fi
 
-echo "✅ Done. Deployed to $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
+echo "Done. Deployed to $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
