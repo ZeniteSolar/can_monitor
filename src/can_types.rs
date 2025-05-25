@@ -937,6 +937,8 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// State error
+                    pub error: u8,
                     /// Control flags for operating point
                     pub control: ControlFlags,
                 }
@@ -1012,6 +1014,8 @@ pub mod modules {
                     pub signature: u8,
                     /// State code
                     pub state: u8,
+                    /// State error
+                    pub error: u8,
                     /// Control flags for operating point
                     pub control: ControlFlags,
                 }
