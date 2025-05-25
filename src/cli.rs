@@ -31,6 +31,10 @@ pub struct Configuration {
     /// Skips CAN interface initialization (for local dev)
     #[arg(long, default_value_t = false)]
     pub no_can: bool,
+
+    /// Skips CAN interface initialization (for local dev)
+    #[arg(long, default_value_t = false)]
+    pub no_log: bool,
 }
 
 lazy_static! {
