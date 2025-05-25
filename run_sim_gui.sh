@@ -17,11 +17,13 @@ if $LOGGING_ENABLED; then
   VITE_LOG="$SCRIPT_DIR/vite.log"
   RUST_LOG="$SCRIPT_DIR/cargo.log"
   PYTHON_LOG="$SCRIPT_DIR/mock_sender.log"
+  CHROMIUM_LOG="$SCRIPT_DIR/chromium.log"
 else
   FRONTEND_LOG="/dev/null"
   VITE_LOG="/dev/null"
   RUST_LOG="/dev/null"
   PYTHON_LOG="/dev/null"
+  CHROMIUM_LOG="/dev/null"
 fi
 
 # ─── 1) Build frontend ─────────────────────────────────────────────────────
@@ -52,17 +54,29 @@ echo "🐍 Running mock_sender.py…"
 python mock_sender.py > "$PYTHON_LOG" 2>&1 &
 PYTHON_PID=$!
 
-# ─── 5) Cleanup trap ───────────────────────────────────────────────────────
+# ─── 5) Launch Chromium in Pi-simulated resolution ─────────────────────────
+echo "🖥️ Launching Chromium at 1024x600 (simulated Pi resolution)…"
+chromium \
+  --no-sandbox \
+  --disable-gpu \
+  --force-device-scale-factor=1 \
+  --window-size=1024,600 \
+  --app=http://localhost:3000 > "$CHROMIUM_LOG" 2>&1 &
+
+CHROMIUM_PID=$!
+
+# ─── 6) Cleanup trap ───────────────────────────────────────────────────────
 cleanup() {
   echo
   echo "🧹 Cleaning up…"
-  kill "$VITE_PID" "$RUST_PID" "$PYTHON_PID" 2>/dev/null || true
-  wait "$VITE_PID" "$RUST_PID" "$PYTHON_PID" 2>/dev/null || true
+  kill "$VITE_PID" "$RUST_PID" "$PYTHON_PID" "$CHROMIUM_PID" 2>/dev/null || true
+  wait "$VITE_PID" "$RUST_PID" "$PYTHON_PID" "$CHROMIUM_PID" 2>/dev/null || true
 }
 trap cleanup SIGINT SIGTERM EXIT
 
-# ─── 6) Hold script open ───────────────────────────────────────────────────
+# ─── 7) Hold script open ───────────────────────────────────────────────────
 echo "🚀 Dev environment started."
 echo "Frontend: http://localhost:3000"
+echo "Chromium running at 1024x600"
 echo "Press Ctrl+C to stop."
 wait
