@@ -1,6 +1,8 @@
+// in types/index.ts or wherever you define shared types
 export interface BoardState {
   label: string;
   value: number;
+  description?: string; // ✅ add this if not present
 }
 
 export interface BoardMetric {
@@ -18,4 +20,3 @@ export enum Orientation {
   VERTICAL = 'VERTICAL',
   HORIZONTAL = 'HORIZONTAL',
 }
-
