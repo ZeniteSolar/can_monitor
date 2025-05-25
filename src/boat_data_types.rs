@@ -13,12 +13,13 @@ pub struct BoatData {
     pump: [bool; 3],
     motor_d: [f32; 2],
     motor_rpm: f32,
-    mam_machine_state: u8,
     mic_machine_state: u8,
     mcs_machine_state: u8,
+    mam_machine_state: u8,
     mac_machine_state: u8,
-    mde_machine_state: u8,
+    msc_machine_state: [u8; 3],
     mcb_machine_state: [u8; 2],
+    mde_machine_state: u8,
     mam_error_code: u8,
     mic_error_code: u8,
     mcs_error_code: u8,
@@ -79,12 +80,13 @@ impl From<BoatState> for BoatData {
             pump: value.pump,
             motor_d,
             motor_rpm: value.motor_rpm.value(),
-            mam_machine_state: value.mam_machine_state,
             mic_machine_state: value.mic_machine_state,
             mcs_machine_state: value.mcs_machine_state,
+            mam_machine_state: value.mam_machine_state,
             mac_machine_state: value.mac_machine_state,
-            mde_machine_state: value.mde_machine_state,
+            msc_machine_state: value.msc_machine_state,
             mcb_machine_state: value.mcb_machine_state,
+            mde_machine_state: value.mde_machine_state,
             mam_error_code: value.mam_error_code,
             mic_error_code: value.mic_error_code,
             mcs_error_code: value.mcs_error_code,
@@ -177,6 +179,7 @@ impl BoatStateVariable for modules::mcb19_1::messages::state::Message  {
 
 
         boat_state.mcb_machine_state[0] = message.state;
+        boat_state.mcb_error_code[0] = message.error;
         boat_state.mcb_control[0] = message.control.into_bytes()[0];
     }
 }
@@ -186,6 +189,7 @@ impl BoatStateVariable for modules::mcb19_2::messages::state::Message  {
 
 
         boat_state.mcb_machine_state[1] = message.state;
+        boat_state.mcb_error_code[1] = message.error;
         boat_state.mcb_control[1] = message.control.into_bytes()[0];
     }
 }
@@ -233,6 +237,14 @@ impl BoatStateVariable for modules::mt19::messages::rpm::Message {
     }
 }
 
+impl BoatStateVariable for modules::msc19_1::messages::state::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
+
+        boat_state.msc_machine_state[0] = message.state;
+        boat_state.msc_error_code[0] = message.error;
+    }
+}
 impl BoatStateVariable for modules::msc19_1::messages::adc::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
@@ -249,11 +261,29 @@ impl BoatStateVariable for modules::msc19_2::messages::adc::Message {
     }
 }
 
+impl BoatStateVariable for modules::msc19_2::messages::state::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
+
+        boat_state.msc_machine_state[1] = message.state;
+        boat_state.msc_error_code[1] = message.error;
+    }
+}
+
 impl BoatStateVariable for modules::msc19_3::messages::adc::Message {
     fn update(message: Self) {
         let mut boat_state = BOAT_STATE.lock().unwrap();
 
         boat_state.bat_cell_v[2].update((message.average as f32) / 100f32);
+    }
+}
+
+impl BoatStateVariable for modules::msc19_3::messages::state::Message {
+    fn update(message: Self) {
+        let mut boat_state = BOAT_STATE.lock().unwrap();
+
+        boat_state.msc_machine_state[2] = message.state;
+        boat_state.msc_error_code[2] = message.error;
     }
 }
 
