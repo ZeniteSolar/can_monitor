@@ -96,11 +96,14 @@ const stateLabelsMap: LabelMap = {
 
 // Module-specific description arrays
 const moduleDescriptions: LabelMap = {
-  MAM: ['Init', 'Wait Contactor', 'Idle: checking system...', 'Running!', 'Error code XXX'],
-  MIC: ['Init', 'Idle: checking system...', 'Running!', 'Error code XXX', 'Reseting'],
-  MCS: ['Init', 'Idle: checking system...', 'Running!', 'Error code XXX', 'Reseting'],
-  MAC: ['Init', 'Idle: checking system...', 'Running!', 'Error code XXX', 'Reseting'],
-  MDE: ['Init', 'Idle: checking system...', 'Running!', 'Error code XXX', 'Reseting'],
+  MIC: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
+  MCS: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
+  MAM: ['Init', 'Wait Contactor', 'Idle: checking system...', 'Running!', 'Error code: XXX'],
+  MAC: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
+  MSC_1: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
+  MCB_1: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
+  MCB_2: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
+  MDE: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
 };
 
 // Helper: get display name for any state index
