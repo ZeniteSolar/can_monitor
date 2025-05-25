@@ -31,8 +31,16 @@
 
         <div v-if="true">
           <!-- MODULES STATE -->
-          <MultiStateCard :title="'ESTADO DOS MÓDULOS'" :titleColor="'bg-primary text-white'"
-            :stateData="moduleStates" />
+          <MultiStateCard :title="'ESTADO DOS MÓDULOS'" :titleColor="'bg-primary text-white'" :modules="[
+            { label: 'MIC', stateKey: 'mic_machine_state', errorKey: 'mic_error_code' },
+            { label: 'MCS', stateKey: 'mcs_machine_state', errorKey: 'mcs_error_code' },
+            { label: 'MAM', stateKey: 'mam_machine_state', errorKey: 'mam_error_code' },
+            { label: 'MAC', stateKey: 'mac_machine_state', errorKey: 'mac_error_code' },
+            { label: 'MSC_1', stateKey: 'msc_machine_state', errorKey: 'msc_error_code', index: 0 },
+            { label: 'MCB_1', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 0 },
+            { label: 'MCB_2', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 1 },
+            { label: 'MDE', stateKey: 'mde_machine_state', errorKey: 'mde_error_code' }
+          ]" />
         </div>
 
       </v-col>
@@ -277,56 +285,7 @@ import SteeringCard from './SteeringCard.vue';
 import { Orientation } from '@/types/index'
 import type { BoardState } from '@/types/index';
 import { GenericCardData } from '../measurement_types'
-
-const moduleSpecs = [
-  { label: 'MIC', stateKey: 'mic_machine_state', errorKey: 'mic_error_code' },
-  { label: 'MCS', stateKey: 'mcs_machine_state', errorKey: 'mcs_error_code' },
-  { label: 'MAM', stateKey: 'mam_machine_state', errorKey: 'mam_error_code' },
-  { label: 'MAC', stateKey: 'mac_machine_state', errorKey: 'mac_error_code' },
-  { label: 'MSC_1', stateKey: 'msc_machine_state', errorKey: 'msc_error_code', index: 0 },
-  { label: 'MCB_1', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 0 },
-  { label: 'MCB_2', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 1 },
-  { label: 'MDE', stateKey: 'mde_machine_state', errorKey: 'mde_error_code' },
-];
-
-const moduleStates = computed<BoardState[]>(() =>
-  moduleSpecs.map(({ label, stateKey, errorKey, index = 0 }) => {
-    const raw = measurementCards[stateKey]?.data?.[index];
-    const value =
-      typeof raw === 'number'
-        ? raw
-        : typeof raw === 'boolean'
-          ? raw ? 1 : 0
-          : 0;
-
-    const rawError = measurementCards[errorKey]?.data?.[index];
-    const error = typeof rawError === 'number' ? rawError : undefined;
-
-    const description = getErrorDescription(label, value, error);
-
-    return {
-      label,
-      value,
-      description,
-    };
-  })
-);
-
-function getErrorDescription(label: string, state: number, errorCode: number | undefined): string | undefined {
-  const baseDescriptions: Record<string, string[]> = {
-    MIC: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-    MCS: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-    MAM: ['Init', 'Contactor...', 'Idle...', 'Running!', 'Error code XXX'],
-    MAC: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-    MSC_1: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-    MCB_1: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-    MCB_2: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-    MDE: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-  };
-
-  const base = baseDescriptions[label]?.[state];
-  return base?.replace('XXX', `${errorCode ?? '?'}`);
-}
+import { measurementCards } from '@/measurement_cards';
 
 // Computed methods acting as additional safeguards for data access
 // This is relevant for angles to avoid 'Nan' values in the SVG
@@ -343,7 +302,6 @@ const tailAngle = computed(() =>
 );
 
 const last_msg_time: Ref<number | null> = ref(null)
-const measurementCards = reactive<Record<string, GenericCardData>>({});
 
 class WSConnection {
   socket: WebSocket | null = null;

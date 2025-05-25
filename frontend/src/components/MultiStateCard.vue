@@ -14,7 +14,7 @@
       <v-col cols="auto">
         <div class="column">
           <div
-            v-for="state in stateData"
+            v-for="state in moduleStates"
             :key="state.label"
             class="cell label-cell"
           >
@@ -27,7 +27,7 @@
       <v-col cols="auto">
         <div class="column">
           <div
-            v-for="state in stateData"
+            v-for="state in moduleStates"
             :key="state.label"
             class="cell value-cell"
           >
@@ -40,11 +40,11 @@
       <v-col>
         <div class="column">
           <div
-            v-for="state in stateData"
+            v-for="state in moduleStates"
             :key="state.label"
             class="cell description-cell"
           >
-            {{ getDescription(state.value, state.label) }}
+            {{ state.description }}
           </div>
         </div>
       </v-col>
@@ -54,79 +54,73 @@
 
 <script setup lang="ts">
 import type { BoardState } from '@/types/index';
-import { defineProps, ref, watch } from 'vue';
+import { defineProps, computed, ref, watch } from 'vue';
+import { measurementCards } from '@/measurement_cards';
 
-// Props
 const props = defineProps<{
   title: string;
   titleColor?: string;
-  stateData: Array<BoardState & { description?: string }>;
+  modules: Array<{ label: string; stateKey: string; errorKey?: string; index?: number }>;
 }>();
 
-// Track previous state values in a reactive map
 const prevStates = ref<Record<string, number>>({});
-  watch(
-  () => props.stateData,
-  (newList, oldList = [] as typeof props.stateData) => {
-    newList.forEach(({ label, value }) => {
-      // On first run (oldList empty), seed prevStates to the current value
-      if (oldList.length === 0) {
-        prevStates.value[label] = value;
-      } else {
-        // Find the previous value for this label
-        const oldItem = oldList.find(item => item.label === label);
-        const oldValue = oldItem?.value ?? prevStates.value[label];
 
-        // Only update prevStates if the state really changed
-        if (value !== oldValue) {
-          prevStates.value[label] = oldValue!;
-        }
+// Descriptions centralized
+const moduleDescriptions: Record<string, string[]> = {
+  MIC: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+  MCS: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+  MAM: ['Init', 'Contactor...', 'Idle...', 'Running!', 'Error code XXX'],
+  MAC: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+  MSC_1: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+  MCB_1: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+  MCB_2: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+  MDE: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+};
+
+function getStateLabel(val: number, label: string) {
+  const defaultStates = ['INIT', 'IDLE', 'RUN', 'ERROR', 'RESET'];
+  const mamStates = ['INIT', 'CONTAT', 'IDLE', 'RUN', 'ERROR'];
+  const isMam = label === 'MAM';
+  const list = isMam ? mamStates : defaultStates;
+  return list[val] ?? 'UNKNOWN';
+}
+
+function getErrorDescription(label: string, state: number, errorCode: number | undefined): string {
+  const base = moduleDescriptions[label]?.[state];
+  return base?.replace('XXX', `${errorCode ?? '?'}`) ?? 'UNKNOWN';
+}
+
+const moduleStates = computed<BoardState[]>(() =>
+  props.modules.map(({ label, stateKey, errorKey, index = 0 }) => {
+    const raw = measurementCards[stateKey]?.data?.[index];
+    const value = typeof raw === 'number' ? raw : typeof raw === 'boolean' ? (raw ? 1 : 0) : 0;
+    const rawError = measurementCards[errorKey || '']?.data?.[index];
+    const error = typeof rawError === 'number' ? rawError : undefined;
+    const description = getErrorDescription(label, value, error);
+    return { label, value, description };
+  })
+);
+
+watch(
+  moduleStates,
+  (newList) => {
+    newList.forEach(({ label, value }) => {
+      if (prevStates.value[label] !== value) {
+        prevStates.value[label] = value;
       }
     });
   },
   { immediate: true, deep: true }
 );
-
-// State-label mappings per module or default
-interface LabelMap { [key: string]: string[]; }
-const stateLabelsMap: LabelMap = {
-  default: ['INIT', 'IDLE', 'RUN', 'ERROR', 'RESET'],
-  MAM:     ['INIT', 'CONTAT', 'IDLE', 'RUN', 'ERROR'],
-};
-
-// Module-specific description arrays
-const moduleDescriptions: LabelMap = {
-  MIC: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
-  MCS: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
-  MAM: ['Init', 'Wait Contactor', 'Idle: checking system...', 'Running!', 'Error code: XXX'],
-  MAC: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
-  MSC_1: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
-  MCB_1: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
-  MCB_2: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
-  MDE: ['Init', 'Idle: checking system...', 'Running!', 'Error code: XXX', 'Reseting'],
-};
-
-// Helper: get display name for any state index
-function getStateLabel(val: number, label: string) {
-  const list = stateLabelsMap[label] ?? stateLabelsMap.default;
-  return list[val] ?? 'UNKNOWN';
-}
-
-// Helper: description, with per-item override
-function getDescription(val: number, label: string) {
-  const override = props.stateData.find(s => s.label === label)?.description;
-  return override ?? moduleDescriptions[label]?.[val] ?? 'NONE';
-}
 </script>
 
 <style scoped>
 .state-card {
   --state-gap:     0.5rem;
   --state-padding: 0.25rem 0.5rem;
-  --value-width:   14ch; /* adjust to fit your longest transition text */
+  --value-width:   14ch;
 }
 
-/* Grid with fixed second column width */
 .state-grid {
   display: grid;
   grid-template-columns: max-content var(--value-width) 1fr;
