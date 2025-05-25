@@ -71,7 +71,7 @@
           stroke="red"
           stroke-width="2"
           stroke-linejoin="round"
-          :transform="`rotate(${props.angle} 100 0)`"
+          :transform="`rotate(${props.steeringAngle} 100 0)`"
           vector-effect="non-scaling-stroke"
         />
 
@@ -94,7 +94,7 @@
 // Dual-angle props, used directly for SVG transforms
 import { defineProps } from 'vue';
 const props = defineProps<{ 
-  angle: number; 
+  steeringAngle: number; 
   tailAngle: number; 
   title: String;
   titleColor?: string;
