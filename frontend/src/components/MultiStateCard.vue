@@ -27,13 +27,13 @@
       </v-col>
 
       <!-- DESCRIPTION COLUMN -->
-      <v-col>
+      <!-- <v-col>
         <div class="column">
           <div v-for="state in moduleStates" :key="state.label" class="cell description-cell">
             {{ state.description }}
           </div>
         </div>
-      </v-col>
+      </v-col> -->
     </v-row>
   </v-card>
 </template>
@@ -53,14 +53,14 @@ const prevStates = ref<Record<string, number>>({});
 
 // Descriptions centralized
 const moduleDescriptions: Record<string, string[]> = {
-  MIC: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-  MCS: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-  MAM: ['Init', 'Contactor...', 'Idle...', 'Running!', 'Error code XXX'],
-  MAC: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-  MSC_1: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-  MCB_1: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-  MCB_2: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
-  MDE: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+  MIC: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MCS: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MAM: ['Init', 'Contactor...', 'Idle', 'Running', 'Code <X>'],
+  MAC: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MSC_1: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MCB_1: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MCB_2: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MDE: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
 };
 
 function getStateLabel(val: number, label: string) {
@@ -77,7 +77,7 @@ function getErrorDescription(
   errorCode: number | undefined):
   string {
   const base = moduleDescriptions[label]?.[state];
-  return base?.replace('XXX', `${errorCode ?? '?'}`) ?? 'UNKNOWN';
+  return base?.replace('<X>', `${errorCode ?? '?'}`) ?? 'UNKNOWN';
 }
 
 const moduleStates = computed<BoardState[]>(() =>
@@ -130,7 +130,7 @@ watch(
 
 .state-grid {
   display: grid;
-  grid-template-columns: max-content var(--value-width) 1fr;
+  grid-template-columns: max-content var(--value-width) minmax(0, 1fr);
   column-gap: var(--state-gap);
 }
 
@@ -159,5 +159,8 @@ watch(
 .description-cell {
   font-style: italic;
   font-family: var(--zenite-ui-font) !important;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
