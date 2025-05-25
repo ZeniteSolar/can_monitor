@@ -1,10 +1,8 @@
 <template>
   <v-card class="ma-0 pa-0 state-card">
     <!-- Title -->
-    <v-card-title
-      :class="['py-0 mt-0 font-weight-black', titleColor ?? 'bg-primary text-black']"
-      :style="titleColor?.includes('text-black') ? 'color: black !important;' : ''"
-    >
+    <v-card-title :class="['py-0 mt-0 font-weight-black', titleColor ?? 'bg-primary text-black']"
+      :style="titleColor?.includes('text-black') ? 'color: black !important;' : ''">
       {{ title }}
     </v-card-title>
 
@@ -13,11 +11,7 @@
       <!-- LABEL COLUMN -->
       <v-col cols="auto">
         <div class="column">
-          <div
-            v-for="state in moduleStates"
-            :key="state.label"
-            class="cell label-cell"
-          >
+          <div v-for="state in moduleStates" :key="state.label" class="cell label-cell">
             {{ state.label }}
           </div>
         </div>
@@ -26,11 +20,7 @@
       <!-- TRANSITION COLUMN -->
       <v-col cols="auto">
         <div class="column">
-          <div
-            v-for="state in moduleStates"
-            :key="state.label"
-            class="cell value-cell"
-          >
+          <div v-for="state in moduleStates" :key="state.label" class="cell value-cell">
             {{ getStateLabel(prevStates[state.label], state.label) }} → {{ getStateLabel(state.value, state.label) }}
           </div>
         </div>
@@ -39,11 +29,7 @@
       <!-- DESCRIPTION COLUMN -->
       <v-col>
         <div class="column">
-          <div
-            v-for="state in moduleStates"
-            :key="state.label"
-            class="cell description-cell"
-          >
+          <div v-for="state in moduleStates" :key="state.label" class="cell description-cell">
             {{ state.description }}
           </div>
         </div>
@@ -85,7 +71,11 @@ function getStateLabel(val: number, label: string) {
   return list[val] ?? 'UNKNOWN';
 }
 
-function getErrorDescription(label: string, state: number, errorCode: number | undefined): string {
+function getErrorDescription(
+  label: string,
+  state: number,
+  errorCode: number | undefined):
+  string {
   const base = moduleDescriptions[label]?.[state];
   return base?.replace('XXX', `${errorCode ?? '?'}`) ?? 'UNKNOWN';
 }
@@ -94,8 +84,17 @@ const moduleStates = computed<BoardState[]>(() =>
   props.modules.map(({ label, stateKey, errorKey, index = 0 }) => {
     const raw = measurementCards[stateKey]?.data?.[index];
     const value = typeof raw === 'number' ? raw : typeof raw === 'boolean' ? (raw ? 1 : 0) : 0;
-    const rawError = measurementCards[errorKey || '']?.data?.[index];
-    const error = typeof rawError === 'number' ? rawError : undefined;
+
+    const errorData = measurementCards[errorKey || '']?.data;
+    let error: number | undefined = undefined;
+
+    if (Array.isArray(errorData)) {
+      const maybe = errorData[index];
+      error = typeof maybe === 'number' ? maybe : undefined;
+    } else if (typeof errorData === 'number') {
+      error = errorData;
+    }
+
     const description = getErrorDescription(label, value, error);
     return { label, value, description };
   })
@@ -103,22 +102,30 @@ const moduleStates = computed<BoardState[]>(() =>
 
 watch(
   moduleStates,
-  (newList) => {
+  (newList, oldList) => {
     newList.forEach(({ label, value }) => {
-      if (prevStates.value[label] !== value) {
+      const old = oldList?.find((s) => s.label === label)?.value;
+
+      if (old !== undefined && old !== value) {
+        prevStates.value[label] = old;
+      }
+
+      // Fallback for first-time init
+      if (prevStates.value[label] === undefined) {
         prevStates.value[label] = value;
       }
     });
   },
   { immediate: true, deep: true }
 );
+
 </script>
 
 <style scoped>
 .state-card {
-  --state-gap:     0.5rem;
+  --state-gap: 0.5rem;
   --state-padding: 0.25rem 0.5rem;
-  --value-width:   14ch;
+  --value-width: 14ch;
 }
 
 .state-grid {
