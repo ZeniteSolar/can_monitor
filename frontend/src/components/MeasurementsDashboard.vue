@@ -80,7 +80,7 @@
 
         <!-- Main Battery -->
         <MultiMetricCard :title="'BATERIA PRINCIPAL'" :titleColor="'bg-secondary text-black'"
-          :orientation="Orientation.VERTICAL" :metricsData="[
+          :metricsData="[
             {
               label: 'TOTAL',
               data: (() => {
