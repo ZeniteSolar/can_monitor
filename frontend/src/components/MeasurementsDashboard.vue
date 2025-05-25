@@ -9,35 +9,30 @@
         <MultiMetricCard :title="'MCB - BATERIA DIREÇÃO'" :titleColor="'bg-primary'" :metricsData="[
           {
             label: 'Vi',
-            data: (measurementCards.get('mcb_vi')?.data ?? []) as number[],
-            units: (measurementCards.get('mcb_vi')?.units ?? ['']) as string[]
+            data: (measurementCards['mcb_vi']?.data ?? []) as number[],
+            units: [measurementCards['mcb_vi']?.units ?? '']
           },
           {
             label: 'Io',
-            data: (measurementCards.get('mcb_io')?.data ?? []) as number[],
-            units: (measurementCards.get('mcb_io')?.units ?? ['']) as string[]
+            data: (measurementCards['mcb_io']?.data ?? []) as number[],
+            units: [measurementCards['mcb_io']?.units ?? '']
           },
           {
             label: 'Vo',
-            data: (measurementCards.get('mcb_vo')?.data ?? []) as number[],
-            units: (measurementCards.get('mcb_vo')?.units ?? ['']) as string[]
+            data: (measurementCards['mcb_vo']?.data ?? []) as number[],
+            units: [measurementCards['mcb_vo']?.units ?? '']
           },
           {
             label: 'Po',
-            data: (measurementCards.get('mcb_po')?.data ?? []) as number[],
-            units: (measurementCards.get('mcb_po')?.units ?? ['']) as string[]
+            data: (measurementCards['mcb_po']?.data ?? []) as number[],
+            units: [measurementCards['mcb_po']?.units ?? '']
           },
         ]" />
 
         <div v-if="true">
           <!-- MODULES STATE -->
-          <MultiStateCard :title="'ESTADO DOS MÓDULOS'" :titleColor="'bg-primary text-white'" :stateData="[
-            { label: 'MAM', value: measurementCards.get('mam_machine_state')?.data[0] as number },
-            { label: 'MIC', value: measurementCards.get('mic_machine_state')?.data[0] as number },
-            { label: 'MCS', value: measurementCards.get('mcs_machine_state')?.data[0] as number },
-            { label: 'MAC', value: measurementCards.get('mac_machine_state')?.data[0] as number },
-            { label: 'MDE', value: measurementCards.get('mde_machine_state')?.data[0] as number },
-          ]" />
+          <MultiStateCard :title="'ESTADO DOS MÓDULOS'" :titleColor="'bg-primary text-white'"
+            :stateData="moduleStates" />
         </div>
 
       </v-col>
@@ -50,27 +45,27 @@
           {
             label: 'DIREÇÃO',
             data: [
-              measurementCards.get('mcb_vo')?.data[0] as number,
-              measurementCards.get('mcb_io')?.data[0] as number,
-              measurementCards.get('mcb_po')?.data[0] as number,
+              measurementCards['mcb_vo']?.data[0] as number,
+              measurementCards['mcb_io']?.data[0] as number,
+              measurementCards['mcb_po']?.data[0] as number,
             ],
             units: [
-              measurementCards.get('mcb_vo')?.units ?? '',
-              measurementCards.get('mcb_io')?.units ?? '',
-              measurementCards.get('mcb_po')?.units ?? '',
+              measurementCards['mcb_vo']?.units ?? '',
+              measurementCards['mcb_io']?.units ?? '',
+              measurementCards['mcb_po']?.units ?? '',
             ]
           },
           {
             label: 'AUXILIAR',
             data: [
-              measurementCards.get('mcb_vo')?.data[1] as number,
-              measurementCards.get('mcb_io')?.data[1] as number,
-              measurementCards.get('mcb_po')?.data[1] as number,
+              measurementCards['mcb_vo']?.data[1] as number,
+              measurementCards['mcb_io']?.data[1] as number,
+              measurementCards['mcb_po']?.data[1] as number,
             ],
             units: [
-              measurementCards.get('mcb_vo')?.units ?? '',
-              measurementCards.get('mcb_io')?.units ?? '',
-              measurementCards.get('mcb_po')?.units ?? '',
+              measurementCards['mcb_vo']?.units ?? '',
+              measurementCards['mcb_io']?.units ?? '',
+              measurementCards['mcb_po']?.units ?? '',
             ]
           },
         ]" />
@@ -81,7 +76,7 @@
             {
               label: 'TOTAL',
               data: (() => {
-                const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
+                const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
                 const cells = raw
                   .filter((v): v is number => typeof v === 'number')
                   .slice(0, 2);
@@ -94,20 +89,20 @@
 
                 return [
                   voltage,
-                  measurementCards.get('bat_i')?.avg() ?? 0.0,
-                  measurementCards.get('bat_p')?.avg() ?? 0.0,
+                  measurementCards['bat_i']?.avg() ?? 0.0,
+                  measurementCards['bat_p']?.avg() ?? 0.0,
                 ];
               })(),
               units: [
-                measurementCards.get('bat_v')?.units?.[0] ?? '',
-                measurementCards.get('bat_i')?.units?.[0] ?? '',
-                measurementCards.get('bat_p')?.units?.[0] ?? '',
+                measurementCards['bat_v']?.units?.[0] ?? '',
+                measurementCards['bat_i']?.units?.[0] ?? '',
+                measurementCards['bat_p']?.units?.[0] ?? '',
               ]
             },
             {
               label: 'CELULAS',
               data: (() => {
-                const raw = measurementCards.get('bat_cell_v')?.data as unknown[] ?? [];
+                const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
                 const safe = raw
                   .filter((v): v is number => typeof v === 'number')
                   .slice(0, 2);
@@ -115,33 +110,33 @@
                 return safe.length === 2 ? [...safe, (safe[0] + safe[1]) / 2] : safe;
               })(),
               units: (() => {
-                const u = measurementCards.get('bat_cell_v')?.units;
+                const u = measurementCards['bat_cell_v']?.units;
                 return Array.isArray(u) ? u : u ? [u] : [];
               })()
             },
           ]" />
 
-        <!-- STEERING/ -->
-        <SteeringCard :title="'DIREÇÃO'" :titleColor="'bg-secondary text-black'" 
-        :angle="steeringAngle" :tailAngle="tailAngle" :metricsData="[
-          {
-            label: 'B',
-            data: [
-              measurementCards.get('dir_bat_v')?.avg() ?? 0,
-              measurementCards.get('dir_bat_i')?.avg() ?? 0,
-              measurementCards.get('dir_bat_p')?.avg() ?? 0
-            ],
-            units: [
-              measurementCards.get('dir_bat_v')?.units[0] ?? '',
-              measurementCards.get('dir_bat_i')?.units[0] ?? '',
-              measurementCards.get('dir_bat_p')?.units[0] ?? ''
-            ]
-          }
-        ]" />
+        <!-- STEERING. Use compute methods for visual integrity and separation from metricsData (display only)-->
+        <SteeringCard :title="'DIREÇÃO'" :titleColor="'bg-secondary text-black'" :steeringAngle="steeringAngle"
+          :tailAngle="tailAngle" :metricsData="[
+            {
+              label: 'B',
+              data: [
+                measurementCards['dir_bat_v']?.avg() ?? 0,
+                measurementCards['dir_bat_i']?.avg() ?? 0,
+                measurementCards['dir_bat_p']?.avg() ?? 0
+              ],
+              units: [
+                measurementCards['dir_bat_v']?.units[0] ?? '',
+                measurementCards['dir_bat_i']?.units[0] ?? '',
+                measurementCards['dir_bat_p']?.units[0] ?? ''
+              ]
+            }
+          ]" />
 
       </v-col>
 
-      <!-- CONTROL COLUMN -->
+      <!-- TODO review .units logic in this code CONTROL COLUMN -->
       <v-col class="ma-1">
 
         <!-- MOTOR -->
@@ -149,25 +144,23 @@
           :metricsData="[
             {
               label: 'D',
-              data: (measurementCards.get('motor_d')?.data ?? []) as number[],
-              units: (measurementCards.get('motor_d')?.units ?? ['']) as string[]
+              data: (measurementCards['motor_d']?.data ?? []) as number[],
+              units: [measurementCards['motor_d']?.units ?? '']
             },
             {
               label: 'RPM',
-              data: [(measurementCards.get('motor_rpm')?.avg() ?? 0.0)],
-              units: [(measurementCards.get('motor_rpm')?.units ?? [''])[0]],
+              data: [(measurementCards['motor_rpm']?.avg() ?? 0.0)],
+              units: [(measurementCards['motor_rpm']?.units ?? [''])[0]],
             },
           ]" />
 
         <!-- CONTROL KEYS -->
         <SwitchDisplay :title="'CONTROLE'" :titleColor="'bg-terciary text-white'" :maxLines="4" :data="[
-          { value: measurementCards.get('motor_on')?.data[0] as boolean, label: 'MOTOR' },
-          { value: measurementCards.get('boat_on')?.data[0] as boolean, label: 'BOAT' },
-          { value: measurementCards.get('dms_on')?.data[0] as boolean, label: 'DMS' },
-          { value: measurementCards.get('motor_rev')?.data[0] as boolean, label: 'REV' },
-        ].concat(
-          (measurementCards.get('pump')?.data as boolean[]).map((value, index) => ({ value, label: `BP ${index + 1}` }))
-        )" />
+          { value: measurementCards['boat_on']?.data[0] as boolean, label: 'BOAT' },
+          { value: measurementCards['motor_on']?.data[0] as boolean, label: 'MOTOR' },
+          { value: measurementCards['motor_rev']?.data[0] as boolean, label: 'REV' },
+          { value: measurementCards['dms_on']?.data[0] as boolean, label: 'DMS' },
+        ]" />
 
       </v-col>
 
@@ -212,6 +205,68 @@
 }
 </style>
 
+<!-- These thresholds are used to determine if the incoming data is significant enough to update the card -->
+<!-- For example, if the old value is 10 and the new value is 20, and the threshold is 5, the card will update -->
+<!-- If the threshold is 0, it will always update -->
+<script lang="ts">
+
+export const thresholds: Record<string, number> = {
+  // binary / boolean flags
+  boat_on: 0,
+  motor_on: 0,
+  motor_rev: 0,
+  dms_on: 0,
+
+  // small digital flags (array of booleans)
+  pump: 0,
+
+  // ESC / motor feedback
+  motor_d: 0.01,
+  motor_rpm: 5,
+
+  // machine states (0–4 enums)
+  mic_machine_state: 0,
+  mcs_machine_state: 0,
+  mam_machine_state: 0,
+  mac_machine_state: 0,
+  msc_machine_state: 0,
+  mcb_machine_state: 0,
+  mde_machine_state: 0,
+
+  // error codes
+  mic_error_code: 0,
+  mcs_error_code: 0,
+  mam_error_code: 0,
+  mac_error_code: 0,
+  msc_error_code: 0,
+  mcb_error_code: 0,
+  mde_error_code: 0,
+
+  // battery block
+  bat_v: 0.05,
+  bat_cell_v: 0.05,
+  bat_ii: 0.1,
+  bat_io: 0.1,
+  bat_i: 0.1,
+  bat_p: 1.5,
+
+  // directional battery
+  dir_bat_v: 0.05,
+  dir_bat_i: 0.1,
+  dir_bat_p: 1.5,
+
+  // steering / tail angles
+  dir_pos: 0,
+
+  // MCB sensors
+  mcb_d: 0.01,
+  mcb_vi: 0.05,
+  mcb_io: 0.05,
+  mcb_vo: 0.05,
+  mcb_po: 0.5,
+};
+
+</script>
 
 <script setup lang="ts">
 import { reactive, ref, onUnmounted, type Ref, computed } from 'vue'
@@ -220,21 +275,75 @@ import MultiStateCard from './MultiStateCard.vue';
 import SwitchDisplay from './SwitchCard.vue';
 import SteeringCard from './SteeringCard.vue';
 import { Orientation } from '@/types/index'
+import type { BoardState } from '@/types/index';
 import { GenericCardData } from '../measurement_types'
 
+const moduleSpecs = [
+  { label: 'MIC', stateKey: 'mic_machine_state', errorKey: 'mic_error_code' },
+  { label: 'MCS', stateKey: 'mcs_machine_state', errorKey: 'mcs_error_code' },
+  { label: 'MAM', stateKey: 'mam_machine_state', errorKey: 'mam_error_code' },
+  { label: 'MAC', stateKey: 'mac_machine_state', errorKey: 'mac_error_code' },
+  { label: 'MSC_1', stateKey: 'msc_machine_state', errorKey: 'msc_error_code', index: 0 },
+  { label: 'MCB_1', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 0 },
+  { label: 'MCB_2', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 1 },
+  { label: 'MDE', stateKey: 'mde_machine_state', errorKey: 'mde_error_code' },
+];
+
+const moduleStates = computed<BoardState[]>(() =>
+  moduleSpecs.map(({ label, stateKey, errorKey, index = 0 }) => {
+    const raw = measurementCards[stateKey]?.data?.[index];
+    const value =
+      typeof raw === 'number'
+        ? raw
+        : typeof raw === 'boolean'
+          ? raw ? 1 : 0
+          : 0;
+
+    const rawError = measurementCards[errorKey]?.data?.[index];
+    const error = typeof rawError === 'number' ? rawError : undefined;
+
+    const description = getErrorDescription(label, value, error);
+
+    return {
+      label,
+      value,
+      description,
+    };
+  })
+);
+
+function getErrorDescription(label: string, state: number, errorCode: number | undefined): string | undefined {
+  const baseDescriptions: Record<string, string[]> = {
+    MIC: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+    MCS: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+    MAM: ['Init', 'Contactor...', 'Idle...', 'Running!', 'Error code XXX'],
+    MAC: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+    MSC_1: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+    MCB_1: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+    MCB_2: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+    MDE: ['Init', 'Idle...', 'Running!', 'Error code XXX', 'Reseting'],
+  };
+
+  const base = baseDescriptions[label]?.[state];
+  return base?.replace('XXX', `${errorCode ?? '?'}`);
+}
+
+// Computed methods acting as additional safeguards for data access
+// This is relevant for angles to avoid 'Nan' values in the SVG
+const steeringAngle = computed(() =>
+  typeof measurementCards['dir_pos']?.data?.[0] === 'number'
+    ? measurementCards['dir_pos'].data[0]
+    : 0
+);
+
+const tailAngle = computed(() =>
+  typeof measurementCards['dir_pos']?.data?.[1] === 'number'
+    ? measurementCards['dir_pos'].data[1]
+    : 0
+);
+
 const last_msg_time: Ref<number | null> = ref(null)
-const measurementCards = reactive(new Map<string, GenericCardData>())
-
-// pull a single angle number out of the array
-const steeringAngle = computed(() => {
-  const value = measurementCards.get('dir_pos')?.data[0];
-  return typeof value === 'number' ? value : 0;
-});
-
-const tailAngle = computed(() => {
-  const value = measurementCards.get('dir_pos')?.data[1];
-  return typeof value === 'number' ? value : 0;
-});
+const measurementCards = reactive<Record<string, GenericCardData>>({});
 
 class WSConnection {
   socket: WebSocket | null = null;
@@ -273,7 +382,16 @@ class WSConnection {
 
   async processMessage(data: string) {
     const message = JSON.parse(data);
-    await parse_canboat_message(message);
+
+    Object.entries(message).forEach(([key, val]) => {
+      if (typeof val === 'number' || typeof val === 'boolean' || (Array.isArray(val) && val.every((v) => typeof v === 'number'))) {
+        // Pass only valid types to updateMetric
+        updateMetric(key, val);
+      } else {
+        console.warn(`Invalid data type for key "${key}":`, val);
+      }
+    });
+
     last_msg_time.value = Date.now();
   }
 }
@@ -281,15 +399,45 @@ class WSConnection {
 const apiUrl = `ws://${window.location.hostname}:3001`;
 const ws = new WSConnection(apiUrl);
 
-async function parse_canboat_message(message: object) {
-  for (const [key, data] of Object.entries(message)) {
-    const card_instance = measurementCards.get(key);
-    if (!card_instance) continue;
+function updateMetric(key: string, data: number[] | number | boolean) {
+  const card = measurementCards[key];
+  if (!card) return;
 
-    if (typeof data === 'number' || typeof data === 'boolean') {
-      card_instance.data[0] = data;
-    } else if (Array.isArray(data)) {
-      card_instance.data = data;
+  // Normalize incoming to array
+  const incoming = Array.isArray(data) ? data : [data];
+  if (incoming.length === 0) return;
+
+  const next = incoming[0];
+  const old = card.data?.[0];
+
+  // --- Handle boolean logic
+  if (typeof next === 'boolean') {
+    if (Array.isArray(card.data) && typeof card.data[0] === 'boolean') {
+      if (old !== next) {
+        card.data = incoming as boolean[];
+      }
+    } else {
+      // If card is newly initialized, accept any valid boolean[]
+      card.data = incoming as boolean[];
+    }
+    return;
+  }
+
+  // --- Handle numeric logic
+  if (typeof next === 'number') {
+    const threshold = thresholds[key] ?? 0;
+
+    if (
+      typeof old !== 'number' || // fresh value
+      Math.abs(next - old) > threshold ||
+      Number.isNaN(old)
+    ) {
+      if (Array.isArray(card.data) && typeof card.data[0] === 'number') {
+        card.data = incoming as number[];
+      } else {
+        // If card is uninitialized, accept any valid number[]
+        card.data = incoming as number[];
+      }
     }
   }
 }
@@ -300,216 +448,46 @@ onUnmounted(() => {
   }
 });
 
-measurementCards.set("motor_d", new GenericCardData(
-  "Motor D",
-  "ESC PWM Duty-Cycle",
-  '%',
-  0,
-  100,
-))
-measurementCards.set("motor_rpm", new GenericCardData(
-  "Motor RPM",
-  "Motor RPM",
-  'RPM',
-  0,
-  6000,
-))
-measurementCards.set("bat_v", new GenericCardData(
-  "Bat Cell V",
-  "Battery Voltage",
-  'V',
-  30,
-  60,
-))
-measurementCards.set("bat_i", new GenericCardData(
-  "Bat I",
-  "Battery Current",
-  'A',
-  -200,
-  200,
-))
-measurementCards.set("bat_p", new GenericCardData(
-  "Bat Cell V",
-  "Battery Power",
-  'W',
-  -10000,
-  10000,
-))
-measurementCards.set("bat_cell_v", new GenericCardData(
-  "Bat V",
-  "Battery Voltage",
-  'V',
-  10,
-  16,
-))
-measurementCards.set("dir_pos", new GenericCardData(
-  "Dir H",
-  "Steering System Sensors Position",
-  '°',
-  -135,
-  135,
-))
-measurementCards.set("dir_bat_v", new GenericCardData(
-  "Dir V",
-  "Steering System Battery Voltage",
-  'V',
-  7,
-  15,
-))
-measurementCards.set("dir_bat_i", new GenericCardData(
-  "Dir I",
-  "Steering System Battery Current",
-  'A',
-  0,
-  20,
-))
-measurementCards.set("dir_bat_p", new GenericCardData(
-  "Dir I",
-  "Steering System Battery Power",
-  'W',
-  0,
-  300,
-))
-measurementCards.set("mcb_po", new GenericCardData(
-  "MCBs Po",
-  "MCBs Output Power",
-  'W',
-  0,
-  300,
-))
-measurementCards.set("mcb_vi", new GenericCardData(
-  "MCB Vi",
-  "MCB Input Voltage",
-  'V',
-  0,
-  60,
-))
-measurementCards.set("mcb_io", new GenericCardData(
-  "MCB Io",
-  "MCB Output Current",
-  'A',
-  0,
-  15,
-))
-measurementCards.set("mcb_vo", new GenericCardData(
-  "MCB Vo",
-  "MCB Output Voltage",
-  'V',
-  0,
-  60,
-))
-measurementCards.set("mcb_d", new GenericCardData(
-  "MCB D",
-  "MCB Duty Cycle",
-  '%',
-  0,
-  100,
-))
-measurementCards.set("pump", new GenericCardData(
-  "BILDGE PUMP",
-  "Bildge Pump Status",
-  '',
-  0,
-  1,
-))
-measurementCards.set("boat_on", new GenericCardData(
-  "BOAT ON",
-  "Boat Status",
-  '',
-  0,
-  1,
-))
-measurementCards.set("dms_on", new GenericCardData(
-  "DMS ON",
-  "Dead Man Switch Status",
-  '',
-  0,
-  1,
-))
-measurementCards.set("motor_on", new GenericCardData(
-  "MOTOR ON",
-  "Motor Status",
-  '',
-  0,
-  1,
-))
-measurementCards.set("motor_rev", new GenericCardData(
-  "MOTOR REVERSE",
-  "Motor Reverse Status",
-  '',
-  0,
-  1,
-))
-measurementCards.set("mam_machine_state", new GenericCardData(
-  "MAM MACHINE STATE",
-  "MAM Machine State",
-  '',
-  0,
-  1,
-))
-measurementCards.set("mic_machine_state", new GenericCardData(
-  "MIC MACHINE STATE",
-  "MIC Machine State",
-  '',
-  0,
-  1,
-))
-measurementCards.set("mcs_machine_state", new GenericCardData(
-  "MCS MACHINE STATE",
-  "MCS Machine State",
-  '',
-  0,
-  1,
-))
-measurementCards.set("mac_machine_state", new GenericCardData(
-  "MAC MACHINE STATE",
-  "MAC Machine State",
-  '',
-  0,
-  1,
-))
-measurementCards.set("mde_machine_state", new GenericCardData(
-  "MDE MACHINE STATE",
-  "MDE Machine State",
-  '',
-  0,
-  1,
-))
+// Standard cards
+const cardsToRegister: [string, string, string, string, number, number][] = [
+  // key,      label,       description,    units, min, max 
+  ['motor_d', 'Motor D', 'ESC PWM Duty-Cycle', '%', 0, 100],
+  ['motor_rpm', 'Motor RPM', 'Motor RPM', 'RPM', 0, 6000],
+  ['bat_v', 'Bat Cell V', 'Battery Voltage', 'V', 30, 60],
+  ['bat_i', 'Bat I', 'Battery Current', 'A', -200, 200],
+  ['bat_p', 'Bat P', 'Battery Power', 'W', -10000, 10000],
+  ['bat_cell_v', 'Bat V', 'Battery Voltage', 'V', 10, 16],
+  ['dir_pos', 'Dir H', 'Steering System Sensors Position', '°', -135, 135],
+  ['dir_bat_v', 'Dir V', 'Steering System Battery Voltage', 'V', 7, 15],
+  ['dir_bat_i', 'Dir I', 'Steering System Battery Current', 'A', 0, 20],
+  ['dir_bat_p', 'Dir P', 'Steering System Battery Power', 'W', 0, 300],
+  ['mcb_po', 'MCBs Po', 'MCBs Output Power', 'W', 0, 300],
+  ['mcb_vi', 'MCB Vi', 'MCB Input Voltage', 'V', 0, 60],
+  ['mcb_io', 'MCB Io', 'MCB Output Current', 'A', 0, 15],
+  ['mcb_vo', 'MCB Vo', 'MCB Output Voltage', 'V', 0, 60],
+  ['mcb_d', 'MCB D', 'MCB Duty Cycle', '%', 0, 100],
+  ['boat_on', 'BOAT ON', 'Boat Status', '', 0, 1],
+  ['dms_on', 'DMS ON', 'Dead Man Switch Status', '', 0, 1],
+  ['motor_on', 'MOTOR ON', 'Motor Status', '', 0, 1],
+  ['motor_rev', 'MOTOR REVERSE', 'Motor Reverse Status', '', 0, 1],
+  ['mic_machine_state', 'MIC MACHINE STATE', 'MIC Machine State', '', 0, 4],
+  ['mcs_machine_state', 'MCS MACHINE STATE', 'MCS Machine State', '', 0, 4],
+  ['mam_machine_state', 'MAM MACHINE STATE', 'MAM Machine State', '', 0, 4],
+  ['mac_machine_state', 'MAC MACHINE STATE', 'MAC Machine State', '', 0, 4],
+  ['msc_machine_state', 'MSC MACHINE STATE', 'MSC Machine State', '', 0, 4],
+  ['mcb_machine_state', 'MCB MACHINE STATE', 'MCB Machine State', '', 0, 4],
+  ['mde_machine_state', 'MDE MACHINE STATE', 'MDE Machine State', '', 0, 4],
+  ['mic_error_code', 'MIC ERROR CODE', 'MIC Error Code', '', 0, 1],
+  ['mcs_error_code', 'MCS ERROR CODE', 'MCS Error Code', '', 0, 1],
+  ['mam_error_code', 'MAM ERROR CODE', 'MAM Error Code', '', 0, 1],
+  ['mac_error_code', 'MAC ERROR CODE', 'MAC Error Code', '', 0, 1],
+  ['msc_error_code', 'MSC ERROR CODE', 'MSC Error Code', '', 0, 1],
+  ['mcb_error_code', 'MCB ERROR CODE', 'MCB Error Code', '', 0, 1],
+  ['mde_error_code', 'MDE ERROR CODE', 'MDE Error Code', '', 0, 1],
+];
 
-measurementCards.set("mam_error_code", new GenericCardData(
-  "MAM ERROR CODE",
-  "MAM Error Code",
-  '',
-  0,
-  1,
-))
-measurementCards.set("mic_error_code", new GenericCardData(
-  "MIC ERROR CODE",
-  "MIC Error Code",
-  '',
-  0,
-  1,
-))
-measurementCards.set("mcs_error_code", new GenericCardData(
-  "MCS ERROR CODE",
-  "MCS Error Code",
-  '',
-  0,
-  1,
-))
-measurementCards.set("mac_error_code", new GenericCardData(
-  "MAC ERROR CODE",
-  "MAC Error Code",
-  '',
-  0,
-  1,
-))
-measurementCards.set("mde_error_code", new GenericCardData(
-  "MDE ERROR CODE",
-  "MDE Error Code",
-  '',
-  0,
-  1,
-))
+cardsToRegister.forEach(([key, label, desc, units, min, max]) => {
+  measurementCards[key] = new GenericCardData(label, desc, units, min, max);
+});
 
 </script>
