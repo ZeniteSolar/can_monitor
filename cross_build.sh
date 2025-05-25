@@ -27,12 +27,12 @@ echo "📤 Deploying to $REMOTE_USER@$REMOTE_HOST..."
 scp "$BUILD_DIR/$BINARY_NAME" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
 
 # Restart service
-echo "🚀 Restarting service on Pi..."
-if ssh $REMOTE_USER@$REMOTE_HOST 'sudo systemctl restart simple_can_monitor.service'; then
-  echo "✅ Service restarted successfully."
-else
-  echo "❌ Failed to restart service."
-  exit 1
-fi
+# echo "🚀 Restarting service on Pi..."
+# if ssh $REMOTE_USER@$REMOTE_HOST 'sudo systemctl restart simple_can_monitor.service'; then
+#   echo "✅ Service restarted successfully."
+# else
+#   echo "❌ Failed to restart service."
+#   exit 1
+# fi
 
 echo "✅ Done. Deployed to $REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
