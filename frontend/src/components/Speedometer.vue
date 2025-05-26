@@ -54,10 +54,11 @@
 
         <!-- MIC Pointer -->
         <polygon
-          :points="pointerPoints(steeringAngle, radius * 0.75)"
+          :points="pointerPoints(steeringAngle, radius * 0.8)"
           fill="red"
           stroke="red"
-          stroke-width="1"
+          stroke-width="6"
+          stroke-linejoin="round"
         />
 
         <!-- MAM Pointer -->
@@ -65,11 +66,12 @@
           :points="pointerPoints(tailAngle, radius)"
           fill="black"
           stroke="black"
-          stroke-width="2"
+          stroke-width="7"
+          stroke-linejoin="round"
         />
 
         <!-- Base circle -->
-        <circle :cx="cx" :cy="cy" r="6" fill="black" />
+        <circle :cx="cx" :cy="cy" r="10" fill="black" />
 
       </svg>
     </v-card-text>

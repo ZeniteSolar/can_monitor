@@ -23,9 +23,9 @@
           <rect x="50" y="105" width="100" height="30" rx="5" ry="5" fill="white" stroke="black" stroke-width="1" />
           <text x="100" y="125" text-anchor="middle" fill="black"
             font-family="sans-serif" font-size="16">Guarapuvu II</text>
-          <polygon points="95,0 105,0 100,100" fill="red" stroke="red" stroke-width="2" stroke-linejoin="round"
+          <polygon points="95,0 105,0 100,100" fill="red" stroke="red" stroke-width="5" stroke-linejoin="round"
             :transform="`rotate(${props.steeringAngle} 100 0)`" vector-effect="non-scaling-stroke" />
-          <polygon points="95,0 105,0 100,100" fill="black" stroke="black" stroke-width="5" stroke-linejoin="round"
+          <polygon points="95,0 105,0 100,100" fill="black" stroke="black" stroke-width="7" stroke-linejoin="round"
             :transform="`rotate(${props.tailAngle} 100 0)`" vector-effect="non-scaling-stroke" />
         </svg>
       </v-card-text>
