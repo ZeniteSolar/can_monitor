@@ -1,14 +1,11 @@
 <template>
   <v-card class="ma-0 pa-0 state-card">
-    <!-- Title -->
     <v-card-title :class="['py-0 mt-0 font-weight-black', titleColor ?? 'bg-primary text-black']"
       :style="titleColor?.includes('text-black') ? 'color: black !important;' : ''">
       {{ title }}
     </v-card-title>
 
-    <!-- Three columns: labels, transitions, descriptions -->
     <v-row class="px-4 py-2 state-grid" no-gutters>
-      <!-- LABEL COLUMN -->
       <v-col cols="auto">
         <div class="column">
           <div v-for="state in moduleStates" :key="state.label" class="cell label-cell">
@@ -17,30 +14,26 @@
         </div>
       </v-col>
 
-      <!-- TRANSITION COLUMN -->
       <v-col cols="auto">
         <div class="column">
-          <div v-for="state in moduleStates" :key="state.label" class="cell value-cell">
-            {{ getStateLabel(prevStates[state.label], state.label) }} → {{ getStateLabel(state.value, state.label) }}
+          <div
+            v-for="state in moduleStates"
+            :key="state.label"
+            class="cell value-cell"
+            :class="{ disconnected: state.value === DISC }"
+          >
+            {{ getStateLabel(prevStates[state.label], state.label) }} →
+            {{ getStateLabel(state.value, state.label) }}
           </div>
         </div>
       </v-col>
-
-      <!-- DESCRIPTION COLUMN -->
-      <!-- <v-col>
-        <div class="column">
-          <div v-for="state in moduleStates" :key="state.label" class="cell description-cell">
-            {{ state.description }}
-          </div>
-        </div>
-      </v-col> -->
     </v-row>
   </v-card>
 </template>
 
 <script setup lang="ts">
 import type { BoardState } from '@/types/index';
-import { defineProps, computed, ref, watch } from 'vue';
+import { defineProps, computed, ref, watch, onMounted, onUnmounted } from 'vue';
 import { measurementCards } from '@/measurement_cards';
 
 const props = defineProps<{
@@ -50,40 +43,25 @@ const props = defineProps<{
 }>();
 
 const prevStates = ref<Record<string, number>>({});
+const lastUpdateTimes = ref<Record<string, number>>({});
+const DISC = -1;
 
-// Descriptions centralized
-const moduleDescriptions: Record<string, string[]> = {
-  MIC: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
-  MCS: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
-  MAM: ['Init', 'Contactor...', 'Idle', 'Running', 'Code <X>'],
-  MAC: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
-  MSC_1: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
-  MCB_1: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
-  MCB_2: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
-  MDE: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
-};
+const currentValues = ref<Record<string, number>>({});
 
-function getStateLabel(val: number, label: string) {
-  const defaultStates = ['INIT', 'IDLE', 'RUN', 'ERROR', 'RESET'];
-  const mamStates = ['INIT', 'CONTAT', 'IDLE', 'RUN', 'ERROR'];
-  const isMam = label === 'MAM';
-  const list = isMam ? mamStates : defaultStates;
-  return list[val] ?? 'UNKNOWN';
-}
-
-function getErrorDescription(
-  label: string,
-  state: number,
-  errorCode: number | undefined):
-  string {
-  const base = moduleDescriptions[label]?.[state];
-  return base?.replace('<X>', `${errorCode ?? '?'}`) ?? 'UNKNOWN';
-}
-
-const moduleStates = computed<BoardState[]>(() =>
-  props.modules.map(({ label, stateKey, errorKey, index = 0 }) => {
+// States map and update tracking
+const moduleStates = computed<BoardState[]>(() => {
+  return props.modules.map(({ label, stateKey, errorKey, index = 0 }) => {
     const raw = measurementCards[stateKey]?.data?.[index];
-    const value = typeof raw === 'number' ? raw : typeof raw === 'boolean' ? (raw ? 1 : 0) : 0;
+    const now = Date.now();
+
+    if (typeof raw === 'number') {
+      currentValues.value[label] = raw;
+      lastUpdateTimes.value[label] = now;
+    }
+
+    const lastSeen = measurementCards[stateKey]?.__touched__;
+    const disconnected = !lastSeen || (Date.now() - lastSeen > 100); // in ms
+    const value = disconnected ? DISC : currentValues.value[label]!;
 
     const errorData = measurementCards[errorKey || '']?.data;
     let error: number | undefined = undefined;
@@ -95,22 +73,46 @@ const moduleStates = computed<BoardState[]>(() =>
       error = errorData;
     }
 
-    const description = getErrorDescription(label, value, error);
-    return { label, value, description };
-  })
-);
+    return {
+      label,
+      value,
+      description: getErrorDescription(label, value, error),
+    };
+  });
+});
+
+function getStateLabel(val: number, label: string): string {
+  if (val === DISC) return 'DISC';
+  const defaultStates = ['INIT', 'IDLE', 'RUN', 'ERROR', 'RESET'];
+  const mamStates = ['INIT', 'CONTAT', 'IDLE', 'RUN', 'ERROR'];
+  const states = label === 'MAM' ? mamStates : defaultStates;
+  return states[val] ?? 'UNKNOWN';
+}
+
+function getErrorDescription(label: string, state: number, errorCode?: number): string {
+  const base = moduleDescriptions[label]?.[state];
+  return base?.replace('<X>', `${errorCode ?? '?'}`) ?? 'UNKNOWN';
+}
+
+const moduleDescriptions: Record<string, string[]> = {
+  MIC: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MCS: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MAM: ['Init', 'Contactor...', 'Idle', 'Running', 'Code <X>'],
+  MAC: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MSC_1: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MCB_1: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MCB_2: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MDE: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+};
 
 watch(
   moduleStates,
   (newList, oldList) => {
     newList.forEach(({ label, value }) => {
       const old = oldList?.find((s) => s.label === label)?.value;
-
       if (old !== undefined && old !== value) {
         prevStates.value[label] = old;
       }
-
-      // Fallback for first-time init
       if (prevStates.value[label] === undefined) {
         prevStates.value[label] = value;
       }
@@ -119,6 +121,14 @@ watch(
   { immediate: true, deep: true }
 );
 
+// Optional: cleanup logic if needed later
+onMounted(() => {
+  // You can poll or handle time-based disconnects here if needed
+});
+
+onUnmounted(() => {
+  // Cleanup if needed
+});
 </script>
 
 <style scoped>
@@ -160,6 +170,11 @@ watch(
   font-family: var(--zenite-data-font) !important;
   white-space: nowrap;
   box-sizing: border-box;
+}
+
+.disconnected {
+  color: #ff3b3b;
+  font-weight: bold;
 }
 
 .description-cell {
