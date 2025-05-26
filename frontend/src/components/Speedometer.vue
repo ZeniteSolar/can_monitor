@@ -36,9 +36,9 @@
             :y1="tickY(step,10)"
             :x2=cx
             :y2=cy
-            stroke="#AAA"
+            stroke="#888"
             stroke-width="1"
-            stroke-dasharray="10,3"
+            stroke-dasharray="10,6"
           />
           <text
             :x="labelX(step)"
@@ -46,7 +46,7 @@
             text-anchor="middle"
             alignment-baseline="middle"
             fill="black"
-            font-size="10"
+            font-size="12"
           >
             {{ step }}%
           </text>
@@ -154,15 +154,17 @@ function labelY(step: number) {
 <style scoped>
 .v-card-title {
   font-family: var(--zenite-ui-font);
+  text-align: center;
 }
+
 .legend-box {
-  width: 12px;
-  height: 12px;
+  width: 15px;
+  height: 15px;
   display: inline-block;
   border: 1px solid black;
 }
 .legend-text {
   font-family: var(--zenite-ui-font);
-  font-size: 12px;
+  font-size: 1rem;
 }
 </style>

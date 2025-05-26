@@ -39,10 +39,16 @@ const metricsData = computed(() => props.metricsData);
 </script>
 
 <style scoped>
+.v-card-title {
+  font-family: var(--zenite-ui-font);
+  text-align: center;
+}
+
+
 .label-cell {
   font-weight: bold;
-  font-family: var(--zenite-ui-font) !important;
-  font-size: 0.75rem;
+  font-family: var(--zenite-data-font) !important;
+  font-size: 1.2rem;
   text-align: center;
   padding: 0;
   margin: 0;
@@ -60,7 +66,7 @@ const metricsData = computed(() => props.metricsData);
 
 .metric-value-text {
   font-family: var(--zenite-data-font);
-  font-size: 0.75rem;
+  /* font-size: 0.75rem; */
   font-weight: bold;
   text-align: center;
   line-height: 1;           /* prevents excess height from font */

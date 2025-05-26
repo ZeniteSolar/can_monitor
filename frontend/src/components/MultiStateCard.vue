@@ -122,6 +122,11 @@ watch(
 </script>
 
 <style scoped>
+.v-card-title {
+  font-family: var(--zenite-ui-font);
+  text-align: center;
+}
+
 .state-card {
   --state-gap: 0.5rem;
   --state-padding: 0.25rem 0.5rem;
@@ -132,6 +137,7 @@ watch(
   display: grid;
   grid-template-columns: max-content var(--value-width) minmax(0, 1fr);
   column-gap: var(--state-gap);
+  font-size: 1rem;
 }
 
 .column {

@@ -47,7 +47,7 @@ const props = defineProps<{
 
 <style scoped>
 .steering-body {
-  background-color: lightblue;
+  background-color: rgb(195, 232, 245);
   background-image: repeating-linear-gradient(
     120deg,
     rgba(255, 255, 255, 0.4) 0px,
@@ -61,6 +61,8 @@ const props = defineProps<{
 
 .v-card-title {
   border-radius: 0 !important;
+  font-family: var(--zenite-ui-font);
+  text-align: center;
 }
 
 </style>

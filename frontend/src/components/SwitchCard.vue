@@ -55,4 +55,13 @@ const chunks = computed(() => {
   }
   return chunked;
 });
+
 </script>
+
+<style scoped>
+.v-card-title {
+  font-family: var(--zenite-ui-font);
+  text-align: center;
+}
+
+</style>
