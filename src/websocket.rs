@@ -118,7 +118,7 @@ impl Websocket {
         // --- START NEW: receive task for mock clients like Python ---
         let tx = MANAGER.lock().unwrap().get_sender();
 
-        let receive_task = tokio::spawn(async move {
+        let _receive_task = tokio::spawn(async move {
             while let Some(msg) = ws_receiver.next().await {
                 match msg {
                     Ok(tungstenite::Message::Text(text)) => {
