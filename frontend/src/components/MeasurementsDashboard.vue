@@ -1,10 +1,7 @@
 <template>
   <v-container fill-height fluid class="pa-0 ma-0">
-    <AppHeader :leftLogo1="'/logo_zenite.png'" 
-    :leftLogo2="'/logo_SantaCatarina.png'"
-    :leftLogo3="'/logo_ifsc.png'"
-    :rightLogo1="'/logo_lic.png'"
-    :rightLogo2="'/logo_camad.png'" />
+    <AppHeader :leftLogo1="'/logo_zenite.png'" :leftLogo2="'/logo_SantaCatarina.png'" :leftLogo3="'/logo_ifsc.png'"
+      :rightLogo1="'/logo_lic.png'" :rightLogo2="'/logo_camad.png'" />
 
     <v-row no-gutters>
       <!-- Your dashboard content continues here -->
@@ -357,17 +354,25 @@ class WSConnection {
 
   async processMessage(data: string) {
     const message = JSON.parse(data);
+    const now = Date.now();
 
     Object.entries(message).forEach(([key, val]) => {
-      if (typeof val === 'number' || typeof val === 'boolean' || (Array.isArray(val) && val.every((v) => typeof v === 'number'))) {
-        // Pass only valid types to updateMetric
+      if (
+        typeof val === 'number' ||
+        typeof val === 'boolean' ||
+        (Array.isArray(val) && val.every((v) => typeof v === 'number'))
+      ) {
+        // Store last update time for this key
+        const card = measurementCards[key];
+        if (card) card.__touched__ = now;
+
         updateMetric(key, val);
       } else {
         console.warn(`Invalid data type for key "${key}":`, val);
       }
     });
 
-    last_msg_time.value = Date.now();
+    last_msg_time.value = now;
   }
 }
 
