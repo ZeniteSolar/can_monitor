@@ -5,6 +5,7 @@ export class GenericCardData {
   min: number
   max: number
   data: number[] | boolean[] = []
+  __touched__?: number // Optional field to track last update time
 
   constructor(name: string, description: string, units: string, min: number, max: number) {
     this.name = name
