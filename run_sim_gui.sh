@@ -38,14 +38,21 @@ VITE_PID=$!
 # ─── 2) Launch Rust server ─────────────────────────────────────────────────
 cd "$SCRIPT_DIR"
 echo "🦀 Starting Rust server… (logging to $RUST_LOG)"
-cargo run -- --no-can > "$RUST_LOG" 2>&1 &
+cargo run -- --no-can --no-log > "$RUST_LOG" 2>&1 &
 RUST_PID=$!
 
 sleep 5
 # ─── 3) Wait for backend to be ready (port 3001) ───────────────────────────
 echo "⏳ Waiting for WebSocket server on port 3001…"
+timeout=10
+count=0
 while ! echo > /dev/tcp/localhost/3001 2>/dev/null; do
   sleep 1
+  count=$((count + 1))
+  if [ "$count" -ge "$timeout" ]; then
+    echo "❌ Timed out waiting for backend on port 3001"
+    exit 1
+  fi
 done
 echo "✅ WebSocket server is ready."
 
