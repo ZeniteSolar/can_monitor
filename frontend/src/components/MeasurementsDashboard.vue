@@ -6,28 +6,28 @@
       <v-col class="ma-1">
 
         <!-- MCB - STEERING BATTERY -->
-        <MultiMetricCard :title="'MCB - BATERIA DIREÇÃO'" :titleColor="'bg-primary'" :metricsData="[
+        <!-- <MultiMetricCard :title="'MCB - BATERIA DIREÇÃO'" :titleColor="'bg-primary'" :metricsData="[
           {
             label: 'Vi',
             data: (measurementCards['mcb_vi']?.data ?? []) as number[],
-            units: [measurementCards['mcb_vi']?.units ?? '']
+            units: [measurementCards['mcb_vi']?.units ?? ''],
           },
           {
             label: 'Io',
             data: (measurementCards['mcb_io']?.data ?? []) as number[],
-            units: [measurementCards['mcb_io']?.units ?? '']
+            units: [measurementCards['mcb_io']?.units ?? ''],
           },
           {
             label: 'Vo',
             data: (measurementCards['mcb_vo']?.data ?? []) as number[],
-            units: [measurementCards['mcb_vo']?.units ?? '']
+            units: [measurementCards['mcb_vo']?.units ?? ''],
           },
           {
             label: 'Po',
             data: (measurementCards['mcb_po']?.data ?? []) as number[],
-            units: [measurementCards['mcb_po']?.units ?? '']
-          },
-        ]" />
+            units: [measurementCards['mcb_po']?.units ?? ''],
+          }
+        ]" /> -->
 
         <div v-if="true">
           <!-- MODULES STATE -->
@@ -75,54 +75,70 @@
               measurementCards['mcb_io']?.units ?? '',
               measurementCards['mcb_po']?.units ?? '',
             ]
-          },
+          }
         ]" />
 
         <!-- Main Battery -->
-        <MultiMetricCard :title="'BATERIA PRINCIPAL'" :titleColor="'bg-secondary text-black'"
-          :metricsData="[
-            {
-              label: 'TOTAL',
-              data: (() => {
-                const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
-                const cells = raw
-                  .filter((v): v is number => typeof v === 'number')
-                  .slice(0, 2);
+        <MultiMetricCard :title="'BATERIA PRINCIPAL'" :titleColor="'bg-secondary text-black'" :metricsData="[
+          {
+            label: (() => {
+              const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
+              const cells = raw.filter((v: unknown): v is number => typeof v === 'number');
+              return cells.length >= 2 ? 'TOTAL (MSC)' : 'TOTAL (MCB)';
+            })(),
+            data: (() => {
+              const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
+              const cells = raw.filter((v: unknown): v is number => typeof v === 'number').slice(0, 2);
 
-                if (cells.length === 2) {
-                  cells.push((cells[0] + cells[1]) / 2);
-                }
+              if (cells.length === 2) {
+                const avg = (cells[0] + cells[1]) / 2;
+                return [
+                  cells[0] + cells[1] + avg,
+                  measurementCards['bat_i']?.avg() ?? 0,
+                  measurementCards['bat_p']?.avg() ?? 0,
+                ];
+              } else {
+                const viRaw = (measurementCards['mcb_vi']?.data as unknown[]) ?? [];
+                const validVi = viRaw.filter((v: unknown): v is number => typeof v === 'number');
 
-                const voltage = cells.reduce((sum: number, v: number) => sum + v, 0);
+                const fallback = validVi.length >= 2
+                  ? Math.min(validVi[0], validVi[1])
+                  : validVi[0] ?? 0;
 
                 return [
-                  voltage,
-                  measurementCards['bat_i']?.avg() ?? 0.0,
-                  measurementCards['bat_p']?.avg() ?? 0.0,
+                  fallback,
+                  measurementCards['bat_i']?.avg() ?? 0,
+                  measurementCards['bat_p']?.avg() ?? 0,
                 ];
-              })(),
-              units: [
-                measurementCards['bat_v']?.units?.[0] ?? '',
-                measurementCards['bat_i']?.units?.[0] ?? '',
-                measurementCards['bat_p']?.units?.[0] ?? '',
-              ]
-            },
-            {
-              label: 'CELULAS',
-              data: (() => {
-                const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
-                const safe = raw
-                  .filter((v): v is number => typeof v === 'number')
-                  .slice(0, 2);
+              }
+            })(),
+            units: [
+              measurementCards['bat_v']?.units?.[0] ?? '',
+              measurementCards['bat_i']?.units?.[0] ?? '',
+              measurementCards['bat_p']?.units?.[0] ?? '',
+            ],
+          },
+          {
+            label: 'CELULAS',
+            data: (() => {
+              const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
+              const cells = raw.filter((v: unknown): v is number => typeof v === 'number').slice(0, 2);
 
-                return safe.length === 2 ? [...safe, (safe[0] + safe[1]) / 2] : safe;
-              })(),
-              units: (() => {
-                const u = measurementCards['bat_cell_v']?.units;
-                return Array.isArray(u) ? u : u ? [u] : [];
-              })()
-            },
-          ]" />
+              if (cells.length === 2) {
+                const avg = (cells[0] + cells[1]) / 2;
+                return [...cells, avg];
+              } else {
+                return [0, 0, 0];
+              }
+            })(),
+            units: (() => {
+              const u = measurementCards['bat_cell_v']?.units;
+              return Array.isArray(u) ? u : u ? [u, u, u] : ['', '', ''];
+            })()
+          }
+        ]" />
+
+
 
         <!-- STEERING. Use compute methods for visual integrity and separation from metricsData (display only)-->
         <SteeringCard :title="'DIREÇÃO'" :titleColor="'bg-secondary text-black'" :steeringAngle="steeringAngle"
@@ -146,22 +162,6 @@
 
       <!-- TODO review .units logic in this code CONTROL COLUMN -->
       <v-col class="ma-1">
-
-        <!-- MOTOR -->
-        <MultiMetricCard :title="'MOTOR'" :titleColor="'bg-terciary text-white'" :orientation="Orientation.VERTICAL"
-          :metricsData="[
-            {
-              label: 'D',
-              data: (measurementCards['motor_d']?.data ?? []) as number[],
-              units: [measurementCards['motor_d']?.units ?? '']
-            },
-            {
-              label: 'RPM',
-              data: [(measurementCards['motor_rpm']?.avg() ?? 0.0)],
-              units: [(measurementCards['motor_rpm']?.units ?? [''])[0]],
-            },
-          ]" />
-
         <!-- CONTROL KEYS -->
         <SwitchDisplay :title="'CONTROLE'" :titleColor="'bg-terciary text-white'" :maxLines="4" :data="[
           { value: measurementCards['boat_on']?.data[0] as boolean, label: 'BOAT' },
@@ -169,6 +169,13 @@
           { value: measurementCards['motor_rev']?.data[0] as boolean, label: 'REV' },
           { value: measurementCards['dms_on']?.data[0] as boolean, label: 'DMS' },
         ]" />
+
+        <!-- MOTOR -->
+        <Speedometer :title="'MOTOR'" :titleColor="'bg-terciary text-white'" :data="[
+          measurementCards['motor_d']?.data?.[0] as number ?? 0,
+          measurementCards['motor_d']?.data?.[1] as number ?? 0
+        ]" />
+
 
       </v-col>
 
@@ -282,6 +289,7 @@ import MultiMetricCard from './MultiMetricCard.vue';
 import MultiStateCard from './MultiStateCard.vue';
 import SwitchDisplay from './SwitchCard.vue';
 import SteeringCard from './SteeringCard.vue';
+import Speedometer from './Speedometer.vue';
 import { Orientation } from '@/types/index'
 import type { BoardState } from '@/types/index';
 import { GenericCardData } from '../measurement_types'
