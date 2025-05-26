@@ -1,6 +1,14 @@
 <template>
   <v-container fill-height fluid class="pa-0 ma-0">
+    <AppHeader :leftLogo1="'/logo_zenite.png'" 
+    :leftLogo2="'/logo_SantaCatarina.png'"
+    :leftLogo3="'/logo_ifsc.png'"
+    :rightLogo1="'/logo_lic.png'"
+    :rightLogo2="'/logo_camad.png'" />
+
     <v-row no-gutters>
+      <!-- Your dashboard content continues here -->
+
 
       <!-- LEFT COLUMN -->
       <v-col class="ma-1">
@@ -285,6 +293,7 @@ export const thresholds: Record<string, number> = {
 
 <script setup lang="ts">
 import { reactive, ref, onUnmounted, type Ref, computed } from 'vue'
+import AppHeader from './AppHeader.vue';
 import MultiMetricCard from './MultiMetricCard.vue';
 import MultiStateCard from './MultiStateCard.vue';
 import SwitchDisplay from './SwitchCard.vue';
