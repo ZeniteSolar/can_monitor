@@ -31,7 +31,7 @@ pub struct BoatState {
     pub msc_error_code: [u8; 3],
     pub mcb_error_code: [u8; 2],
     pub mde_error_code: u8,
-    pub mcb_control: [u8; 2],
+    // pub mcb_control: [u8; 2],
     pub bat_v: Ema<10>,
     pub bat_cell_v: [Ema<10>; 3],
     pub bat_ii: Ema<10>,
