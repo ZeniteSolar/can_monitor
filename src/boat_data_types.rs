@@ -6,107 +6,104 @@ use crate::can_types::modules;
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
 #[serde_with::skip_serializing_none]
 pub struct BoatData {
-    boat_on: bool,
-    motor_on: bool,
-    motor_rev: bool,
-    dms_on: bool,
-    pump: [bool; 3],
-    motor_d: [f32; 2],
-    motor_rpm: f32,
+    boat_on: Option<bool>,
+    motor_on: Option<bool>,
+    motor_rev: Option<bool>,
+    dms_on: Option<bool>,
+    pump: Option<[bool; 3]>,
+    motor_d: Option<[f32; 2]>,
+    motor_rpm: Option<f32>,
 
-    mic_machine_state: u8,
-    mcs_machine_state: u8,
-    mam_machine_state: u8,
-    mac_machine_state: u8,
-    msc_machine_state: [u8; 3],
-    mcb_machine_state: [u8; 2],
-    mde_machine_state: u8,
+    mic_machine_state: Option<u8>,
+    mcs_machine_state: Option<u8>,
+    mam_machine_state: Option<u8>,
+    mac_machine_state: Option<u8>,
+    msc_machine_state: Option<[u8; 3]>,
+    mcb_machine_state: Option<[u8; 2]>,
+    mde_machine_state: Option<u8>,
 
-    mic_error_code: u8,
-    mcs_error_code: u8,
-    mam_error_code: u8,
-    mac_error_code: u8,
-    msc_error_code: [u8; 3],
-    mcb_error_code: [u8; 2],
-    mde_error_code: u8,
+    mic_error_code: Option<u8>,
+    mcs_error_code: Option<u8>,
+    mam_error_code: Option<u8>,
+    mac_error_code: Option<u8>,
+    msc_error_code: Option<[u8; 3]>,
+    mcb_error_code: Option<[u8; 2]>,
+    mde_error_code: Option<u8>,
 
-    // mcb_control: [u8; 2],
-    // I didnt manage to fix the usage of ControlFlags, since this is unused it'll be ignored
-
-    bat_v: f32,
-    bat_cell_v: [f32; 3],
-    bat_ii: f32,
-    bat_io: f32,
-    bat_i: f32,
-    bat_p: f32,
-    dir_bat_v: f32,
-    dir_bat_i: f32,
-    dir_bat_p: f32,
-    dir_pos: [f32; 2],
-    mcb_d: [f32; 2],
-    mcb_vi: [f32; 2],
-    mcb_io: [f32; 2],
-    mcb_vo: [f32; 2],
-    mcb_po: [f32; 2],
+    bat_v: Option<f32>,
+    bat_cell_v: Option<[f32; 3]>,
+    bat_ii: Option<f32>,
+    bat_io: Option<f32>,
+    bat_i: Option<f32>,
+    bat_p: Option<f32>,
+    dir_bat_v: Option<f32>,
+    dir_bat_i: Option<f32>,
+    dir_bat_p: Option<f32>,
+    dir_pos: Option<[f32; 2]>,
+    mcb_d: Option<[f32; 2]>,
+    mcb_vi: Option<[f32; 2]>,
+    mcb_io: Option<[f32; 2]>,
+    mcb_vo: Option<[f32; 2]>,
+    mcb_po: Option<[f32; 2]>,
 }
+
 
 impl From<BoatState> for BoatData {
     fn from(value: BoatState) -> Self {
-        let motor_d = value.motor_d.map(Ema::value);
+        let motor_d = Some(value.motor_d.map(Ema::value));
+        let bat_cell_v = Some(value.bat_cell_v.map(Ema::value));
 
-        let bat_v = value.bat_v.value();
-        let bat_cell_v = value.bat_cell_v.map(Ema::value);
+        let bat_v = Some(value.bat_v.value());
+        let bat_ii = Some(value.bat_ii.value());
+        let bat_io = Some(value.bat_io.value());
+        let bat_i = Some(bat_ii.unwrap_or(0.0) - bat_io.unwrap_or(0.0));
+        let bat_p = Some(bat_i.unwrap_or(0.0) * bat_v.unwrap_or(0.0));
 
-        let bat_ii = value.bat_ii.value();
-        let bat_io = value.bat_io.value();
-        let bat_i = bat_ii - bat_io;
-        let bat_p = bat_i * bat_v;
+        let dir_bat_v = Some(value.dir_bat_v.value());
+        let dir_bat_i = Some(value.dir_bat_i.value());
+        let dir_bat_p = Some(dir_bat_v.unwrap_or(0.0) * dir_bat_i.unwrap_or(0.0));
+        let dir_pos = Some(value.dir_pos.map(Ema::value));
 
-        let dir_bat_v = value.dir_bat_v.value();
-        let dir_bat_i = value.dir_bat_i.value();
-        let dir_bat_p = dir_bat_v * dir_bat_i;
-        let dir_pos = value.dir_pos.map(Ema::value);
+        let mcb_d = Some(value.mcb_d.map(Ema::value));
+        let mcb_vi = Some(value.mcb_vi.map(Ema::value));
+        let mcb_io = Some(value.mcb_io.map(Ema::value));
+        let mcb_vo = Some(value.mcb_vo.map(Ema::value));
 
-        let mcb_d = value.mcb_d.map(Ema::value);
-        let mcb_vi = value.mcb_vi.map(Ema::value);
-        let mcb_io = value.mcb_io.map(Ema::value);
-        let mcb_vo = value.mcb_vo.map(Ema::value);
-        let mcb_po: [f32; 2] = mcb_io
-            .iter()
-            .zip(mcb_vo)
-            .map(|(io, vo)| io * vo)
-            .collect::<Vec<f32>>()
-            .try_into()
-            .unwrap();
+        let mcb_po = Some(
+            mcb_io.unwrap_or([0.0; 2])
+                .iter()
+                .zip(mcb_vo.unwrap_or([0.0; 2]))
+                .map(|(io, vo)| io * vo)
+                .collect::<Vec<f32>>()
+                .try_into()
+                .unwrap_or([0.0; 2]),
+        );
 
         Self {
-            boat_on: value.boat_on,
-            motor_on: value.motor_on,
-            motor_rev: value.motor_rev,
-            dms_on: value.dms_on,
-            pump: value.pump,
+            boat_on: Some(value.boat_on),
+            motor_on: Some(value.motor_on),
+            motor_rev: Some(value.motor_rev),
+            dms_on: Some(value.dms_on),
+            pump: Some(value.pump),
             motor_d,
-            motor_rpm: value.motor_rpm.value(),
+            motor_rpm: Some(value.motor_rpm.value()),
 
-            mic_machine_state: value.mic_machine_state,
-            mcs_machine_state: value.mcs_machine_state,
-            mam_machine_state: value.mam_machine_state,
-            mac_machine_state: value.mac_machine_state,
-            msc_machine_state: value.msc_machine_state,
-            mcb_machine_state: value.mcb_machine_state,
-            mde_machine_state: value.mde_machine_state,
+            mic_machine_state: Some(value.mic_machine_state),
+            mcs_machine_state: Some(value.mcs_machine_state),
+            mam_machine_state: Some(value.mam_machine_state),
+            mac_machine_state: Some(value.mac_machine_state),
+            msc_machine_state: Some(value.msc_machine_state),
+            mcb_machine_state: Some(value.mcb_machine_state),
+            mde_machine_state: Some(value.mde_machine_state),
 
-            mic_error_code: value.mic_error_code,
-            mcs_error_code: value.mcs_error_code,
-            mam_error_code: value.mam_error_code,
-            mac_error_code: value.mac_error_code,
-            msc_error_code: value.msc_error_code,
-            mcb_error_code: value.mcb_error_code,
-            mde_error_code: value.mde_error_code,
+            mic_error_code: Some(value.mic_error_code),
+            mcs_error_code: Some(value.mcs_error_code),
+            mam_error_code: Some(value.mam_error_code),
+            mac_error_code: Some(value.mac_error_code),
+            msc_error_code: Some(value.msc_error_code),
+            mcb_error_code: Some(value.mcb_error_code),
+            mde_error_code: Some(value.mde_error_code),
 
-            // mcb_control: value.mcb_control,
-            // I didnt manage to fix the usage of ControlFlags, since this is unused it'll be ignored
-            
             bat_v,
             bat_cell_v,
             bat_ii,
@@ -125,6 +122,7 @@ impl From<BoatState> for BoatData {
         }
     }
 }
+
 
 impl BoatStateVariable for modules::mic19::messages::motor::Message {
     fn update(message: Self) {
