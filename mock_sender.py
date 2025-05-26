@@ -35,7 +35,7 @@ async def send_mock_boat_data():
                 "motor_rpm": 1500 + 200 * sin_wave,
 
                 "mic_machine_state": int(t) % 5,
-                "mcs_machine_state": int(t) % 5,
+                # "mcs_machine_state": int(t) % 5,
                 "mam_machine_state": int(t) % 5,
                 "mac_machine_state": int(t) % 5,
                 "msc_machine_state": [int(t) % 5, int(t) % 5, int(t) % 5],
@@ -69,6 +69,11 @@ async def send_mock_boat_data():
                 "mcb_po": [13.0 + 0.5 * sin_wave, 14.0],
 
             }
+            
+            
+            # Omit `mic_machine_state` for 6s every 20s
+            if t % 10 >= 4:
+                mock_data["mcs_machine_state"] = int(t) % 5
 
             await ws.send(json.dumps(mock_data))
             print("✅ Sent mock BoatData frame")
