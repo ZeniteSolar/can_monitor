@@ -28,22 +28,22 @@ fi
 
 # ─── 1) Build frontend ─────────────────────────────────────────────────────
 cd "$SCRIPT_DIR/frontend"
-echo "🔨 Building frontend…"
+echo "Building frontend…"
 npm run build > "$FRONTEND_LOG" 2>&1
 
-echo "🌐 Starting Vite dev server in background (npm run dev)…"
+echo "Starting Vite dev server in background (npm run dev)…"
 npm run dev > "$VITE_LOG" 2>&1 &
 VITE_PID=$!
 
 # ─── 2) Launch Rust server ─────────────────────────────────────────────────
 cd "$SCRIPT_DIR"
-echo "🦀 Starting Rust server… (logging to $RUST_LOG)"
+echo "Starting Rust server… (logging to $RUST_LOG)"
 cargo run -- --no-can --no-log > "$RUST_LOG" 2>&1 &
 RUST_PID=$!
 
 sleep 5
 # ─── 3) Wait for backend to be ready (port 3001) ───────────────────────────
-echo "⏳ Waiting for WebSocket server on port 3001…"
+echo "Waiting for WebSocket server on port 3001…"
 timeout=10
 count=0
 while ! echo > /dev/tcp/localhost/3001 2>/dev/null; do
@@ -54,17 +54,16 @@ while ! echo > /dev/tcp/localhost/3001 2>/dev/null; do
     exit 1
   fi
 done
-echo "✅ WebSocket server is ready."
+echo "WebSocket server is ready."
 
 # ─── 4) Start Python mock (after backend is ready) ─────────────────────────
-echo "🐍 Running mock_sender.py…"
+echo "Running mock_sender.py…"
 python mock_sender.py > "$PYTHON_LOG" 2>&1 &
 PYTHON_PID=$!
 
 # ─── 5) Launch Chromium in Pi-simulated resolution ─────────────────────────
-echo "🖥️ Launching Chromium at 1024x600 (simulated Pi resolution)…"
+echo "Launching Chromium at 1024x600 (simulated Pi resolution)…"
 chromium \
-  --no-sandbox \
   --disable-gpu \
   --force-device-scale-factor=1 \
   --window-size=1024,600 \
@@ -75,14 +74,14 @@ CHROMIUM_PID=$!
 # ─── 6) Cleanup trap ───────────────────────────────────────────────────────
 cleanup() {
   echo
-  echo "🧹 Cleaning up…"
+  echo "Cleaning up…"
   kill "$VITE_PID" "$RUST_PID" "$PYTHON_PID" "$CHROMIUM_PID" 2>/dev/null || true
   wait "$VITE_PID" "$RUST_PID" "$PYTHON_PID" "$CHROMIUM_PID" 2>/dev/null || true
 }
 trap cleanup SIGINT SIGTERM EXIT
 
 # ─── 7) Hold script open ───────────────────────────────────────────────────
-echo "🚀 Dev environment started."
+echo "Dev environment started."
 echo "Frontend: http://localhost:3000"
 echo "Chromium running at 1024x600"
 echo "Press Ctrl+C to stop."
