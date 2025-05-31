@@ -54,7 +54,7 @@
 
         <!-- MIC Pointer -->
         <polygon
-          :points="pointerPoints(steeringAngle, radius * 0.8)"
+          :points="pointerPoints(MIC_angle, radius * 0.8)"
           fill="red"
           stroke="red"
           stroke-width="6"
@@ -63,7 +63,7 @@
 
         <!-- MAM Pointer -->
         <polygon
-          :points="pointerPoints(tailAngle, radius)"
+          :points="pointerPoints(MAM_angle, radius)"
           fill="black"
           stroke="black"
           stroke-width="7"
@@ -95,12 +95,12 @@ const cy = svgHeight - margin;
 const radius = 90;
 const ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
-const steeringAngle = computed(() =>
-  typeof props.data[0] === 'number' ? (props.data[0] / 100) * 180 : 0
+const MIC_angle = computed(() =>
+  typeof props.data[0] === 'number' ? (1 - props.data[0] / 1023) * 180 : 0  //
 );
 
-const tailAngle = computed(() =>
-  typeof props.data[1] === 'number' ? (props.data[1] / 100) * 180 : 0
+const MAM_angle = computed(() =>
+  typeof props.data[1] === 'number' ? (1 - props.data[1] / 1023) * 180 : 0 //
 );
 
 const arcPath = computed(() => {

@@ -146,22 +146,25 @@
 
 
         <!-- STEERING. Use compute methods for visual integrity and separation from metricsData (display only)-->
-        <SteeringCard :title="'DIREÇÃO'" :titleColor="'bg-secondary text-black'" :steeringAngle="steeringAngle"
-          :tailAngle="tailAngle" :metricsData="[
-            {
-              label: 'B',
-              data: [
-                measurementCards['dir_bat_v']?.avg() ?? 0,
-                measurementCards['dir_bat_i']?.avg() ?? 0,
-                measurementCards['dir_bat_p']?.avg() ?? 0
-              ],
-              units: [
-                measurementCards['dir_bat_v']?.units[0] ?? '',
-                measurementCards['dir_bat_i']?.units[0] ?? '',
-                measurementCards['dir_bat_p']?.units[0] ?? ''
-              ]
-            }
-          ]" />
+        <SteeringCard :title="'DIREÇÃO'" :titleColor="'bg-secondary text-black'" :data="[
+          measurementCards['dir_pos']?.data?.[0] as number ?? 0,
+          measurementCards['dir_pos']?.data?.[1] as number ?? 0
+        ]" :metricsData="[
+          {
+            label: 'B',
+            data: [
+              measurementCards['dir_bat_v']?.avg() ?? 0,
+              measurementCards['dir_bat_i']?.avg() ?? 0,
+              measurementCards['dir_bat_p']?.avg() ?? 0,
+            ],
+            units: [
+              measurementCards['dir_bat_v']?.units[0] ?? '',
+              measurementCards['dir_bat_i']?.units[0] ?? '',
+              measurementCards['dir_bat_p']?.units[0] ?? '',
+            ]
+          }
+        ]" />
+
 
       </v-col>
 
@@ -241,7 +244,7 @@ export const thresholds: Record<string, number> = {
   pump: 0,
 
   // ESC / motor feedback
-  motor_d: 0.01,
+  motor_d: 0.05,
   motor_rpm: 5,
 
   // machine states (0–4 enums)
@@ -263,17 +266,17 @@ export const thresholds: Record<string, number> = {
   mde_error_code: 0,
 
   // battery block
-  bat_v: 0.05,
-  bat_cell_v: 0.05,
+  bat_v: 0.1,
+  bat_cell_v: 0.1,
   bat_ii: 0.1,
   bat_io: 0.1,
   bat_i: 0.1,
   bat_p: 1.5,
 
   // directional battery
-  dir_bat_v: 0.05,
+  dir_bat_v: 0.1,
   dir_bat_i: 0.1,
-  dir_bat_p: 1.5,
+  dir_bat_p: 1,
 
   // steering / tail angles
   dir_pos: 0,
@@ -303,17 +306,6 @@ import { measurementCards } from '@/measurement_cards';
 
 // Computed methods acting as additional safeguards for data access
 // This is relevant for angles to avoid 'Nan' values in the SVG
-const steeringAngle = computed(() =>
-  typeof measurementCards['dir_pos']?.data?.[0] === 'number'
-    ? measurementCards['dir_pos'].data[0]
-    : 0
-);
-
-const tailAngle = computed(() =>
-  typeof measurementCards['dir_pos']?.data?.[1] === 'number'
-    ? measurementCards['dir_pos'].data[1]
-    : 0
-);
 
 const last_msg_time: Ref<number | null> = ref(null)
 
