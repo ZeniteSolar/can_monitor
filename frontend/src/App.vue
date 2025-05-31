@@ -1,5 +1,5 @@
 <template>
-  <div id="app" :class="{ flipped: flipScreen }">
+  <div id="app">
     <Suspense>
       <MeasurementsDashboard />
     </Suspense>
@@ -10,7 +10,6 @@
 import MeasurementsDashboard from "./components/MeasurementsDashboard.vue";
 
 // Read VITE_FLIP_SCREEN from .env
-const flipScreen = import.meta.env.VITE_FLIP_SCREEN === 'true';
 </script>
 
 <style>
@@ -62,9 +61,4 @@ body, #app {
   overflow: hidden;
 }
 
-/* Applied dynamically by .env VITE_FLIP_SCREEN=true npm run build 
-/* If flipScreen === true → class="flipped" is applied */ */
-.flipped {
-  transform: rotate(180deg);
-}
 </style>
