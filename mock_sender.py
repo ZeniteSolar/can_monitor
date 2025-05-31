@@ -31,8 +31,15 @@ async def send_mock_boat_data():
                 "dms_on": t % 15 < 3,
                 "pump": [bool(int((t + i) % 2)) for i in range(3)],
 
-                "motor_d": [100*abs(sin_wave_delayed), 100*abs(sin_wave)],
-                "motor_rpm": 1500 + 200 * sin_wave,
+                "dir_bat_v": 13.0 + 0.1 * sin_wave,
+                "dir_bat_i": 2.0 + 0.1 * cos_wave,
+                "dir_bat_p": 25 + 2 * sin_wave,
+                "dir_pos": [int(120 + 120 * sin_wave_delayed), int(120 + 120 * sin_wave)],
+
+                
+                # "motor_d": [1024 *abs(sin_wave_delayed), 1024*abs(sin_wave)],
+                "motor_d": [int(1024 * 1), int(0 * abs(sin_wave_smooth))],
+                "motor_rpm": 1500,
 
                 "mic_machine_state": int(t) % 5,
                 # "mcs_machine_state": int(t) % 5,
@@ -56,11 +63,6 @@ async def send_mock_boat_data():
                 "bat_io": 1.0 + 0.1 * sin_wave,
                 "bat_i": 3.5 + 0.3 * cos_wave,
                 "bat_p": 36 + 3 * sin_wave,
-
-                "dir_bat_v": 13.0 + 0.1 * sin_wave,
-                "dir_bat_i": 2.0 + 0.1 * cos_wave,
-                "dir_bat_p": 25 + 2 * sin_wave,
-                "dir_pos": [15 * sin_wave, 15 * cos_wave],
 
                 "mcb_d": [0.1 + 0.05 * sin_wave, 0.2 + 0.05 * cos_wave],
                 "mcb_vi": [3*12.6 + 0.1 * cos_wave, 3*13],
