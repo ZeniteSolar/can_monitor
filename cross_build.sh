@@ -2,6 +2,8 @@
 
 set -e  # Exit on error
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Arguments
 REMOTE_HOST=$1
 if [ -z "$REMOTE_HOST" ]; then
@@ -17,7 +19,15 @@ BUILD_DIR=$PWD/target/$TARGET/release
 REMOTE_USER=zenite
 REMOTE_PATH="~/$BINARY_NAME"
 
-# Build
+
+# Build frontend
+cd "$SCRIPT_DIR/frontend"
+echo "Building frontend…"
+npm run build
+
+cd ..
+# Build project
+cd "$SCRIPT_DIR"
 echo "📦 Building for target: $TARGET..."
 cross build --release --target=$TARGET
 echo "Build complete. Binary at: $BUILD_DIR/$BINARY_NAME"
@@ -31,6 +41,9 @@ if ssh $REMOTE_USER@$REMOTE_HOST 'sudo systemctl stop simple_can_monitor.service
   ssh $REMOTE_USER@$REMOTE_HOST "rm $REMOTE_PATH"
   echo "Deploying to $REMOTE_USER@$REMOTE_HOST..."
   scp "$BUILD_DIR/$BINARY_NAME" "$REMOTE_USER@$REMOTE_HOST:$REMOTE_PATH"
+
+  echo "reboot rasp"
+  ssh $REMOTE_USER@$REMOTE_HOST 'sudo reboot now'
 
 else
   echo "❌ Failed to stop service."
