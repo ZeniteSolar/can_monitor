@@ -19,7 +19,7 @@
 
 
 <script setup lang="ts">
-  import { defineProps, computed } from 'vue';
+  import { computed } from 'vue';
   import MetricDisplay from './MetricDisplay.vue';
   /* Types */
   import type { BoardMetric, Orientation } from '@/types/index';

@@ -22,7 +22,7 @@
   import StateDisplay from './StateDisplay.vue';
   import StateDisplayMam from './StateDisplayMam.vue';
   import type { BoardState } from '@/types/index';
-  import { defineProps, computed } from 'vue';
+  import { computed } from 'vue';
 
 
 
