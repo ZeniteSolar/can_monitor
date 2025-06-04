@@ -1,0 +1,179 @@
+┌────────────────────────────────────────────────────────────┐
+│                          Start                            │
+│             (Rust binary wakes up, enters `run()`)        │
+└────────────────────────────────────────────────────────────┘
+            │
+            ▼
+┌────────────────────────────────────────────────────────────┐
+│  Loop: “open or re-open CAN socket”                        │
+│  • Look up interface name (or use CLI override)            │
+│  • `CANSocket::open(&interface)`                           │
+│  • If opening fails → sleep 1s → retry                      │
+│                                                            │
+│  File: `can.rs`                                            │
+└────────────────────────────────────────────────────────────┘
+            │
+            ▼
+┌────────────────────────────────────────────────────────────┐
+│  Loop: “read next CAN frame (or timeout after 1 s)”        │
+│  • `tokio::time::timeout(Duration::from_secs(1), socket_rx.next())` │
+│     - If a frame arrives:                                   │
+│       └─ go to “process_frame”                              │
+│     - If timeout (no frame for 1 s):                        │
+│       └─ go to “prune & broadcast stale entries”            │
+│     - If socket error or None:                              │
+│       └─ drop socket + break → re-open socket               │
+│                                                            │
+│  File: `can.rs` (inside `run(...)`)                         │
+└────────────────────────────────────────────────────────────┘
+            │
+            │ (frame arrived)
+            ▼
+┌────────────────────────────────────────────────────────────┐
+│  Function: `process_frame(frame: CANFrame)`                │
+│  • Deserialize bytes via `read_message::<T>(…)`            │
+│    → `BoatStateVariable::update(message)`                   │
+│  • Inside each `update(...)`:                               │
+│      ├─ Lock `BOAT_STATE` (a `Mutex<BoatState>`)             │
+│      ├─ Write `some_module_state = Some(parsed_u8)`         │
+│      ├─ Write `some_module_error = Some(parsed_u8)`         │
+│      └─ Write `some_module_last_timestamp = Some(Instant::now())` │
+│                                                            │
+│  File: `can.rs` → calls into each module’s `state::Message::update(...)` │
+│  Under-the-hood: those `update(...)` impls reside in each module’s code, │
+│    but **critical point** is:  every time a valid state frame arrives,  │
+│    we both set the new state and record “Instant::now()” into BoatState. │
+└────────────────────────────────────────────────────────────┘
+            │
+            ▼
+┌────────────────────────────────────────────────────────────┐
+│  After `process_frame` returns, inside `run(...)`:        │
+│  • Check if `period` ms have elapsed since last broadcast │
+│    (tracked via local `last_broadcast: Instant`)           │
+│    – If yes → call “prune & broadcast”                      │
+│    – If no → continue reading next frame                    │
+└────────────────────────────────────────────────────────────┘
+            │
+            ▼
+### 2. Prune & broadcast stale entries (`can.rs`)
+
+┌────────────────────────────────────────────────────────────┐
+│ Function: prune_and_broadcast_if_stale(tx) │
+│ │
+│ 1) let now = Instant::now(); │
+│ 2) Lock boat_state = BOAT_STATE.lock().unwrap() │
+│ 3) Clone into ephemeral snapshot: BoatData = boat_state.clone().into() │
+│ – Note: .into() invokes the From<BoatState> for BoatData │
+│ (timestamp fields are dropped; only Option<u8> remain) │
+│ │
+│ 4) For each single‐unit module (MIC, MCS, MAM, MAC, MDE): │
+│ if boat_state.X_state_last_timestamp.is_some() and │
+│ now.duration_since(ts) > STALE_TIMEOUT_MS: │
+│ └─ set boat_state.X_machine_state = None │
+│ └─ set boat_state.X_error_code = None │
+│ └─ set snapshot.X_machine_state = None │
+│ └─ set snapshot.X_error_code = None │
+│ │
+│ 5) For multi-unit modules (MSC has 3, MCB has 2): │
+│ loop idx in 0..boat_state.msc_state_last_timestamp.len(): │
+│ if Some(ts) = boat_state.msc_state_last_timestamp[idx] │
+│ and now.duration_since(ts) > STALE_TIMEOUT_MS: │
+│ └─ set boat_state.msc_machine_state[idx] = None │
+│ └─ set boat_state.msc_error_code[idx] = None │
+│ └─ set snapshot.msc_machine_state[idx] = None │
+│ └─ set snapshot.msc_error_code[idx] = None │
+│ (same for mcb_state_last_timestamp[..]) │
+│ │
+│ 6) If tx.receiver_count() > 0: │
+│ attempt tx.send(snapshot) │
+│ (sending current BoatData to the WebSocket layer) │
+│ │
+│ File: can.rs │
+└────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────┐
+│  File: `websocket.rs`                                      │
+│                                                            │
+│  1) A separate Tokio task ran `websocket::run()` which:    │
+│     – Binds a `TcpListener` on port 3001                    │
+│     – On each incoming TCP connection → `accept_async(rediscovered_stream)` │
+│     – Splits into `(ws_sender, ws_receiver)`                │
+│     – Immediately spawns a loop that does:                  │
+│         while let Ok(message) = data_receiver.recv().await {│
+│             let msg: tungstenite::Message = message.try_into().unwrap(); │
+│             ws_sender.send(msg).await.unwrap();             │
+│         }                                                   │
+│     – That `data_receiver` is a `broadcast::Receiver<BoatData>` cloned from`BOAT_STATE` broadcaster. │
+└────────────────────────────────────────────────────────────┘
+            │
+            ▼
+### 4. Vue front-end receives `BoatData` JSON (MeasurementsDashboard.vue)
+┌────────────────────────────────────────────────────────────┐
+│ File: MeasurementsDashboard.vue │
+│ │
+│ 1) On startup, JS does: │
+│ const apiUrl = ws://${window.location.hostname}:3001;│
+│ const ws = new WSConnection(apiUrl); │
+│ │
+│ 2) WSConnection (in that .vue) sets up: │
+│ this.socket = new WebSocket(apiUrl); │
+│ this.socket.onmessage = (event) => { latestMessage = event.data }; │
+│ … a small loop that “debounces” at ≤100 ms. (Optional) │
+│ │
+│ 3) When a JSON string arrives, processMessage(data) → │
+│ const message = JSON.parse(data); │
+│ for each [key, val] in message: │
+│ if val is null (Rust None → JS null) → treat as “DISC” │
+│ if val is number or [number,…] → store in measurementCards[key].data │
+│ mark last_msg_time = Date.now() │
+│ │
+│ 4) Vue’s computed properties (in MultiStateCard.vue) do: │
+│ if raw == null → value = DISC │
+│ else value = raw (0..4) → label “INIT/IDLE/RUN/ERROR” │
+│ connected/disconnected logic: if lastSeenTimestamp old │
+│ → override to DISC. │
+│ │
+│ 5) The template reactivity then updates all cards in the UI. │
+└────────────────────────────────────────────────────────────┘
+
+
+
+
+
+## “Is pruning a common pattern?”  
+Yes. Whenever you have a stream of sensor‐state messages (CAN, MQTT, UDP, etc.), you usually:
+
+1. **Timestamp each update** as it arrives.  
+2. **Periodically check** whether any sensor has gone silent for “too long.”  
+3. **Mark stale sensors as disconnected** (or set their state to `None`/`null`).  
+
+Without that step, your UI would show “RUNNING” forever even if the board physically unplugged. Most production backends incorporate one of these patterns—sometimes called a “health‐check timeout,” “heartbeat window,” or simply “staleness pruning.”  
+
+---
+
+### Putting it all together in a single chain
+
+1. **CAN frames arrive** (file `can.rs`)  
+    → `process_frame(...)` deserializes each frame  
+   → `update(...)` in `BoatState` (sets `state=Some(u8)` + `timestamp=Some(Instant::now())`)  
+
+2. **Every `period` ms or on 1 s timeout**  
+   → `prune_and_broadcast_if_stale(...)` (file `can.rs`)  
+   → If “now – timestamp > STALE_TIMEOUT_MS” → set `state=None` (thus prune)  
+   → Clone into `BoatData` and `tx.send(snapshot)`  
+
+3. **WebSocket layer** (file `websocket.rs`)  
+   → Receives that `BoatData` in a broadcast channel  
+   → Sends text( JSON ) out every time a new snapshot appears  
+
+4. **Vue (MeasurementsDashboard.vue)**  
+   → `new WebSocket("ws://…:3001")` → receives e.g.  
+```json
+{
+  "mic_machine_state": null,
+  "mic_error_code": null,
+  "mcs_machine_state": 2,
+  "mcs_error_code": 0,
+  "msc_machine_state": [1, null, 0],
+  …
+}
