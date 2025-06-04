@@ -96,11 +96,11 @@ const radius = 90;
 const ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
 
 const MIC_angle = computed(() =>
-  typeof props.data[0] === 'number' ? (1 - props.data[0] / 1023) * 180 : 0  //
+  typeof props.data[0] === 'number' ? (1 - props.data[0] / 255) * 180 : 0  //
 );
 
 const MAM_angle = computed(() =>
-  typeof props.data[1] === 'number' ? (1 - props.data[1] / 1023) * 180 : 0 //
+  typeof props.data[1] === 'number' ? (1 - props.data[1] / 255) * 180 : 0 //
 );
 
 const arcPath = computed(() => {
