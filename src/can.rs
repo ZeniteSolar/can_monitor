@@ -15,15 +15,24 @@ use crate::cli::{self, CONFIGURATION};
 #[instrument(level = "debug")]
 pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
     loop {
+        // ── ADDED LOG ──
+        debug!("Entering main `run()` loop; attempting to pick a CAN interface…");
+
         // 1) Determine which CAN interface to open
         let interface = match &cli::CONFIGURATION.can_interface {
-            Some(iface) => iface.to_owned(),
+            Some(iface) => {
+                debug!("CLI explicitly provided interface: \"{}\"", iface); // ── ADDED LOG ──
+                iface.to_owned()
+            }
             None => match lookup_can_interface() {
-                Ok(found) => found,
+                Ok(found) => {
+                    debug!("lookup_can_interface() found: \"{}\"", found); // ── ADDED LOG ──
+                    found
+                }
                 Err(error) => {
                     warn!(
-                        "Failed to find a CAN interface; will retry in 1s… Reason: {error:?}"
-                    );
+                        "Failed to find a CAN interface; retrying in 1s… Reason: {error:?}"
+                    ); // ── ADDED LOG ──
                     tokio::time::sleep(std::time::Duration::from_secs(1)).await;
                     continue;
                 }
@@ -31,8 +40,21 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
         };
 
         // 2) Open the socket
-        let mut socket_rx = CANSocket::open(&interface)?;
-        debug!("Listening for CAN frames on interface \"{}\"", interface);
+        // ── ADDED LOG ──
+        info!("Attempting to open CAN socket on interface \"{}\"…", interface);
+
+        let mut socket_rx = match CANSocket::open(&interface) {
+            Ok(sock) => {
+                debug!("Successfully opened CAN socket on \"{}\"", interface); // ── ADDED LOG ──
+                sock
+            }
+            Err(e) => {
+                error!("Cannot open CAN socket on `{}`: {e:?}", interface); // ── ADDED LOG ──
+                // Wait a moment then retry the outer loop
+                tokio::time::sleep(std::time::Duration::from_secs(1)).await;
+                continue;
+            }
+        };
 
         let mut last_emit = std::time::Instant::now();
 
@@ -45,17 +67,22 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
         {
             Ok(stream_item) => stream_item,
             Err(_) => {
-                debug!("Receive timeout (1s) on CAN socket; restarting socket…");
+                // Timeout expired → restart the CAN socket
+                debug!("Receive timeout (1s) on CAN socket; will restart socket…"); // ── ADDED LOG ──
                 None
             }
         } {
             let frame = match maybe_frame {
-                Ok(f) => f,
+                Ok(f) => {
+                    // ── ADDED LOG ──
+                    trace!("Raw CANFrame arrived: {:?}", f);
+                    f
+                }
                 Err(err) => {
                     error!(
                         "Error while reading from CAN socket; dropping this connection: {err:?}"
-                    );
-                    // drop + break out to outer loop, so we re-open the interface
+                    ); // ── ADDED LOG ──
+                    // Drop the existing socket_rx and break to outer loop to reopen
                     drop(socket_rx);
                     break;
                 }
@@ -63,8 +90,8 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
 
             // 4) Process the incoming CAN frame
             if let Err(err) = process_frame(frame) {
-                trace!("Failed to decode one CAN frame: {err:?}");
-                // Continue reading frames even if one failed
+                trace!("Failed to decode one CAN frame: {err:?}"); // ── ADDED LOG ──
+                // Continue reading further frames even if one decode fails
                 continue;
             }
 
@@ -76,6 +103,7 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
 
             // If no listeners, skip encoding/sending
             if tx.receiver_count() == 0 {
+                debug!("Broadcast channel has no subscribers; skipping send."); // ── ADDED LOG ──
                 continue;
             }
 
@@ -84,15 +112,14 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
                 let state_snapshot = BOAT_STATE.lock().unwrap().clone();
                 // ───> If/when you add per-field timestamps to BoatState, this is
                 // the place to “prune” any fields older than threshold by setting
-                // them to None. Since BoatData’s `From<BoatState>` already wraps
-                // each field in `Option<…>`, you would override stale fields here.
+                // them to None before calling `.into()`.
                 state_snapshot.into()
             };
 
-            trace!("Broadcasting BoatData over WebSocket: {boat_data:?}");
+            trace!("Broadcasting BoatData over WebSocket: {boat_data:?}"); // ── ADDED LOG ──
 
             if let Err(send_err) = tx.send(boat_data) {
-                error!("Failed to send BoatData on broadcast channel: {send_err:?}");
+                error!("Failed to send BoatData on broadcast channel: {send_err:?}"); // ── ADDED LOG ──
             }
         }
     }
@@ -100,6 +127,13 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
 
 #[instrument(level = "debug")]
 fn process_frame(frame: CANFrame) -> Result<()> {
+    // ── DEBUG LINE: print CAN ID and raw payload bytes on every incoming frame
+    // debug!(
+    //     "process_frame(): got CANFrame  id=0x{:X},  data={:?}",
+    //     frame.id(),
+    //     frame.data()
+    // );
+    // (Optional) You can also print the raw frame struct at trace level:
     trace!("Received CANFrame: {frame:?}");
 
     let data = frame.data();
@@ -184,42 +218,34 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             .map_err(anyhow::Error::from)
         }
 
-        // ── MSC (five instances: indices 1–5; here only adc messages) ──
+        // ── MSC (five instances) ──
+        modules::msc19_1::messages::state::ID => {
+            read_message::<modules::msc19_1::messages::state::Message>(data, &modules::msc19_1::SIGNATURE)
+                .map_err(anyhow::Error::from)
+        }
+        modules::msc19_2::messages::state::ID => {
+            read_message::<modules::msc19_2::messages::state::Message>(data, &modules::msc19_2::SIGNATURE)
+                .map_err(anyhow::Error::from)
+        }
+        modules::msc19_3::messages::state::ID => {
+            read_message::<modules::msc19_3::messages::state::Message>(data, &modules::msc19_3::SIGNATURE)
+                .map_err(anyhow::Error::from)
+        }
+        // (msc19_4 and msc19_5 state handlers could go here with TODO comments)
+
         modules::msc19_1::messages::adc::ID => {
-            read_message::<modules::msc19_1::messages::adc::Message>(
-                data,
-                &modules::msc19_1::SIGNATURE,
-            )
-            .map_err(anyhow::Error::from)
+            read_message::<modules::msc19_1::messages::adc::Message>(data, &modules::msc19_1::SIGNATURE)
+                .map_err(anyhow::Error::from)
         }
         modules::msc19_2::messages::adc::ID => {
-            read_message::<modules::msc19_2::messages::adc::Message>(
-                data,
-                &modules::msc19_2::SIGNATURE,
-            )
-            .map_err(anyhow::Error::from)
+            read_message::<modules::msc19_2::messages::adc::Message>(data, &modules::msc19_2::SIGNATURE)
+                .map_err(anyhow::Error::from)
         }
         modules::msc19_3::messages::adc::ID => {
-            read_message::<modules::msc19_3::messages::adc::Message>(
-                data,
-                &modules::msc19_3::SIGNATURE,
-            )
-            .map_err(anyhow::Error::from)
+            read_message::<modules::msc19_3::messages::adc::Message>(data, &modules::msc19_3::SIGNATURE)
+                .map_err(anyhow::Error::from)
         }
-        modules::msc19_4::messages::adc::ID => {
-            read_message::<modules::msc19_4::messages::adc::Message>(
-                data,
-                &modules::msc19_4::SIGNATURE,
-            )
-            .map_err(anyhow::Error::from)
-        }
-        modules::msc19_5::messages::adc::ID => {
-            read_message::<modules::msc19_5::messages::adc::Message>(
-                data,
-                &modules::msc19_5::SIGNATURE,
-            )
-            .map_err(anyhow::Error::from)
-        }
+        // (msc19_4 and msc19_5 adc handlers could go here with TODO comments)
 
         // ── MDE (steering/battery) ──
         modules::mde22::messages::steeringbat_measurements::ID => {
@@ -230,7 +256,10 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             .map_err(anyhow::Error::from)
         }
 
-        other => Err(anyhow!("Unknown CAN message ID: 0x{:X}", other)),
+        other => {
+            error!("Unknown CAN message ID: 0x{:X}", other); // ── ADDED LOG ──
+            Err(anyhow!("Unknown CAN message ID: 0x{:X}", other))
+        }
     }
 }
 
@@ -244,11 +273,15 @@ where
         + std::fmt::Debug
         + BoatStateVariable,
 {
-    trace!("Deserializing CAN payload: {data:?}");
+    trace!("Deserializing CAN payload: {data:?}"); // ── ADDED LOG ──
 
     let message: T = bincode::deserialize(data).map_err(|_| ReadMessageError::DeserializationError)?;
 
     if &message.signature() != signature {
+        error!(
+            "Signature mismatch: expected {signature}, got {}",
+            message.signature()
+        ); // ── ADDED LOG ──
         return Err(ReadMessageError::WrongSignatureError);
     }
 
@@ -271,7 +304,7 @@ impl From<ReadMessageError> for anyhow::Error {
     }
 }
 
-/// If no `--can-interface` was passed, look for any “can*/vcan*” in `/sys/class/net`
+/// If no `--can-interface` was passed, look for any “can*/vcan*” in `/sys/class/net`.
 #[instrument(level = "debug")]
 fn lookup_can_interface() -> Result<String> {
     let sys_path = "/sys/class/net";
@@ -280,11 +313,11 @@ fn lookup_can_interface() -> Result<String> {
             if let Some(name_os) = e.path().file_name() {
                 let name = name_os.to_string_lossy();
                 if name.starts_with("can") || name.starts_with("vcan") {
-                    debug!("Automatically selected CAN interface: {name}");
+                    debug!("Automatically selected CAN interface: \"{}\"", name); // ── ADDED LOG ──
                     return Ok(name.to_string());
                 }
             }
         }
     }
-    Err(anyhow!("No CAN interface found in {sys_path}"))
+    Err(anyhow!("No CAN interface found in {}", sys_path))
 }
