@@ -1,109 +1,213 @@
+// boat_data_types.rs
+
 use serde::{Deserialize, Serialize};
+use serde_with::skip_serializing_none;
 
-use crate::boat_state::{BoatState, BoatStateVariable, Ema, BOAT_STATE};
-use crate::can_types::modules;
+// XXX Unused, apparently...
+use crate::boat_state::{BoatState};//, BOAT_STATE, Ema};
+// use crate::can_types::modules;
 
+// use std::time::Instant;
+
+#[skip_serializing_none]
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
-#[serde_with::skip_serializing_none]
 pub struct BoatData {
-    boat_on: Option<bool>,
-    motor_on: Option<bool>,
-    motor_rev: Option<bool>,
-    dms_on: Option<bool>,
-    pump: Option<[bool; 3]>,
-    motor_d: Option<[f32; 2]>,
-    motor_rpm: Option<f32>,
+    // ── Boolean flags ─────────────────────────────────────────────────────────
+    pub boat_on:    Option<bool>,
+    pub motor_on:   Option<bool>,
+    pub motor_rev:  Option<bool>,
+    pub dms_on:     Option<bool>,
+    pub pump:       Option<[bool; 3]>,
 
-    mic_machine_state: Option<u8>,
-    mcs_machine_state: Option<u8>,
-    mam_machine_state: Option<u8>,
-    mac_machine_state: Option<u8>,
-    msc_machine_state: Option<[u8; 3]>,
-    mcb_machine_state: Option<[u8; 2]>,
-    mde_machine_state: Option<u8>,
+    // ── EMA‐filtered numeric measurements ───────────────────────────────────
+    pub motor_d:    Option<[f32; 2]>,
+    pub motor_rpm:  Option<f32>,
 
-    mic_error_code: Option<u8>,
-    mcs_error_code: Option<u8>,
-    mam_error_code: Option<u8>,
-    mac_error_code: Option<u8>,
-    msc_error_code: Option<[u8; 3]>,
-    mcb_error_code: Option<[u8; 2]>,
-    mde_error_code: Option<u8>,
+    pub bat_v:      Option<f32>,
+    pub bat_cell_v: Option<[f32; 3]>,
+    pub bat_ii:     Option<f32>,
+    pub bat_io:     Option<f32>,
+    pub bat_i:      Option<f32>, // derived: bat_ii - bat_io
+    pub bat_p:      Option<f32>, // derived: bat_i * bat_v
 
-    bat_v: Option<f32>,
-    bat_cell_v: Option<[f32; 3]>,
-    bat_ii: Option<f32>,
-    bat_io: Option<f32>,
-    bat_i: Option<f32>,
-    bat_p: Option<f32>,
-    dir_bat_v: Option<f32>,
-    dir_bat_i: Option<f32>,
-    dir_bat_p: Option<f32>,
-    dir_pos: Option<[f32; 2]>,
-    mcb_d: Option<[f32; 2]>,
-    mcb_vi: Option<[f32; 2]>,
-    mcb_io: Option<[f32; 2]>,
-    mcb_vo: Option<[f32; 2]>,
-    mcb_po: Option<[f32; 2]>,
+    pub dir_bat_v:  Option<f32>,
+    pub dir_bat_i:  Option<f32>,
+    pub dir_bat_p:  Option<f32>, // derived: dir_bat_v * dir_bat_i
+    pub dir_pos:    Option<[f32; 2]>,
+
+    pub mcb_d:      Option<[f32; 2]>,
+    pub mcb_vi:     Option<[f32; 2]>,
+    pub mcb_io:     Option<[f32; 2]>,
+    pub mcb_vo:     Option<[f32; 2]>,
+    pub mcb_po:     Option<[f32; 2]>, // derived: mcb_io * mcb_vo elementwise
+
+    // ── Machine‐state + error codes ─────────────────────────────────────────
+    // Single‐unit modules:
+    pub mic_machine_state: Option<u8>,
+    pub mic_error_code:    Option<u8>,
+
+    pub mcs_machine_state: Option<u8>,
+    pub mcs_error_code:    Option<u8>,
+
+    pub mam_machine_state: Option<u8>,
+    pub mam_error_code:    Option<u8>,
+
+    pub mac_machine_state: Option<u8>,
+    pub mac_error_code:    Option<u8>,
+
+    pub mde_machine_state: Option<u8>,
+    pub mde_error_code:    Option<u8>,
+
+    // Multi‐unit modules:
+    pub msc_machine_state:   Option<[u8; 3]>,
+    pub msc_error_code:      Option<[u8; 3]>,
+
+    pub mcb_machine_state:   Option<[u8; 2]>,
+    pub mcb_error_code:      Option<[u8; 2]>,
+
+    // ───────────────────────────────────────────────────────────
+    // ── NEW: MCS-19 “bat” fields ──
+    pub mcs_bat_avg: Option<f32>,
+    pub mcs_bat_min: Option<f32>,
+    pub mcs_bat_max: Option<f32>,
+
+    // ── NEW: MCS-19 “cap” fields ──
+    pub mcs_cap_avg: Option<f32>,
+    pub mcs_cap_min: Option<f32>,
+    pub mcs_cap_max: Option<f32>,
 }
 
-
 impl From<BoatState> for BoatData {
-    fn from(value: BoatState) -> Self {
-        let motor_d = Some(value.motor_d.map(Ema::value));
-        let bat_cell_v = Some(value.bat_cell_v.map(Ema::value));
+    fn from(state: BoatState) -> Self {
+        // booleans are never None
+        let boat_on   = Some(state.boat_on);
+        let motor_on  = Some(state.motor_on);
+        let motor_rev = Some(state.motor_rev);
+        let dms_on    = Some(state.dms_on);
+        let pump      = Some(state.pump);
 
-        let bat_v = Some(value.bat_v.value());
-        let bat_ii = Some(value.bat_ii.value());
-        let bat_io = Some(value.bat_io.value());
-        let bat_i = Some(bat_ii.unwrap_or(0.0) - bat_io.unwrap_or(0.0));
-        let bat_p = Some(bat_i.unwrap_or(0.0) * bat_v.unwrap_or(0.0));
+        // EMAs → actual values
+        let motor_d = Some([
+            state.motor_d[0].value(),
+            state.motor_d[1].value(),
+        ]);
+        let motor_rpm = Some(state.motor_rpm.value());
 
-        let dir_bat_v = Some(value.dir_bat_v.value());
-        let dir_bat_i = Some(value.dir_bat_i.value());
+        let bat_v      = Some(state.bat_v.value());
+        let bat_cell_v = Some([
+            state.bat_cell_v[0].value(),
+            state.bat_cell_v[1].value(),
+            state.bat_cell_v[2].value(),
+        ]);
+        let bat_ii = Some(state.bat_ii.value());
+        let bat_io = Some(state.bat_io.value());
+        let bat_i  = Some(bat_ii.unwrap_or(0.0) - bat_io.unwrap_or(0.0));
+        let bat_p  = Some(bat_i.unwrap_or(0.0) * bat_v.unwrap_or(0.0));
+
+        let dir_bat_v = Some(state.dir_bat_v.value());
+        let dir_bat_i = Some(state.dir_bat_i.value());
         let dir_bat_p = Some(dir_bat_v.unwrap_or(0.0) * dir_bat_i.unwrap_or(0.0));
-        let dir_pos = Some(value.dir_pos.map(Ema::value));
+        let dir_pos   = Some([
+            state.dir_pos[0].value(),
+            state.dir_pos[1].value(),
+        ]);
 
-        let mcb_d = Some(value.mcb_d.map(Ema::value));
-        let mcb_vi = Some(value.mcb_vi.map(Ema::value));
-        let mcb_io = Some(value.mcb_io.map(Ema::value));
-        let mcb_vo = Some(value.mcb_vo.map(Ema::value));
+        let mcb_d  = Some([state.mcb_d[0].value(), state.mcb_d[1].value()]);
+        let mcb_vi = Some([state.mcb_vi[0].value(), state.mcb_vi[1].value()]);
+        let mcb_io = Some([state.mcb_io[0].value(), state.mcb_io[1].value()]);
+        let mcb_vo = Some([state.mcb_vo[0].value(), state.mcb_vo[1].value()]);
+        let mcb_po = Some([
+            mcb_io.unwrap_or([0.0, 0.0])[0] * mcb_vo.unwrap_or([0.0, 0.0])[0],
+            mcb_io.unwrap_or([0.0, 0.0])[1] * mcb_vo.unwrap_or([0.0, 0.0])[1],
+        ]);
 
-        let mcb_po = Some(
-            mcb_io.unwrap_or([0.0; 2])
-                .iter()
-                .zip(mcb_vo.unwrap_or([0.0; 2]))
-                .map(|(io, vo)| io * vo)
-                .collect::<Vec<f32>>()
-                .try_into()
-                .unwrap_or([0.0; 2]),
-        );
+        // ───────────────────────────────────────────────────────────
+        // ── NEW: extract the 6 MCS fields as f32
+        let mcs_bat_avg = Some(state.mcs_bat_avg.value());
+        let mcs_bat_min = Some(state.mcs_bat_min.value());
+        let mcs_bat_max = Some(state.mcs_bat_max.value());
 
-        Self {
-            boat_on: Some(value.boat_on),
-            motor_on: Some(value.motor_on),
-            motor_rev: Some(value.motor_rev),
-            dms_on: Some(value.dms_on),
-            pump: Some(value.pump),
+        let mcs_cap_avg = Some(state.mcs_cap_avg.value());
+        let mcs_cap_min = Some(state.mcs_cap_min.value());
+        let mcs_cap_max = Some(state.mcs_cap_max.value());
+
+        // Single‐unit machine states and errors (copy Option<u8>)
+        let mic_machine_state = state.mic_machine_state;
+        let mic_error_code    = state.mic_error_code;
+
+        let mcs_machine_state = state.mcs_machine_state;
+        let mcs_error_code    = state.mcs_error_code;
+
+        let mam_machine_state = state.mam_machine_state;
+        let mam_error_code    = state.mam_error_code;
+
+        let mac_machine_state = state.mac_machine_state;
+        let mac_error_code    = state.mac_error_code;
+
+        let mde_machine_state = state.mde_machine_state;
+        let mde_error_code    = state.mde_error_code;
+
+        // Multi‐unit: turn [Option<u8>; N] → Option<[u8; N]>
+        let msc_machine_state = {
+            let arr_opt = state.msc_machine_state;
+            if arr_opt.iter().all(|&o| o.is_some()) {
+                Some([
+                    arr_opt[0].unwrap(),
+                    arr_opt[1].unwrap(),
+                    arr_opt[2].unwrap(),
+                ])
+            } else if arr_opt.iter().all(|&o| o.is_none()) {
+                None
+            } else {
+                // Mixed Some/None → represent partial data?
+                // We choose to propagate only if every slot is Some.
+                None
+            }
+        };
+        let msc_error_code = {
+            let arr_opt = state.msc_error_code;
+            if arr_opt.iter().all(|&o| o.is_some()) {
+                Some([
+                    arr_opt[0].unwrap(),
+                    arr_opt[1].unwrap(),
+                    arr_opt[2].unwrap(),
+                ])
+            } else if arr_opt.iter().all(|&o| o.is_none()) {
+                None
+            } else {
+                None
+            }
+        };
+
+        let mcb_machine_state = {
+            let arr_opt = state.mcb_machine_state;
+            if arr_opt.iter().all(|&o| o.is_some()) {
+                Some([arr_opt[0].unwrap(), arr_opt[1].unwrap()])
+            } else if arr_opt.iter().all(|&o| o.is_none()) {
+                None
+            } else {
+                None
+            }
+        };
+        let mcb_error_code = {
+            let arr_opt = state.mcb_error_code;
+            if arr_opt.iter().all(|&o| o.is_some()) {
+                Some([arr_opt[0].unwrap(), arr_opt[1].unwrap()])
+            } else if arr_opt.iter().all(|&o| o.is_none()) {
+                None
+            } else {
+                None
+            }
+        };
+
+        BoatData {
+            boat_on,
+            motor_on,
+            motor_rev,
+            dms_on,
+            pump,
             motor_d,
-            motor_rpm: Some(value.motor_rpm.value()),
-
-            mic_machine_state: Some(value.mic_machine_state),
-            mcs_machine_state: Some(value.mcs_machine_state),
-            mam_machine_state: Some(value.mam_machine_state),
-            mac_machine_state: Some(value.mac_machine_state),
-            msc_machine_state: Some(value.msc_machine_state),
-            mcb_machine_state: Some(value.mcb_machine_state),
-            mde_machine_state: Some(value.mde_machine_state),
-
-            mic_error_code: Some(value.mic_error_code),
-            mcs_error_code: Some(value.mcs_error_code),
-            mam_error_code: Some(value.mam_error_code),
-            mac_error_code: Some(value.mac_error_code),
-            msc_error_code: Some(value.msc_error_code),
-            mcb_error_code: Some(value.mcb_error_code),
-            mde_error_code: Some(value.mde_error_code),
-
+            motor_rpm,
             bat_v,
             bat_cell_v,
             bat_ii,
@@ -119,241 +223,36 @@ impl From<BoatState> for BoatData {
             mcb_io,
             mcb_vo,
             mcb_po,
+            mcs_bat_avg,
+            mcs_bat_min,
+            mcs_bat_max,
+            mcs_cap_avg,
+            mcs_cap_min,
+            mcs_cap_max,
+            mic_machine_state,
+            mic_error_code,
+            mcs_machine_state,
+            mcs_error_code,
+            mam_machine_state,
+            mam_error_code,
+            mac_machine_state,
+            mac_error_code,
+            mde_machine_state,
+            mde_error_code,
+            msc_machine_state,
+            msc_error_code,
+            mcb_machine_state,
+            mcb_error_code,
         }
     }
 }
 
+// ----------------------------------------------------------------------------
+// 7) OPTIONAL: If you want to implement `BoatStateVariable for some Message types that
+//    produce BoatData directly (rare), you can do so here. Usually not needed.
+// ----------------------------------------------------------------------------
 
-impl BoatStateVariable for modules::mic19::messages::motor::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.motor_d[0].update(100f32 * (message.d as f32) / (u8::MAX as f32));
-
-        boat_state.motor_on = message.motor.motor_on();
-        boat_state.dms_on = message.motor.dms_on();
-        boat_state.motor_rev = message.motor.reverse();
-    }
-}
-
-impl BoatStateVariable for modules::mam19::messages::motor::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.motor_d[1].update((message.duty_cycle as f32) / 100f32);
-    }
-}
-
-// Ref: https://github.com/ZeniteSolar/MAM17/blob/DSB22/firmware/src/machine.h#L34
-impl BoatStateVariable for modules::mam19::messages::state::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.mam_machine_state = message.state;
-        boat_state.mam_error_code = message.error;
-    }
-}
-impl BoatStateVariable for modules::mic19::messages::state::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.mic_machine_state = message.state;
-        boat_state.mic_error_code = message.error;
-    }
-}
-impl BoatStateVariable for modules::mcs19::messages::state::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.mcs_machine_state = message.state;
-        boat_state.mcs_error_code = message.error;
-    }
-}
-impl BoatStateVariable for modules::mac22::messages::state::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.mac_machine_state = message.state;
-        boat_state.mac_error_code = message.error;
-    }
-}
-impl BoatStateVariable for modules::mde22::messages::state::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.mde_machine_state = message.state;
-        boat_state.mde_error_code = message.error;
-    }
-}
-impl BoatStateVariable for modules::mcb19_1::messages::state::Message  {
-    fn update(message: Self)  {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-
-        boat_state.mcb_machine_state[0] = message.state;
-        boat_state.mcb_error_code[0] = message.error;
-        // boat_state.mcb_control[0] = message.control.into_bytes()[0];
-        // I didnt manage to fix the usage of ControlFlags, since this is unused it'll be ignored
-    }
-}
-impl BoatStateVariable for modules::mcb19_2::messages::state::Message  {
-    fn update(message: Self)  {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-
-        boat_state.mcb_machine_state[1] = message.state;
-        boat_state.mcb_error_code[1] = message.error;
-        // boat_state.mcb_control[1] = message.control.into_bytes()[0];
-        // I didnt manage to fix the usage of ControlFlags, since this is unused it'll be ignored
-    }
-}
-
-impl BoatStateVariable for modules::mcs19::messages::bat::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.bat_v.update((message.average as f32) / 100f32);
-    }
-}
-
-impl BoatStateVariable for modules::mic19::messages::mde::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.dir_pos[0]
-            .update((26.392_962_f32 * ((message.position as f32) / 100f32)) - 135f32);
-    }
-}
-
-impl BoatStateVariable for modules::mic19::messages::pumps::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.pump[0] = message.pumps.pump1();
-        boat_state.pump[1] = message.pumps.pump2();
-        boat_state.pump[2] = message.pumps.pump3();
-    }
-}
-
-impl BoatStateVariable for modules::mic19::messages::mcs::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.boat_on = message.boat_on.boat_on();
-    }
-}
-
-impl BoatStateVariable for modules::mt19::messages::rpm::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.motor_rpm.update(message.average as f32);
-    }
-}
-
-impl BoatStateVariable for modules::msc19_1::messages::state::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.msc_machine_state[0] = message.state;
-        boat_state.msc_error_code[0] = message.error;
-    }
-}
-impl BoatStateVariable for modules::msc19_1::messages::adc::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.bat_cell_v[0].update((message.average as f32) / 100f32);
-    }
-}
-
-
-impl BoatStateVariable for modules::msc19_2::messages::state::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-        
-        boat_state.msc_machine_state[1] = message.state;
-        boat_state.msc_error_code[1] = message.error;
-    }
-}
-
-impl BoatStateVariable for modules::msc19_2::messages::adc::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.bat_cell_v[1].update((message.average as f32) / 100f32);
-    }
-}
-
-
-impl BoatStateVariable for modules::msc19_3::messages::state::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-        
-        boat_state.msc_machine_state[2] = message.state;
-        boat_state.msc_error_code[2] = message.error;
-    }
-}
-
-impl BoatStateVariable for modules::msc19_3::messages::adc::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.bat_cell_v[2].update((message.average as f32) / 100f32);
-    }
-}
-
-impl BoatStateVariable for modules::msc19_4::messages::adc::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.bat_ii.update((message.average as f32) / 100f32);
-    }
-}
-
-impl BoatStateVariable for modules::msc19_5::messages::adc::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.bat_io.update((message.average as f32) / 100f32);
-    }
-}
-
-impl BoatStateVariable for modules::mde22::messages::steeringbat_measurements::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state
-            .dir_bat_v
-            .update((message.batvoltage as f32) / 100f32);
-
-        boat_state
-            .dir_bat_i
-            .update((message.batcurrent as f32) / 100f32);
-
-        boat_state.dir_pos[1]
-            .update((26.392_962_f32 * ((message.tail_position as f32) / 100f32)) - 135f32);
-    }
-}
-
-impl BoatStateVariable for modules::mcb19_1::messages::measurements::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.mcb_d[0].update(100f32 * (message.dt as f32) / (u8::MAX as f32));
-        boat_state.mcb_io[0].update((message.output_current as f32) / 100f32);
-        boat_state.mcb_vo[0].update((message.output_voltage as f32) / 100f32);
-        boat_state.mcb_vi[0].update((message.input_voltage as f32) / 100f32);
-    }
-}
-
-impl BoatStateVariable for modules::mcb19_2::messages::measurements::Message {
-    fn update(message: Self) {
-        let mut boat_state = BOAT_STATE.lock().unwrap();
-
-        boat_state.mcb_d[1].update(100f32 * (message.dt as f32) / (u8::MAX as f32));
-        boat_state.mcb_io[1].update((message.output_current as f32) / 100f32);
-        boat_state.mcb_vo[1].update((message.output_voltage as f32) / 100f32);
-        boat_state.mcb_vi[1].update((message.input_voltage as f32) / 100f32);
-    }
-}
+// e.g.
+// impl BoatDataVariable for modules::mic19::messages::motor::Message {
+//     fn into_boat_data(self) -> BoatData { /* … */ }
+// }
