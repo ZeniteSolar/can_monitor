@@ -134,7 +134,7 @@ fn process_frame(frame: CANFrame) -> Result<()> {
     //     frame.data()
     // );
     // (Optional) You can also print the raw frame struct at trace level:
-    trace!("Received CANFrame: {frame:?}");
+    // trace!("Received CANFrame: {frame:?}");
 
     let data = frame.data();
 
