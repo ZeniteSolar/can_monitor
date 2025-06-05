@@ -209,8 +209,8 @@ impl BoatStateVariable for modules::mic19::messages::motor::Message {
     fn update(message: Self) {
         let mut state = BOAT_STATE.lock().unwrap();
 
-        // EMA‐filter the new duty‐cycle (0..255) → fraction
-        state.motor_d[0].update(100.0 * (message.d as f32) / (u8::MAX as f32));
+        // Push the raw 0..255 position straight into our EMA (as f32).
+        state.motor_d[0].update(message.d as f32);
 
         state.motor_on = message.motor.motor_on();
         state.dms_on = message.motor.dms_on();
@@ -384,11 +384,15 @@ impl BoatStateVariable for modules::msc19_5::messages::adc::Message {
 
 // ── Other update impls (e.g. pumps, rpm, MDE sensor, etc.) ───────────────────
 
+
 impl BoatStateVariable for modules::mic19::messages::mde::Message {
     fn update(message: Self) {
         let mut state = BOAT_STATE.lock().unwrap();
 
-        state.dir_pos[0].update((26.392_962_f32 * ((message.position as f32) / 100.0)) - 135.0);
+        // Push the raw 0..255 position straight into our EMA (as f32).
+        state.dir_pos[0].update(message.position as f32);
+
+        // Stamp “last seen” now so the front-end can detect DISC/timeout
         state.mic_last_seen = Some(Instant::now());
     }
 }
