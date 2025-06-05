@@ -37,8 +37,7 @@ async def send_mock_boat_data():
                 "dir_pos": [int(120 + 120 * sin_wave_delayed), int(120 + 120 * sin_wave)],
 
                 
-                # "motor_d": [1024 *abs(sin_wave_delayed), 1024*abs(sin_wave)],
-                "motor_d": [int(1024 * 1), int(0 * abs(sin_wave_smooth))],
+                "motor_d": [int(120 + 120 * sin_wave_delayed), int(120 + 120 * sin_wave)],
                 "motor_rpm": 1500,
 
                 "mic_machine_state": int(t) % 5,
