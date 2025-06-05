@@ -244,7 +244,7 @@ export const thresholds: Record<string, number> = {
   pump: 0,
 
   // ESC / motor feedback
-  motor_d: 0.05,
+  motor_d: 0,
   motor_rpm: 5,
 
   // machine states (0–4 enums)
