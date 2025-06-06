@@ -389,7 +389,7 @@ impl BoatStateVariable for modules::mic19::messages::mde::Message {
     fn update(message: Self) {
         let mut state = BOAT_STATE.lock().unwrap();
 
-        // Push the raw 0..255 position straight into our EMA (as f32).
+        // Push the raw 0..1023 position straight into our EMA (as f32).
         state.dir_pos[0].update(message.position as f32);
 
         // Stamp “last seen” now so the front-end can detect DISC/timeout
@@ -433,8 +433,7 @@ impl BoatStateVariable for modules::mde22::messages::steeringbat_measurements::M
 
         state.dir_bat_v.update((message.batvoltage as f32) / 100.0);
         state.dir_bat_i.update((message.batcurrent as f32) / 100.0);
-        state.dir_pos[1]
-            .update((26.392_962_f32 * ((message.tail_position as f32) / 100.0)) - 135.0);
+        state.dir_pos[1].update(message.tail_position as f32);
 
         state.mde_last_seen = Some(Instant::now());
     }

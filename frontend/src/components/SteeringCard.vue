@@ -127,8 +127,8 @@ function pointerPoints(angle: number, len: number): string {
 // Map raw 0–255 so that 255→180° (far left) and 0→360° (far right)
 // i.e. bottom semicircle spans from 180° to 360°.
 function toBottomSemicircleAngle(raw: number): number {
-  const clamped = Math.max(0, Math.min(255, raw));
-  return 180 + ((255 - clamped) / 255) * 180;
+  const clamped = Math.max(0, Math.min(1023, raw));
+  return 180 + ((1023 - clamped) / 1023) * 180;
 }
 
 const steeringAngle = computed(() =>
