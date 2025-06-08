@@ -92,30 +92,60 @@
               return cells.length >= 2 ? 'TOTAL (MSC)' : 'TOTAL (MCB)';
             })(),
             data: (() => {
+              // 1) Try raw bank voltage from bat_v (MCB-reported total)
               const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
-              const cells = raw.filter((v: unknown): v is number => typeof v === 'number').slice(0, 2);
-
-              if (cells.length === 2) {
-                const avg = (cells[0] + cells[1]) / 2;
+              const filteredCells = raw.filter((v: unknown): v is number => typeof v === 'number').slice(0, 2);
+              const bankV = measurementCards['bat_v']?.avg() ?? NaN;
+              // if we have a valid bankV ≥ 28 V, use it
+              if (!Number.isNaN(bankV) && bankV >= 28) {
                 return [
-                  cells[0] + cells[1] + avg,
-                  measurementCards['bat_i']?.avg() ?? 0,
-                  measurementCards['bat_p']?.avg() ?? 0,
-                ];
-              } else {
-                const viRaw = (measurementCards['mcb_vi']?.data as unknown[]) ?? [];
-                const validVi = viRaw.filter((v: unknown): v is number => typeof v === 'number');
-
-                const fallback = validVi.length >= 2
-                  ? Math.min(validVi[0], validVi[1])
-                  : validVi[0] ?? 0;
-
-                return [
-                  fallback,
+                  bankV,
                   measurementCards['bat_i']?.avg() ?? 0,
                   measurementCards['bat_p']?.avg() ?? 0,
                 ];
               }
+
+              // 2) Fallback to MCB input-voltage if both channels ≥ 6 V
+              const viRaw = measurementCards['mcb_vi']?.data as unknown[] ?? [];
+              const validVi = viRaw
+                .filter((v): v is number => typeof v === 'number' && v >= 6);
+              if (validVi.length >= 2) {
+                // sum of both modules
+                const viSum = validVi[0];
+                return [
+                  viSum,
+                  measurementCards['bat_i']?.avg() ?? 0,
+                  measurementCards['bat_p']?.avg() ?? 0,
+                ];
+              } else if (validVi.length === 1) {
+                return [
+                  validVi[0],
+                  measurementCards['bat_i']?.avg() ?? 0,
+                  measurementCards['bat_p']?.avg() ?? 0,
+                ];
+              }
+
+              // 3) Last resort: use individual cell voltages, require each ≥ 6 V
+              const rawCells = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
+              const validCells = rawCells
+                .filter((v): v is number => typeof v === 'number' && v >= 6)
+                .slice(0, 2);
+              if (filteredCells.length === 2) {
+                const avg = (filteredCells[0] + filteredCells[1]) / 2;
+                return [
+                  filteredCells[0] + filteredCells[1] + avg,
+                  measurementCards['bat_i']?.avg() ?? 0,
+                  measurementCards['bat_p']?.avg() ?? 0,
+                ];
+              }
+
+              // 4) If *nothing* is usable, show zero-line
+              return [
+                0,
+                measurementCards['bat_i']?.avg() ?? 0,
+                measurementCards['bat_p']?.avg() ?? 0,
+              ];
+            
             })(),
             units: [
               measurementCards['bat_v']?.units?.[0] ?? '',
