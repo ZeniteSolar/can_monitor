@@ -345,7 +345,7 @@ impl BoatStateVariable for modules::msc19_1::messages::adc::Message {
     fn update(message: Self) {
         let mut state = BOAT_STATE.lock().unwrap();
 
-        state.bat_cell_v[0].update((message.average as f32) / 100.0);
+        state.bat_cell_v[0].update((message.average as f32) / 1000.0);
         // The MSC “state” timestamp was handled by the corresponding state message above
     }
 }
@@ -354,7 +354,7 @@ impl BoatStateVariable for modules::msc19_2::messages::adc::Message {
     fn update(message: Self) {
         let mut state = BOAT_STATE.lock().unwrap();
 
-        state.bat_cell_v[1].update((message.average as f32) / 100.0);
+        state.bat_cell_v[1].update((message.average as f32) / 1000.0);
     }
 }
 
@@ -362,7 +362,7 @@ impl BoatStateVariable for modules::msc19_3::messages::adc::Message {
     fn update(message: Self) {
         let mut state = BOAT_STATE.lock().unwrap();
 
-        state.bat_cell_v[2].update((message.average as f32) / 100.0);
+        state.bat_cell_v[2].update((message.average as f32) / 1000.0);
     }
 }
 
@@ -445,8 +445,8 @@ impl BoatStateVariable for modules::mcb19_1::messages::measurements::Message {
 
         state.mcb_d[0].update(100.0 * (message.dt as f32) / (u8::MAX as f32));
         state.mcb_io[0].update((message.output_current as f32) / 100.0);
-        state.mcb_vo[0].update((message.output_voltage as f32) / 100.0);
-        state.mcb_vi[0].update((message.input_voltage as f32) / 100.0);
+        state.mcb_vo[0].update((message.output_voltage as f32) / 1000.0);
+        state.mcb_vi[0].update((message.input_voltage as f32) / 1000.0);
 
         // NOTE: no direct “state” or “error” in a pure “measurements” frame—but
         //       later, when pruning, we will mark stale if no state frame arrives.
@@ -472,9 +472,9 @@ impl BoatStateVariable for modules::mcs19::messages::bat::Message {
         let mut state = BOAT_STATE.lock().unwrap();
 
         // Convert u16→f32 (divide by 100 to get “volts”)
-        let avg_v = (message.average as f32) / 100.0;
-        let min_v = (message.min as f32) / 100.0;
-        let max_v = (message.max as f32) / 100.0;
+        let avg_v = (message.average as f32) / 1000.0;
+        let min_v = (message.min as f32) / 1000.0;
+        let max_v = (message.max as f32) / 1000.0;
 
         state.mcs_bat_avg.update(avg_v);
         state.mcs_bat_min.update(min_v);
@@ -493,9 +493,9 @@ impl BoatStateVariable for modules::mcs19::messages::cap::Message {
         let mut state = BOAT_STATE.lock().unwrap();
 
         // Convert u16→f32 (divide by 100 to get “volts” for capacitor)
-        let avg_v = (message.average as f32) / 100.0;
-        let min_v = (message.min as f32) / 100.0;
-        let max_v = (message.max as f32) / 100.0;
+        let avg_v = (message.average as f32) / 1000.0;
+        let min_v = (message.min as f32) / 1000.0;
+        let max_v = (message.max as f32) / 1000.0;
 
         state.mcs_cap_avg.update(avg_v);
         state.mcs_cap_min.update(min_v);
