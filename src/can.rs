@@ -30,9 +30,7 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
                     found
                 }
                 Err(error) => {
-                    warn!(
-                        "Failed to find a CAN interface; retrying in 1s… Reason: {error:?}"
-                    ); // ── ADDED LOG ──
+                    warn!("Failed to find a CAN interface; retrying in 1s… Reason: {error:?}"); // ── ADDED LOG ──
                     tokio::time::sleep(std::time::Duration::from_secs(1)).await;
                     continue;
                 }
@@ -41,7 +39,10 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
 
         // 2) Open the socket
         // ── ADDED LOG ──
-        info!("Attempting to open CAN socket on interface \"{}\"…", interface);
+        info!(
+            "Attempting to open CAN socket on interface \"{}\"…",
+            interface
+        );
 
         let mut socket_rx = match CANSocket::open(&interface) {
             Ok(sock) => {
@@ -50,7 +51,7 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
             }
             Err(e) => {
                 error!("Cannot open CAN socket on `{}`: {e:?}", interface); // ── ADDED LOG ──
-                // Wait a moment then retry the outer loop
+                                                                            // Wait a moment then retry the outer loop
                 tokio::time::sleep(std::time::Duration::from_secs(1)).await;
                 continue;
             }
@@ -59,19 +60,16 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
         let mut last_emit = std::time::Instant::now();
 
         // 3) Read frames in a loop, with a 1s receive timeout
-        while let Some(maybe_frame) = match tokio::time::timeout(
-            std::time::Duration::from_secs(1),
-            socket_rx.next(),
-        )
-        .await
-        {
-            Ok(stream_item) => stream_item,
-            Err(_) => {
-                // Timeout expired → restart the CAN socket
-                debug!("Receive timeout (1s) on CAN socket; will restart socket…"); // ── ADDED LOG ──
-                None
+        while let Some(maybe_frame) =
+            match tokio::time::timeout(std::time::Duration::from_secs(1), socket_rx.next()).await {
+                Ok(stream_item) => stream_item,
+                Err(_) => {
+                    // Timeout expired → restart the CAN socket
+                    debug!("Receive timeout (1s) on CAN socket; will restart socket…"); // ── ADDED LOG ──
+                    None
+                }
             }
-        } {
+        {
             let frame = match maybe_frame {
                 Ok(f) => {
                     // ── ADDED LOG ──
@@ -82,7 +80,7 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
                     error!(
                         "Error while reading from CAN socket; dropping this connection: {err:?}"
                     ); // ── ADDED LOG ──
-                    // Drop the existing socket_rx and break to outer loop to reopen
+                       // Drop the existing socket_rx and break to outer loop to reopen
                     drop(socket_rx);
                     break;
                 }
@@ -91,7 +89,7 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
             // 4) Process the incoming CAN frame
             if let Err(err) = process_frame(frame) {
                 trace!("Failed to decode one CAN frame: {err:?}"); // ── ADDED LOG ──
-                // Continue reading further frames even if one decode fails
+                                                                   // Continue reading further frames even if one decode fails
                 continue;
             }
 
@@ -119,7 +117,8 @@ pub async fn run(tx: broadcast::Sender<BoatData>) -> Result<()> {
             trace!("Broadcasting BoatData over WebSocket: {boat_data:?}"); // ── ADDED LOG ──
 
             if let Err(send_err) = tx.send(boat_data) {
-                error!("Failed to send BoatData on broadcast channel: {send_err:?}"); // ── ADDED LOG ──
+                error!("Failed to send BoatData on broadcast channel: {send_err:?}");
+                // ── ADDED LOG ──
             }
         }
     }
@@ -140,10 +139,10 @@ fn process_frame(frame: CANFrame) -> Result<()> {
 
     match frame.id() {
         // ── MIC ──
-        modules::mic19::messages::motor::ID => {
-            read_message::<modules::mic19::messages::motor::Message>(data, &modules::mic19::SIGNATURE)
-                .map_err(anyhow::Error::from)
-        }
+        modules::mic19::messages::motor::ID => read_message::<
+            modules::mic19::messages::motor::Message,
+        >(data, &modules::mic19::SIGNATURE)
+        .map_err(anyhow::Error::from),
         modules::mic19::messages::mde::ID => {
             read_message::<modules::mic19::messages::mde::Message>(data, &modules::mic19::SIGNATURE)
                 .map_err(anyhow::Error::from)
@@ -152,38 +151,38 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             read_message::<modules::mic19::messages::mcs::Message>(data, &modules::mic19::SIGNATURE)
                 .map_err(anyhow::Error::from)
         }
-        modules::mic19::messages::pumps::ID => {
-            read_message::<modules::mic19::messages::pumps::Message>(data, &modules::mic19::SIGNATURE)
-                .map_err(anyhow::Error::from)
-        }
+        modules::mic19::messages::pumps::ID => read_message::<
+            modules::mic19::messages::pumps::Message,
+        >(data, &modules::mic19::SIGNATURE)
+        .map_err(anyhow::Error::from),
 
         // ── MAM ──
-        modules::mam19::messages::motor::ID => {
-            read_message::<modules::mam19::messages::motor::Message>(data, &modules::mam19::SIGNATURE)
-                .map_err(anyhow::Error::from)
-        }
+        modules::mam19::messages::motor::ID => read_message::<
+            modules::mam19::messages::motor::Message,
+        >(data, &modules::mam19::SIGNATURE)
+        .map_err(anyhow::Error::from),
 
         // ── STATES (generic u8 state + error) ──
-        modules::mam19::messages::state::ID => {
-            read_message::<modules::mam19::messages::state::Message>(data, &modules::mam19::SIGNATURE)
-                .map_err(anyhow::Error::from)
-        }
-        modules::mic19::messages::state::ID => {
-            read_message::<modules::mic19::messages::state::Message>(data, &modules::mic19::SIGNATURE)
-                .map_err(anyhow::Error::from)
-        }
-        modules::mcs19::messages::state::ID => {
-            read_message::<modules::mcs19::messages::state::Message>(data, &modules::mcs19::SIGNATURE)
-                .map_err(anyhow::Error::from)
-        }
-        modules::mac22::messages::state::ID => {
-            read_message::<modules::mac22::messages::state::Message>(data, &modules::mac22::SIGNATURE)
-                .map_err(anyhow::Error::from)
-        }
-        modules::mde22::messages::state::ID => {
-            read_message::<modules::mde22::messages::state::Message>(data, &modules::mde22::SIGNATURE)
-                .map_err(anyhow::Error::from)
-        }
+        modules::mam19::messages::state::ID => read_message::<
+            modules::mam19::messages::state::Message,
+        >(data, &modules::mam19::SIGNATURE)
+        .map_err(anyhow::Error::from),
+        modules::mic19::messages::state::ID => read_message::<
+            modules::mic19::messages::state::Message,
+        >(data, &modules::mic19::SIGNATURE)
+        .map_err(anyhow::Error::from),
+        modules::mcs19::messages::state::ID => read_message::<
+            modules::mcs19::messages::state::Message,
+        >(data, &modules::mcs19::SIGNATURE)
+        .map_err(anyhow::Error::from),
+        modules::mac22::messages::state::ID => read_message::<
+            modules::mac22::messages::state::Message,
+        >(data, &modules::mac22::SIGNATURE)
+        .map_err(anyhow::Error::from),
+        modules::mde22::messages::state::ID => read_message::<
+            modules::mde22::messages::state::Message,
+        >(data, &modules::mde22::SIGNATURE)
+        .map_err(anyhow::Error::from),
 
         // ── MCS-specific battery info ──
         modules::mcs19::messages::bat::ID => {
@@ -203,49 +202,102 @@ fn process_frame(frame: CANFrame) -> Result<()> {
         }
 
         // ── MCB (two instances) ──
-        modules::mcb19_1::messages::measurements::ID => {
-            read_message::<modules::mcb19_1::messages::measurements::Message>(
-                data,
-                &modules::mcb19_1::SIGNATURE,
-            )
-            .map_err(anyhow::Error::from)
-        }
-        modules::mcb19_2::messages::measurements::ID => {
-            read_message::<modules::mcb19_2::messages::measurements::Message>(
-                data,
-                &modules::mcb19_2::SIGNATURE,
-            )
-            .map_err(anyhow::Error::from)
-        }
+        modules::mcb19_1::messages::measurements::ID => read_message::<
+            modules::mcb19_1::messages::measurements::Message,
+        >(
+            data, &modules::mcb19_1::SIGNATURE
+        )
+        .map_err(anyhow::Error::from),
+        modules::mcb19_2::messages::measurements::ID => read_message::<
+            modules::mcb19_2::messages::measurements::Message,
+        >(
+            data, &modules::mcb19_2::SIGNATURE
+        )
+        .map_err(anyhow::Error::from),
 
-        // ── MSC (five instances) ──
+        // ── MSC19 state messages (five boards) ──
         modules::msc19_1::messages::state::ID => {
-            read_message::<modules::msc19_1::messages::state::Message>(data, &modules::msc19_1::SIGNATURE)
-                .map_err(anyhow::Error::from)
+            // debug!("Got MSC19_1 STATE frame");
+            read_message::<modules::msc19_1::messages::state::Message>(
+                data,
+                &modules::msc19_1::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
         }
         modules::msc19_2::messages::state::ID => {
-            read_message::<modules::msc19_2::messages::state::Message>(data, &modules::msc19_2::SIGNATURE)
-                .map_err(anyhow::Error::from)
+            // debug!("Got MSC19_2 STATE frame");
+            read_message::<modules::msc19_2::messages::state::Message>(
+                data,
+                &modules::msc19_2::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
         }
         modules::msc19_3::messages::state::ID => {
-            read_message::<modules::msc19_3::messages::state::Message>(data, &modules::msc19_3::SIGNATURE)
-                .map_err(anyhow::Error::from)
+            // debug!("Got MSC19_3 STATE frame");
+            read_message::<modules::msc19_3::messages::state::Message>(
+                data,
+                &modules::msc19_3::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
         }
-        // (msc19_4 and msc19_5 state handlers could go here with TODO comments)
+        modules::msc19_4::messages::state::ID => {
+            // debug!("Got MSC19_4 STATE frame");
+            read_message::<modules::msc19_4::messages::state::Message>(
+                data,
+                &modules::msc19_4::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
+        }
+        modules::msc19_5::messages::state::ID => {
+            // debug!("Got MSC19_5 STATE frame");
+            read_message::<modules::msc19_5::messages::state::Message>(
+                data,
+                &modules::msc19_5::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
+        }
 
+        // ── MSC19 ADC messages (five boards) ──
         modules::msc19_1::messages::adc::ID => {
-            read_message::<modules::msc19_1::messages::adc::Message>(data, &modules::msc19_1::SIGNATURE)
-                .map_err(anyhow::Error::from)
+            // debug!("Got MSC19_1 ADC frame");
+            read_message::<modules::msc19_1::messages::adc::Message>(
+                data,
+                &modules::msc19_1::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
         }
         modules::msc19_2::messages::adc::ID => {
-            read_message::<modules::msc19_2::messages::adc::Message>(data, &modules::msc19_2::SIGNATURE)
-                .map_err(anyhow::Error::from)
+            // debug!("Got MSC19_2 ADC frame");
+            read_message::<modules::msc19_2::messages::adc::Message>(
+                data,
+                &modules::msc19_2::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
         }
         modules::msc19_3::messages::adc::ID => {
-            read_message::<modules::msc19_3::messages::adc::Message>(data, &modules::msc19_3::SIGNATURE)
-                .map_err(anyhow::Error::from)
+            // debug!("Got MSC19_3 ADC frame");
+            read_message::<modules::msc19_3::messages::adc::Message>(
+                data,
+                &modules::msc19_3::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
         }
-        // (msc19_4 and msc19_5 adc handlers could go here with TODO comments)
+        modules::msc19_4::messages::adc::ID => {
+            // debug!("Got MSC19_4 ADC frame");
+            read_message::<modules::msc19_4::messages::adc::Message>(
+                data,
+                &modules::msc19_4::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
+        }
+        modules::msc19_5::messages::adc::ID => {
+            // debug!("Got MSC19_5 ADC frame");
+            read_message::<modules::msc19_5::messages::adc::Message>(
+                data,
+                &modules::msc19_5::SIGNATURE,
+            )
+            .map_err(anyhow::Error::from)
+        }
 
         // ── MDE (steering/battery) ──
         modules::mde22::messages::steeringbat_measurements::ID => {
@@ -275,7 +327,8 @@ where
 {
     trace!("Deserializing CAN payload: {data:?}"); // ── ADDED LOG ──
 
-    let message: T = bincode::deserialize(data).map_err(|_| ReadMessageError::DeserializationError)?;
+    let message: T =
+        bincode::deserialize(data).map_err(|_| ReadMessageError::DeserializationError)?;
 
     if &message.signature() != signature {
         error!(
