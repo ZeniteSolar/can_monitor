@@ -59,8 +59,8 @@ pub struct BoatData {
     pub mde_error_code:    Option<u8>,
 
     // Multi‐unit modules:
-    pub msc_machine_state:   Option<[u8; 3]>,
-    pub msc_error_code:      Option<[u8; 3]>,
+    pub msc_machine_state:   Option<[u8; 5]>,
+    pub msc_error_code:      Option<[u8; 5]>,
 
     pub mcb_machine_state:   Option<[u8; 2]>,
     pub mcb_error_code:      Option<[u8; 2]>,
@@ -150,20 +150,21 @@ impl From<BoatState> for BoatData {
         // Multi‐unit: turn [Option<u8>; N] → Option<[u8; N]>
         let msc_machine_state = {
             let arr_opt = state.msc_machine_state;
-            if arr_opt.iter().all(|&o| o.is_some()) {
-                Some([
-                    arr_opt[0].unwrap(),
-                    arr_opt[1].unwrap(),
-                    arr_opt[2].unwrap(),
-                ])
-            } else if arr_opt.iter().all(|&o| o.is_none()) {
+            // If *all* slots are still None, emit None
+            if arr_opt.iter().all(|&o| o.is_none()) {
                 None
             } else {
-                // Mixed Some/None → represent partial data?
-                // We choose to propagate only if every slot is Some.
-                None
+                // Otherwise build an array, using 0 (or another sentinel) for any missing slot
+                Some([
+                    arr_opt[0].unwrap_or(0),
+                    arr_opt[1].unwrap_or(0),
+                    arr_opt[2].unwrap_or(0),
+                    arr_opt[3].unwrap_or(0),
+                    arr_opt[4].unwrap_or(0),
+                ])
             }
         };
+        
         let msc_error_code = {
             let arr_opt = state.msc_error_code;
             if arr_opt.iter().all(|&o| o.is_some()) {
@@ -171,6 +172,8 @@ impl From<BoatState> for BoatData {
                     arr_opt[0].unwrap(),
                     arr_opt[1].unwrap(),
                     arr_opt[2].unwrap(),
+                    arr_opt[3].unwrap(),
+                    arr_opt[4].unwrap(),
                 ])
             } else if arr_opt.iter().all(|&o| o.is_none()) {
                 None
