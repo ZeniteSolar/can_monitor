@@ -1,5 +1,6 @@
 <template>
-  <v-card class="ma-0 pa-0 state-card">
+ <v-card class="ma-0 pa-0 state-card"
+         :style="{ width: cardWidth }">   <!-- ← bind width here -->
     <v-card-title :class="['py-0 mt-0 font-weight-black', titleColor ?? 'bg-primary text-black']"
       :style="titleColor?.includes('text-black') ? 'color: black !important;' : ''">
       {{ title }}
@@ -39,13 +40,14 @@ import { measurementCards } from '@/measurement_cards';
 const props = defineProps<{
   title: string;
   titleColor?: string;
+  cardWidth?: string;          // <-- new prop
   modules: Array<{ label: string; stateKey: string; errorKey?: string; index?: number }>;
 }>();
 
 const prevStates = ref<Record<string, number>>({});
 const lastUpdateTimes = ref<Record<string, number>>({});
 const DISC = -1;
-
+const cardWidth = computed(() => props.cardWidth ?? '300px');
 const currentValues = ref<Record<string, number>>({});
 
 // States map and update tracking
@@ -100,6 +102,7 @@ const moduleDescriptions: Record<string, string[]> = {
   MAM: ['Init', 'Contactor...', 'Idle', 'Running', 'Code <X>'],
   MAC: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
   MSC_1: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
+  MSC_4: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
   MCB_1: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
   MCB_2: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
   MDE: ['Init', 'Idle', 'Running', 'Code <X>', 'Reseting'],
@@ -135,6 +138,7 @@ onUnmounted(() => {
 .v-card-title {
   font-family: var(--zenite-ui-font);
   text-align: center;
+  font-size: 1rem;
 }
 
 .state-card {
