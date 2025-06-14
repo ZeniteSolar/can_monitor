@@ -9,10 +9,14 @@
     <v-card-text class="d-flex justify-center align-center pa-1" style="gap: 1rem;">
       <div class="legend-box" style="background: red;"></div><span class="legend-text">MIC</span>
       <div class="legend-box" style="background: black;"></div><span class="legend-text">MAM</span>
+      <span class="legend-text">
+        {{ MAM_percent.toFixed(0)}}%
+      </span>
     </v-card-text>
 
     <v-card-text class="d-flex justify-center pt-0 pb-2">
-      <svg :width="svgWidth" :height="svgHeight" :viewBox="`0 0 ${svgWidth} ${svgHeight}`" xmlns="http://www.w3.org/2000/svg">
+      <svg :width="svgWidth" :height="svgHeight" :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
+        xmlns="http://www.w3.org/2000/svg">
         <!-- Light grey background fill -->
         <path :d="filledArcPath" fill="#f0f0f0" stroke="none" />
 
@@ -20,55 +24,26 @@
         <path :d="arcPath" fill="none" stroke="#ccc" stroke-width="2" />
 
         <!-- Horizontal base line -->
-        <line
-          :x1="polarToCartesian(cx, cy, radius, 0).x"
-          :y1="cy"
-          :x2="polarToCartesian(cx, cy, radius, 180).x"
-          :y2="cy"
-          stroke="#aaa"
-          stroke-width="1"
-        />
+        <line :x1="polarToCartesian(cx, cy, radius, 0).x" :y1="cy" :x2="polarToCartesian(cx, cy, radius, 180).x"
+          :y2="cy" stroke="#aaa" stroke-width="1" />
 
         <!-- Tick marks and labels -->
         <g v-for="step in ticks" :key="step">
-          <line
-            :x1="tickX(step,10)"
-            :y1="tickY(step,10)"
-            :x2=cx
-            :y2=cy
-            stroke="#888"
-            stroke-width="1"
-            stroke-dasharray="10,6"
-          />
-          <text
-            :x="labelX(step)"
-            :y="labelY(step)"
-            text-anchor="middle"
-            alignment-baseline="middle"
-            fill="black"
-            font-size="12"
-          >
-            {{ step }}%
+          <line :x1="tickX(step)" :y1="tickY(step)" :x2=cx :y2=cy stroke="#888" stroke-width="1"
+            stroke-dasharray="10,6" />
+          <text :x="labelX(step, 18)" :y="labelY(step, 18)" text-anchor="middle" alignment-baseline="middle"
+            fill="black" font-size="1.2rem" font-weight="lighter">
+            {{ step }}
           </text>
         </g>
 
         <!-- MIC Pointer -->
-        <polygon
-          :points="pointerPoints(MIC_angle, radius * 0.8)"
-          fill="red"
-          stroke="red"
-          stroke-width="6"
-          stroke-linejoin="round"
-        />
+        <polygon :points="pointerPoints(MIC_angle, radius * 0.8)" fill="red" stroke="red" stroke-width="6"
+          stroke-linejoin="round" />
 
         <!-- MAM Pointer -->
-        <polygon
-          :points="pointerPoints(MAM_angle, radius)"
-          fill="black"
-          stroke="black"
-          stroke-width="7"
-          stroke-linejoin="round"
-        />
+        <polygon :points="pointerPoints(MAM_angle, radius)" fill="black" stroke="black" stroke-width="7"
+          stroke-linejoin="round" />
 
         <!-- Base circle -->
         <circle :cx="cx" :cy="cy" r="10" fill="black" />
@@ -86,6 +61,12 @@ const props = defineProps<{
   titleColor?: string;
   data: number[]; // [mic, mam]
 }>();
+
+const MAM_percent = computed(() =>
+  typeof props.data[1] === 'number'
+    ? (props.data[1] / 255) * 100
+    : 0
+);
 
 const svgWidth = 250;
 const svgHeight = 150;
@@ -145,11 +126,11 @@ function tickX(step: number, offset = 0) {
 function tickY(step: number, offset = 0) {
   return polarToCartesian(cx, cy, radius + offset, (step / 100) * 180).y;
 }
-function labelX(step: number) {
-  return polarToCartesian(cx, cy, radius + 18, (step / 100) * 180).x;
+function labelX(step: number, offset = 0) {
+  return polarToCartesian(cx, cy, radius + offset, (step / 100) * 180).x;
 }
-function labelY(step: number) {
-  return polarToCartesian(cx, cy, radius + 18, (step / 100) * 180).y;
+function labelY(step: number, offset = 0) {
+  return polarToCartesian(cx, cy, radius + offset, (step / 100) * 180).y;
 }
 </script>
 
@@ -163,10 +144,13 @@ function labelY(step: number) {
   width: 15px;
   height: 15px;
   display: inline-block;
+  font-weight: lighter;
   border: 1px solid black;
 }
+
 .legend-text {
   font-family: var(--zenite-ui-font);
-  font-size: 1rem;
+  font-size: 1.5rem;
+  font-weight: lighter;
 }
 </style>
