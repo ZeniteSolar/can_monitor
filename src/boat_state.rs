@@ -316,7 +316,7 @@ impl BoatStateVariable for modules::msc19_1::messages::state::Message {
         state.msc_machine_state[0] = Some(message.state);
         state.msc_error_code[0] = Some(message.error);
         state.msc_last_seen[0] = Some(Instant::now());
-        println!("MSC19_1 STATE update: state={}, err_code={}", message.state, /*message.error*/0);
+        // println!("MSC19_1 STATE update: state={}, err_code={}", message.state, /*message.error*/0);
     }
 }
 
@@ -365,7 +365,7 @@ impl BoatStateVariable for modules::msc19_1::messages::adc::Message {
         let mut state = BOAT_STATE.lock().unwrap();
 
         state.bat_cell_v[0].update((message.average as f32) / 1000.0);
-        println!("MSC19_1 average = {:?}", state.bat_cell_v[0]);
+        // println!("MSC19_1 average = {:?}", state.bat_cell_v[0]);
         // The MSC “state” timestamp was handled by the corresponding state message above
     }
 }
@@ -375,7 +375,7 @@ impl BoatStateVariable for modules::msc19_2::messages::adc::Message {
         let mut state = BOAT_STATE.lock().unwrap();
 
         state.bat_cell_v[1].update((message.average as f32) / 1000.0);
-        println!("MSC19_2 average = {:?}", state.bat_cell_v[1]);
+        // println!("MSC19_2 average = {:?}", state.bat_cell_v[1]);
     }
 }
 
@@ -394,7 +394,7 @@ impl BoatStateVariable for modules::msc19_4::messages::adc::Message {
         let mut state = BOAT_STATE.lock().unwrap();
 
         state.bat_ii.update((message.average as f32) / 100.0);
-        println!("MSC19_4 average = {:?}", state.bat_ii);
+        // println!("MSC19_4 average = {:?}", state.bat_ii);
     }
 }
 
