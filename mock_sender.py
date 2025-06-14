@@ -44,7 +44,7 @@ async def send_mock_boat_data():
                 # "mcs_machine_state": int(t) % 5,
                 "mam_machine_state": int(t) % 5,
                 "mac_machine_state": int(t) % 5,
-                "msc_machine_state": [int(t) % 5, int(t) % 5, int(t) % 5],
+                "msc_machine_state": [int(t) % 5, int(t) % 5, int(t) % 5, int(t) % 5, int(t) % 5],
                 "mcb_machine_state": [int(t) % 5, int(t) % 5],
                 "mde_machine_state": int(t) % 5,
 
@@ -52,7 +52,7 @@ async def send_mock_boat_data():
                 "mcs_error_code": int(t+1) % 8,
                 "mam_error_code": int(t+2) % 8,
                 "mac_error_code": int(t+3) % 8,
-                "msc_error_code": [1, 2, 3],
+                "msc_error_code": [1, 2, 3, 4, 5],
                 "mcb_error_code": [1, 2],
                 "mde_error_code": int(t+5) % 8,
 
