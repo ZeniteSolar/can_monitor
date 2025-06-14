@@ -36,12 +36,14 @@
 
         <div v-if="true">
           <!-- MODULES STATE -->
-          <MultiStateCard :title="'ESTADO DOS MÓDULOS'" :titleColor="'bg-primary text-white'" :modules="[
+          <MultiStateCard :title="'ESTADO DOS MÓDULOS'" :titleColor="'bg-primary text-white'" 
+          :card-width="'260px'" :modules="[
             { label: 'MIC', stateKey: 'mic_machine_state', errorKey: 'mic_error_code' },
             { label: 'MCS', stateKey: 'mcs_machine_state', errorKey: 'mcs_error_code' },
             { label: 'MAM', stateKey: 'mam_machine_state', errorKey: 'mam_error_code' },
             { label: 'MAC', stateKey: 'mac_machine_state', errorKey: 'mac_error_code' },
             { label: 'MSC_1', stateKey: 'msc_machine_state', errorKey: 'msc_error_code', index: 0 },
+            { label: 'MSC_4', stateKey: 'msc_machine_state', errorKey: 'msc_error_code', index: 3 },
             { label: 'MCB_1', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 0 },
             { label: 'MCB_2', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 1 },
             { label: 'MDE', stateKey: 'mde_machine_state', errorKey: 'mde_error_code' }
@@ -50,13 +52,14 @@
 
       </v-col>
 
-      <!-- p COLUMN -->
+      <!-- MIDDLE COLUMN -->
       <v-col class="ma-1">
 
         <!-- AUXILIAR BATTERIES -->
-        <MultiMetricCard :title="'BATERIAS AUXILIARES'" :titleColor="'bg-secondary text-black'" :metricsData="[
+        <MultiMetricCard :title="'BATERIAS AUXILIARES'" :titleColor="'bg-secondary text-black'" 
+        metric_fontSize="1.75rem" :card-width="'450px'" :metricsData="[
           {
-            label: 'DIREÇÃO',
+            label: 'Direção',
             data: [
               measurementCards['mcb_vo']?.data[0] as number,
               measurementCards['mcb_io']?.data[0] as number,
@@ -69,7 +72,7 @@
             ]
           },
           {
-            label: 'AUXILIAR',
+            label: 'Auxiliar',
             data: [
               measurementCards['mcb_vo']?.data[1] as number,
               measurementCards['mcb_io']?.data[1] as number,
@@ -84,12 +87,13 @@
         ]" />
 
         <!-- Main Battery -->
-        <MultiMetricCard :title="'BATERIA PRINCIPAL'" :titleColor="'bg-secondary text-black'" :metricsData="[
+        <MultiMetricCard :title="'BATERIA PRINCIPAL'" :titleColor="'bg-secondary text-black'" 
+        metric_fontSize="2rem" :card-width="'450px'" :metricsData="[
           {
             label: (() => {
               const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
               const cells = raw.filter((v: unknown): v is number => typeof v === 'number');
-              return cells.length >= 2 ? 'TOTAL (MSC)' : 'TOTAL (MCB)';
+              return cells.length >= 2 ? 'Total (MSC)' : 'Total (MCB)';
             })(),
             data: (() => {
               // 1) Try raw bank voltage from bat_v (MCB-reported total)
@@ -154,7 +158,7 @@
             ],
           },
           {
-            label: 'CELULAS',
+            label: 'Células',
             data: (() => {
               const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
               const cells = raw.filter((v: unknown): v is number => typeof v === 'number').slice(0, 2);
@@ -173,29 +177,6 @@
           }
         ]" />
 
-
-
-        <!-- STEERING. Use compute methods for visual integrity and separation from metricsData (display only)-->
-        <SteeringCard :title="'DIREÇÃO'" :titleColor="'bg-secondary text-black'" :data="[
-          measurementCards['dir_pos']?.data?.[0] as number ?? 0,
-          measurementCards['dir_pos']?.data?.[1] as number ?? 0
-        ]" :metricsData="[
-          {
-            label: 'B',
-            data: [
-              measurementCards['dir_bat_v']?.avg() ?? 0,
-              measurementCards['dir_bat_i']?.avg() ?? 0,
-              measurementCards['dir_bat_p']?.avg() ?? 0,
-            ],
-            units: [
-              measurementCards['dir_bat_v']?.units[0] ?? '',
-              measurementCards['dir_bat_i']?.units[0] ?? '',
-              measurementCards['dir_bat_p']?.units[0] ?? '',
-            ]
-          }
-        ]" />
-
-
       </v-col>
 
       <!-- TODO review .units logic in this code CONTROL COLUMN -->
@@ -212,6 +193,26 @@
         <Speedometer :title="'MOTOR'" :titleColor="'bg-terciary text-white'" :data="[
           measurementCards['motor_d']?.data?.[0] as number ?? 0,
           measurementCards['motor_d']?.data?.[1] as number ?? 0
+        ]" />
+
+        <!-- STEERING. Use compute methods for visual integrity and separation from metricsData (display only)-->
+        <SteeringCard :title="'DIREÇÃO'" :titleColor="'bg-terciary text-white'" :data="[
+          measurementCards['dir_pos']?.data?.[0] as number ?? 0,
+          measurementCards['dir_pos']?.data?.[1] as number ?? 0
+        ]" :metricsData="[
+          {
+            label: 'B',
+            data: [
+              measurementCards['dir_bat_v']?.avg() ?? 0,
+              measurementCards['dir_bat_i']?.avg() ?? 0,
+              measurementCards['dir_bat_p']?.avg() ?? 0,
+            ],
+            units: [
+              measurementCards['dir_bat_v']?.units[0] ?? '',
+              measurementCards['dir_bat_i']?.units[0] ?? '',
+              measurementCards['dir_bat_p']?.units[0] ?? '',
+            ]
+          }
         ]" />
 
 
@@ -458,7 +459,7 @@ const cardsToRegister: [string, string, string, string, number, number][] = [
   ['bat_v', 'Bat Cell V', 'Battery Voltage', 'V', 30, 60],
   ['bat_i', 'Bat I', 'Battery Current', 'A', -200, 200],
   ['bat_p', 'Bat P', 'Battery Power', 'W', -10000, 10000],
-  ['bat_cell_v', 'Bat V', 'Battery Voltage', 'V', 10, 16],
+  ['bat_cell_v', 'Bat V', 'Battery Voltage', 'V', 8, 17],
   ['dir_pos', 'Dir H', 'Steering System Sensors Position', '°', -135, 135],
   ['dir_bat_v', 'Dir V', 'Steering System Battery Voltage', 'V', 7, 15],
   ['dir_bat_i', 'Dir I', 'Steering System Battery Current', 'A', 0, 20],
@@ -479,13 +480,13 @@ const cardsToRegister: [string, string, string, string, number, number][] = [
   ['msc_machine_state', 'MSC MACHINE STATE', 'MSC Machine State', '', 0, 4],
   ['mcb_machine_state', 'MCB MACHINE STATE', 'MCB Machine State', '', 0, 4],
   ['mde_machine_state', 'MDE MACHINE STATE', 'MDE Machine State', '', 0, 4],
-  ['mic_error_code', 'MIC ERROR CODE', 'MIC Error Code', '', 0, 1],
-  ['mcs_error_code', 'MCS ERROR CODE', 'MCS Error Code', '', 0, 1],
-  ['mam_error_code', 'MAM ERROR CODE', 'MAM Error Code', '', 0, 1],
-  ['mac_error_code', 'MAC ERROR CODE', 'MAC Error Code', '', 0, 1],
-  ['msc_error_code', 'MSC ERROR CODE', 'MSC Error Code', '', 0, 1],
-  ['mcb_error_code', 'MCB ERROR CODE', 'MCB Error Code', '', 0, 1],
-  ['mde_error_code', 'MDE ERROR CODE', 'MDE Error Code', '', 0, 1],
+  ['mic_error_code', 'MIC ERROR CODE', 'MIC Error Code', '', 0, 8],
+  ['mcs_error_code', 'MCS ERROR CODE', 'MCS Error Code', '', 0, 8],
+  ['mam_error_code', 'MAM ERROR CODE', 'MAM Error Code', '', 0, 8],
+  ['mac_error_code', 'MAC ERROR CODE', 'MAC Error Code', '', 0, 8],
+  ['msc_error_code', 'MSC ERROR CODE', 'MSC Error Code', '', 0, 8],
+  ['mcb_error_code', 'MCB ERROR CODE', 'MCB Error Code', '', 0, 8],
+  ['mde_error_code', 'MDE ERROR CODE', 'MDE Error Code', '', 0, 8],
 ];
 
 cardsToRegister.forEach(([key, label, desc, units, min, max]) => {
