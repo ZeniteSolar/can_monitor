@@ -28,8 +28,8 @@ async def send_mock_boat_data():
                 "boat_on": True,
                 "motor_on": t % 20 < 10,  # on for 10s, off for 10s
                 "motor_rev": t % 5 < 2.5,
-                "dms_on": t % 15 < 3,
-                "pump": [bool(int((t + i) % 2)) for i in range(3)],
+                "dms_on": t % 5 < 2,
+                "pumps": [bool(int(t % 5 < 2)) for i in range(3)],
 
                 "dir_bat_v": 13.0 + 0.1 * sin_wave,
                 "dir_bat_i": 2.0 + 0.1 * cos_wave,
@@ -37,7 +37,7 @@ async def send_mock_boat_data():
                 "dir_pos": [int(120 + 120 * sin_wave_delayed), int(120 + 120 * sin_wave)],
 
                 
-                "motor_d": [int(120 + 120 * sin_wave_delayed), int(120 + 120 * sin_wave)],
+                "motor_d": [int(128 + 127 * sin_wave_delayed), int(128 + 127 * sin_wave)],
                 "motor_rpm": 1500,
 
                 "mic_machine_state": int(t) % 5,
@@ -63,11 +63,11 @@ async def send_mock_boat_data():
                 "bat_i": 3.5 + 0.3 * cos_wave,
                 "bat_p": 36 + 3 * sin_wave,
 
-                "mcb_d": [0.1 + 0.05 * sin_wave, 0.2 + 0.05 * cos_wave],
-                "mcb_vi": [3*12.6 + 0.1 * cos_wave, 3*13],
-                "mcb_io": [1.1 + 0.1 * sin_wave, 1.2],
-                "mcb_vo": [11.8 + 0.1 * cos_wave, 11.9],
-                "mcb_po": [13.0 + 0.5 * sin_wave, 14.0],
+                # "mcb_d": [0.1 + 0.05 * sin_wave, 0.2 + 0.05 * cos_wave],
+                # "mcb_vi": [3*12.6 + 0.1 * cos_wave, 3*13],
+                # "mcb_io": [1.1 + 0.1 * sin_wave, 1.2],
+                # "mcb_vo": [7 + 0.1 * cos_wave, 7],
+                # "mcb_po": [13.0 + 0.5 * sin_wave, 14.0],
 
             }
             
@@ -75,6 +75,7 @@ async def send_mock_boat_data():
             # Omit `mic_machine_state` for 6s every 20s
             if t % 10 >= 4:
                 mock_data["mcs_machine_state"] = int(t) % 5
+                mock_data["mcb_vo"] = [7 + 0.1 * cos_wave, 7]
 
             await ws.send(json.dumps(mock_data))
             print("✅ Sent mock BoatData frame")
