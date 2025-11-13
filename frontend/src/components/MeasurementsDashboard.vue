@@ -36,18 +36,18 @@
 
         <div v-if="true">
           <!-- MODULES STATE -->
-          <MultiStateCard :title="'ESTADO DOS MÓDULOS'" :titleColor="'bg-primary text-white'" 
-          :card-width="'260px'" :modules="[
-            { label: 'MIC', stateKey: 'mic_machine_state', errorKey: 'mic_error_code' },
-            { label: 'MCS', stateKey: 'mcs_machine_state', errorKey: 'mcs_error_code' },
-            { label: 'MAM', stateKey: 'mam_machine_state', errorKey: 'mam_error_code' },
-            { label: 'MAC', stateKey: 'mac_machine_state', errorKey: 'mac_error_code' },
-            { label: 'MSC_1', stateKey: 'msc_machine_state', errorKey: 'msc_error_code', index: 0 },
-            { label: 'MSC_4', stateKey: 'msc_machine_state', errorKey: 'msc_error_code', index: 3 },
-            { label: 'MCB_1', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 0 },
-            { label: 'MCB_2', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 1 },
-            { label: 'MDE', stateKey: 'mde_machine_state', errorKey: 'mde_error_code' }
-          ]" />
+          <MultiStateCard :title="'ESTADO DOS MÓDULOS'" :titleColor="'bg-primary text-white'" :card-width="'260px'"
+            :modules="[
+              { label: 'MIC', stateKey: 'mic_machine_state', errorKey: 'mic_error_code' },
+              { label: 'MCS', stateKey: 'mcs_machine_state', errorKey: 'mcs_error_code' },
+              { label: 'MAM', stateKey: 'mam_machine_state', errorKey: 'mam_error_code' },
+              { label: 'MAC', stateKey: 'mac_machine_state', errorKey: 'mac_error_code' },
+              { label: 'MSC_1', stateKey: 'msc_machine_state', errorKey: 'msc_error_code', index: 0 },
+              { label: 'MSC_4', stateKey: 'msc_machine_state', errorKey: 'msc_error_code', index: 3 },
+              { label: 'MCB_1', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 0 },
+              { label: 'MCB_2', stateKey: 'mcb_machine_state', errorKey: 'mcb_error_code', index: 1 },
+              { label: 'MDE', stateKey: 'mde_machine_state', errorKey: 'mde_error_code' }
+            ]" />
         </div>
 
       </v-col>
@@ -56,130 +56,155 @@
       <v-col class="ma-1">
 
         <!-- AUXILIAR BATTERIES -->
-        <MultiMetricCard :title="'BATERIAS AUXILIARES'" :titleColor="'bg-secondary text-black'" 
-        metric_fontSize="1.75rem" :card-width="'450px'" :metricsData="[
-          {
-            label: 'Direção',
-            data: [
-              measurementCards['mcb_vo']?.data[0] as number,
-              measurementCards['mcb_io']?.data[0] as number,
-              measurementCards['mcb_po']?.data[0] as number,
-            ],
-            units: [
-              measurementCards['mcb_vo']?.units ?? '',
-              measurementCards['mcb_io']?.units ?? '',
-              measurementCards['mcb_po']?.units ?? '',
-            ]
-          },
-          {
-            label: 'Auxiliar',
-            data: [
-              measurementCards['mcb_vo']?.data[1] as number,
-              measurementCards['mcb_io']?.data[1] as number,
-              measurementCards['mcb_po']?.data[1] as number,
-            ],
-            units: [
-              measurementCards['mcb_vo']?.units ?? '',
-              measurementCards['mcb_io']?.units ?? '',
-              measurementCards['mcb_po']?.units ?? '',
-            ]
-          }
-        ]" />
+        <MultiMetricCard :title="'BATERIAS AUXILIARES'" :titleColor="'bg-secondary text-black'"
+          metric_fontSize="1.75rem" :card-width="'450px'" :metricsData="[
+            {
+              label: 'Direção',
+              data: (() => {
+                // grab the raw MCB readings (first channel)
+                const vo = (measurementCards['mcb_vo']?.data?.[0] ?? 0) as number;
+                const io = (measurementCards['mcb_io']?.data?.[0] ?? 0) as number;
+                const po = (measurementCards['mcb_po']?.data?.[0] ?? 0) as number;
+
+                // if voltage < 7V → use the MDE readings instead
+                if (vo < 7) {
+                  const dirV = (measurementCards['dir_bat_v']?.data?.[0] ?? 0) as number;
+                  const dirI = (measurementCards['dir_bat_i']?.data?.[0] ?? 0) as number;
+                  const dirP = dirV * dirI;
+                  return [dirV, dirI, dirP];
+                }
+
+                // otherwise stick with the MCB values
+                return [vo, io, po];
+              })(),
+              units: (() => {
+                // these are the MCB unit‐strings
+                const voU = measurementCards['mcb_vo']?.units ?? '';
+                const ioU = measurementCards['mcb_io']?.units ?? '';
+                const poU = measurementCards['mcb_po']?.units ?? '';
+
+                // if we’re falling back, grab the Dir units instead
+                if (((measurementCards['mcb_vo']?.data?.[0] ?? 0) as number) < 7) {
+                  const vU = measurementCards['dir_bat_v']?.units?.[0] ?? '';
+                  const iU = measurementCards['dir_bat_i']?.units?.[0] ?? '';
+                  const pU = measurementCards['dir_bat_p']?.units?.[0] ?? '';
+                  return [vU, iU, pU];
+                }
+
+                return [voU, ioU, poU];
+              })()
+            },
+            {
+              label: 'Auxiliar',
+              data: [
+                measurementCards['mcb_vo']?.data[1] as number,
+                measurementCards['mcb_io']?.data[1] as number,
+                measurementCards['mcb_po']?.data[1] as number,
+              ],
+              units: [
+                measurementCards['mcb_vo']?.units ?? '',
+                measurementCards['mcb_io']?.units ?? '',
+                measurementCards['mcb_po']?.units ?? '',
+              ]
+            }
+          ]" />
+
 
         <!-- Main Battery -->
-        <MultiMetricCard :title="'BATERIA PRINCIPAL'" :titleColor="'bg-secondary text-black'" 
-        metric_fontSize="2rem" :card-width="'450px'" :metricsData="[
-          {
-            label: (() => {
-              const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
-              const cells = raw.filter((v: unknown): v is number => typeof v === 'number');
-              return cells.length >= 2 ? 'Total (MSC)' : 'Total (MCB)';
-            })(),
-            data: (() => {
-              // 1) Try raw bank voltage from bat_v (MCB-reported total)
-              const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
-              const filteredCells = raw.filter((v: unknown): v is number => typeof v === 'number').slice(0, 2);
-              const bankV = measurementCards['bat_v']?.avg() ?? NaN;
-              // if we have a valid bankV ≥ 28 V, use it
-              if (!Number.isNaN(bankV) && bankV >= 28) {
+        <MultiMetricCard :title="'BATERIA PRINCIPAL'" :titleColor="'bg-secondary text-black'" metric_fontSize="2rem"
+          :card-width="'450px'" :metricsData="[
+            {
+              label: (() => {
+                const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
+                const cells = raw.filter((v: unknown): v is number => typeof v === 'number');
+                return cells.length >= 2 ? 'Total (MSC)' : 'Total (MCB)';
+              })(),
+              data: (() => {
+                // 1) Total bank voltage: Try raw bank voltage from MCS (bat_v)
+                const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
+                const filteredCells = raw.filter((v: unknown): v is number => typeof v === 'number').slice(0, 2);
+                const bankV = measurementCards['bat_v']?.avg() ?? NaN;
+                // If we have expected voltage level (bankV ≥ 28 V, use it)
+                if (!Number.isNaN(bankV) && bankV >= 28) {
+                  return [
+                    bankV,
+                    measurementCards['bat_i']?.avg() ?? 0,
+                    measurementCards['bat_p']?.avg() ?? 0,
+                  ];
+                }
+
+                // 2) Use individual cell voltages, require each ≥ 6 V
+                const rawCells = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
+                const validCells = rawCells
+                  .filter((v): v is number => typeof v === 'number' && v >= 6)
+                  .slice(0, 2);
+                // If we have two valid cells, calculate bankV from it and the average between them 
+                if (filteredCells.length === 2) {
+                  const avg = (filteredCells[0] + filteredCells[1]) / 2;
+                  return [
+                    filteredCells[0] + filteredCells[1] + avg, // right here (guessed value)
+                    measurementCards['bat_i']?.avg() ?? 0,
+                    measurementCards['bat_p']?.avg() ?? 0,
+                  ];
+                }
+
+                // 3) Last resort: Fallback to MCB input-voltage if any channel has vi ≥ 28 V
+                const viRaw = measurementCards['mcb_vi']?.data as unknown[] ?? [];
+                const validVi = viRaw
+                  .filter((v): v is number => typeof v === 'number' && v >= 28);
+                if (validVi.length >= 1) {
+                  // sum of both modules
+                  const viSum = validVi[0];
+                  return [
+                    viSum,
+                    measurementCards['bat_i']?.avg() ?? 0,
+                    measurementCards['bat_p']?.avg() ?? 0,
+                  ];
+                } else if (validVi.length === 1) {
+                  return [
+                    validVi[0],
+                    measurementCards['bat_i']?.avg() ?? 0,
+                    measurementCards['bat_p']?.avg() ?? 0,
+                  ];
+                }
+
+
+                // 4) If *nothing* is usable, show zero-line
                 return [
-                  bankV,
+                  0,
                   measurementCards['bat_i']?.avg() ?? 0,
                   measurementCards['bat_p']?.avg() ?? 0,
                 ];
-              }
 
-              // 2) Fallback to MCB input-voltage if both channels ≥ 6 V
-              const viRaw = measurementCards['mcb_vi']?.data as unknown[] ?? [];
-              const validVi = viRaw
-                .filter((v): v is number => typeof v === 'number' && v >= 6);
-              if (validVi.length >= 2) {
-                // sum of both modules
-                const viSum = validVi[0];
-                return [
-                  viSum,
-                  measurementCards['bat_i']?.avg() ?? 0,
-                  measurementCards['bat_p']?.avg() ?? 0,
-                ];
-              } else if (validVi.length === 1) {
-                return [
-                  validVi[0],
-                  measurementCards['bat_i']?.avg() ?? 0,
-                  measurementCards['bat_p']?.avg() ?? 0,
-                ];
-              }
+              })(),
+              units: [
+                measurementCards['bat_v']?.units?.[0] ?? '',
+                measurementCards['bat_i']?.units?.[0] ?? '',
+                measurementCards['bat_p']?.units?.[0] ?? '',
+              ],
+            },
+            {
+              label: 'Células',
+              data: (() => {
+                const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
+                const cells = raw.filter((v: unknown): v is number => typeof v === 'number').slice(0, 2);
 
-              // 3) Last resort: use individual cell voltages, require each ≥ 6 V
-              const rawCells = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
-              const validCells = rawCells
-                .filter((v): v is number => typeof v === 'number' && v >= 6)
-                .slice(0, 2);
-              if (filteredCells.length === 2) {
-                const avg = (filteredCells[0] + filteredCells[1]) / 2;
-                return [
-                  filteredCells[0] + filteredCells[1] + avg,
-                  measurementCards['bat_i']?.avg() ?? 0,
-                  measurementCards['bat_p']?.avg() ?? 0,
-                ];
-              }
-
-              // 4) If *nothing* is usable, show zero-line
-              return [
-                0,
-                measurementCards['bat_i']?.avg() ?? 0,
-                measurementCards['bat_p']?.avg() ?? 0,
-              ];
-            
-            })(),
-            units: [
-              measurementCards['bat_v']?.units?.[0] ?? '',
-              measurementCards['bat_i']?.units?.[0] ?? '',
-              measurementCards['bat_p']?.units?.[0] ?? '',
-            ],
-          },
-          {
-            label: 'Células',
-            data: (() => {
-              const raw = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
-              const cells = raw.filter((v: unknown): v is number => typeof v === 'number').slice(0, 2);
-
-              if (cells.length === 2) {
-                const avg = (cells[0] + cells[1]) / 2;
-                return [...cells, avg];
-              } else {
-                return [0, 0, 0];
-              }
-            })(),
-            units: (() => {
-              const u = measurementCards['bat_cell_v']?.units;
-              return Array.isArray(u) ? u : u ? [u, u, u] : ['', '', ''];
-            })()
-          }
-        ]" />
+                if (cells.length === 2) {
+                  const avg = (cells[0] + cells[1]) / 2;
+                  return [...cells, avg];
+                } else {
+                  return [0, 0, 0];
+                }
+              })(),
+              units: (() => {
+                const u = measurementCards['bat_cell_v']?.units;
+                return Array.isArray(u) ? u : u ? [u, u, u] : ['', '', ''];
+              })()
+            }
+          ]" />
 
       </v-col>
 
-      <!-- TODO review .units logic in this code CONTROL COLUMN -->
       <v-col class="ma-1">
         <!-- CONTROL KEYS -->
         <SwitchDisplay :title="'CONTROLE'" :titleColor="'bg-terciary text-white'" :maxLines="4" :data="[
@@ -187,6 +212,7 @@
           { value: measurementCards['motor_on']?.data[0] as boolean, label: 'MOTOR' },
           { value: measurementCards['motor_rev']?.data[0] as boolean, label: 'REV' },
           { value: measurementCards['dms_on']?.data[0] as boolean, label: 'DMS' },
+          { value: measurementCards['pump']?.data[0] as boolean, label: 'ZENIRA' },
         ]" />
 
         <!-- MOTOR -->
@@ -198,7 +224,7 @@
         <!-- STEERING. Use compute methods for visual integrity and separation from metricsData (display only)-->
         <SteeringCard :title="'DIREÇÃO'" :titleColor="'bg-terciary text-white'" :data="[
           measurementCards['dir_pos']?.data?.[0] as number ?? 0,
-          measurementCards['dir_pos']?.data?.[1] as number ?? 0
+          measurementCards['dir_pos']?.data?.[1] as number ?? 0,
         ]" :metricsData="[
           {
             label: 'B',
@@ -276,7 +302,7 @@ export const thresholds: Record<string, number> = {
 
   // ESC / motor feedback
   motor_d: 0,
-  motor_rpm: 5,
+  // motor_rpm: 10,
 
   // machine states (0–4 enums)
   mic_machine_state: 0,
@@ -454,25 +480,26 @@ onUnmounted(() => {
 // Standard cards
 const cardsToRegister: [string, string, string, string, number, number][] = [
   // key,      label,       description,    units, min, max 
-  ['motor_d', 'Motor D', 'ESC PWM Duty-Cycle', '%', 0, 100],
-  ['motor_rpm', 'Motor RPM', 'Motor RPM', 'RPM', 0, 6000],
-  ['bat_v', 'Bat Cell V', 'Battery Voltage', 'V', 30, 60],
-  ['bat_i', 'Bat I', 'Battery Current', 'A', -200, 200],
-  ['bat_p', 'Bat P', 'Battery Power', 'W', -10000, 10000],
-  ['bat_cell_v', 'Bat V', 'Battery Voltage', 'V', 8, 17],
-  ['dir_pos', 'Dir H', 'Steering System Sensors Position', '°', -135, 135],
-  ['dir_bat_v', 'Dir V', 'Steering System Battery Voltage', 'V', 7, 15],
-  ['dir_bat_i', 'Dir I', 'Steering System Battery Current', 'A', 0, 20],
-  ['dir_bat_p', 'Dir P', 'Steering System Battery Power', 'W', 0, 300],
-  ['mcb_po', 'MCBs Po', 'MCBs Output Power', 'W', 0, 300],
+  ['motor_d', 'Motor D', 'ESC PWM Duty-Cycle', '%', 0, 255],  // uint8 coming from both MIC and MAM
+  // ['motor_rpm', 'Motor RPM', 'Motor RPM', 'RPM', 0, 6000],
+  ['bat_v', 'Bat Cell V', 'Battery Voltage', 'V', 0, 60],
+  ['bat_i', 'Bat I', 'Battery Current', 'A', -250, 250],
+  ['bat_p', 'Bat P', 'Battery Power', 'W', -20000, 20000],
+  ['bat_cell_v', 'Bat V', 'Battery Voltage', 'V', 0, 17],
+  ['dir_pos', 'Dir H', 'Steering System Sensors Position', '°', 0, 1023], // MIC provides 10 bit ADC value (avergaed by cbuf) 
+  ['dir_bat_v', 'Dir V', 'Steering System Battery Voltage', 'V', 0, 17],
+  ['dir_bat_i', 'Dir I', 'Steering System Battery Current', 'A', 0, 50], // unknown, untested
+  ['dir_bat_p', 'Dir P', 'Steering System Battery Power', 'W', 0, 850],
   ['mcb_vi', 'MCB Vi', 'MCB Input Voltage', 'V', 0, 60],
-  ['mcb_io', 'MCB Io', 'MCB Output Current', 'A', 0, 15],
-  ['mcb_vo', 'MCB Vo', 'MCB Output Voltage', 'V', 0, 60],
-  ['mcb_d', 'MCB D', 'MCB Duty Cycle', '%', 0, 100],
+  ['mcb_io', 'MCB Io', 'MCB Output Current', 'A', 0, 17], // TODO review limits inside MCB
+  ['mcb_vo', 'MCB Vo', 'MCB Output Voltage', 'V', 0, 17], 
+  ['mcb_po', 'MCBs Po', 'MCBs Output Power', 'W', 0, 300], // TODO review limits inside MCB
+  ['mcb_d', 'MCB D', 'MCB Duty Cycle', '%', 0, 100], // TODO review limits inside MCB
   ['boat_on', 'BOAT ON', 'Boat Status', '', 0, 1],
   ['dms_on', 'DMS ON', 'Dead Man Switch Status', '', 0, 1],
   ['motor_on', 'MOTOR ON', 'Motor Status', '', 0, 1],
   ['motor_rev', 'MOTOR REVERSE', 'Motor Reverse Status', '', 0, 1],
+  ['pump', 'PUMP STATE', 'Pump states [0 and 1]', '', 0, 1],
   ['mic_machine_state', 'MIC MACHINE STATE', 'MIC Machine State', '', 0, 4],
   ['mcs_machine_state', 'MCS MACHINE STATE', 'MCS Machine State', '', 0, 4],
   ['mam_machine_state', 'MAM MACHINE STATE', 'MAM Machine State', '', 0, 4],
