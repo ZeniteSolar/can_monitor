@@ -133,10 +133,10 @@
                   ];
                 }
 
-                // 2) Use individual cell voltages, require each ≥ 6 V
+                // 2) Calculate with individual cell voltages from MCS, require each ≥ 7 V
                 const rawCells = measurementCards['bat_cell_v']?.data as unknown[] ?? [];
                 const validCells = rawCells
-                  .filter((v): v is number => typeof v === 'number' && v >= 6)
+                  .filter((v): v is number => typeof v === 'number' && v >= 7)
                   .slice(0, 2);
                 // If we have two valid cells, calculate bankV from it and the average between them 
                 if (filteredCells.length === 2) {
@@ -153,21 +153,14 @@
                 const validVi = viRaw
                   .filter((v): v is number => typeof v === 'number' && v >= 28);
                 if (validVi.length >= 1) {
-                  // sum of both modules
+                  // Take first available value
                   const viSum = validVi[0];
                   return [
                     viSum,
                     measurementCards['bat_i']?.avg() ?? 0,
                     measurementCards['bat_p']?.avg() ?? 0,
                   ];
-                } else if (validVi.length === 1) {
-                  return [
-                    validVi[0],
-                    measurementCards['bat_i']?.avg() ?? 0,
-                    measurementCards['bat_p']?.avg() ?? 0,
-                  ];
                 }
-
 
                 // 4) If *nothing* is usable, show zero-line
                 return [
@@ -519,5 +512,7 @@ const cardsToRegister: [string, string, string, string, number, number][] = [
 cardsToRegister.forEach(([key, label, desc, units, min, max]) => {
   measurementCards[key] = new GenericCardData(label, desc, units, min, max);
 });
+
+
 
 </script>
