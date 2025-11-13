@@ -46,7 +46,7 @@
 import { defineProps, computed } from 'vue';
 
 const props = defineProps<{
-  data: number[]; // [steering_raw (0–255), tail_raw (0–255)]
+  data: number[]; // [steering_raw (0–255), tail_raw (0–255)], pump1 state // TODO use this on the card to show selected sense
   title: string;
   titleColor?: string;
 }>();
@@ -79,24 +79,28 @@ function pointerPoints(angle: number, len: number): string {
   return `${baseLeft.x},${baseLeft.y} ${baseRight.x},${baseRight.y} ${tip.x},${tip.y}`;
 }
 
-// Map raw 0–255 so that 255→180° (far left) and 0→360° (far right)
-// i.e. bottom semicircle spans from 180° to 360°.
-function toBottomSemicircleAngle(raw: number): number {
+// Bottom semicircle spans from 180° to 360°.
+// MIC values come from cbuf adc (u10 variable, almost whole range)
+// XXX let's not change the behavior of MDE22 right now
+// TODO linearize the interface to receive those values
+// MIC is not multiplied by coeff (see MDE can_app.c -> can_app_extractor_mic19_mde)
+const str_whl_coeff = 0.263929618
+function toBottomSemicircleAngle_MIC(raw: number): number {
   const clamped = Math.max(0, Math.min(1023, raw));
-  return 180 + ((1023 - clamped) / 1023) * 180;
+  return 180 + ((240 - str_whl_coeff * clamped) / 240) * 180; // TODO "275" what is the true max?
 }
-
-function toBottomSemicircleAngle_u8(raw: number): number {
+// MDE value is already multiplied by coeff
+function toBottomSemicircleAngle_MDE(raw: number): number {
   const clamped = Math.max(0, Math.min(254, raw));
-  return 180 + ((254 - clamped) / 254) * 180;
+  return 180 + ((275 - clamped) / 275) * 180; // TODO "275" what is the true max?
 }
 
 const steeringAngle = computed(() =>
-  typeof props.data[0] === 'number' ? toBottomSemicircleAngle(props.data[0]) : 180
+  typeof props.data[0] === 'number' ? toBottomSemicircleAngle_MIC(props.data[0]) : 180
 );
 
 const tailAngle = computed(() =>
-  typeof props.data[1] === 'number' ? toBottomSemicircleAngle_u8(props.data[1]) : 180
+  typeof props.data[1] === 'number' ? toBottomSemicircleAngle_MDE(props.data[1]) : 180
 );
 </script>
 
