@@ -457,6 +457,7 @@ impl BoatStateVariable for modules::mde22::messages::steeringbat_measurements::M
 
         state.dir_bat_v.update((message.batvoltage as f32) / 100.0);
         state.dir_bat_i.update((message.batcurrent as f32) / 100.0);
+        println!("MDE22 bat_dir = {:?}", state.dir_bat_v);
         state.dir_pos[1].update(message.tail_position as f32);
 
         state.mde_last_seen = Some(Instant::now());
