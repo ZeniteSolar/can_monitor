@@ -4,8 +4,8 @@ use serde::{Deserialize, Serialize};
 use serde_with::skip_serializing_none;
 
 // XXX Unused, apparently...
-use crate::boat_state::{BoatState};//, BOAT_STATE, Ema};
-// use crate::can_types::modules;
+use crate::boat_state::BoatState; //, BOAT_STATE, Ema};
+                                  // use crate::can_types::modules;
 
 // use std::time::Instant;
 
@@ -13,57 +13,57 @@ use crate::boat_state::{BoatState};//, BOAT_STATE, Ema};
 #[derive(Default, Debug, Clone, Serialize, Deserialize)]
 pub struct BoatData {
     // ── Boolean flags ─────────────────────────────────────────────────────────
-    pub boat_on:    Option<bool>,
-    pub motor_on:   Option<bool>,
-    pub motor_rev:  Option<bool>,
-    pub dms_on:     Option<bool>,
-    pub pump:       Option<[bool; 3]>,
+    pub boat_on: Option<bool>,
+    pub motor_on: Option<bool>,
+    pub motor_rev: Option<bool>,
+    pub dms_on: Option<bool>,
+    pub pump: Option<[bool; 3]>,
 
     // ── EMA‐filtered numeric measurements ───────────────────────────────────
-    pub motor_d:    Option<[f32; 2]>,
-    pub motor_rpm:  Option<f32>,
+    pub motor_d: Option<[f32; 2]>,
+    pub motor_rpm: Option<f32>,
 
-    pub bat_v:      Option<f32>,
+    pub bat_v: Option<f32>,
     pub bat_cell_v: Option<[f32; 3]>,
-    pub bat_ii:     Option<f32>,
-    pub bat_io:     Option<f32>,
-    pub bat_i:      Option<f32>, // derived: bat_ii - bat_io
-    pub bat_p:      Option<f32>, // derived: bat_i * bat_v
+    pub bat_ii: Option<f32>,
+    pub bat_io: Option<f32>,
+    pub bat_i: Option<f32>, // derived: bat_ii - bat_io
+    pub bat_p: Option<f32>, // derived: bat_i * bat_v
 
-    pub dir_bat_v:  Option<f32>,
-    pub dir_bat_i:  Option<f32>,
-    pub dir_bat_p:  Option<f32>, // derived: dir_bat_v * dir_bat_i
-    pub dir_pos:    Option<[f32; 2]>,
+    pub dir_bat_v: Option<f32>,
+    pub dir_bat_i: Option<f32>,
+    pub dir_bat_p: Option<f32>, // derived: dir_bat_v * dir_bat_i
+    pub dir_pos: Option<[f32; 2]>,
 
-    pub mcb_d:      Option<[f32; 2]>,
-    pub mcb_vi:     Option<[f32; 2]>,
-    pub mcb_io:     Option<[f32; 2]>,
-    pub mcb_vo:     Option<[f32; 2]>,
-    pub mcb_po:     Option<[f32; 2]>, // derived: mcb_io * mcb_vo elementwise
+    pub mcb_d: Option<[f32; 2]>,
+    pub mcb_vi: Option<[f32; 2]>,
+    pub mcb_io: Option<[f32; 2]>,
+    pub mcb_vo: Option<[f32; 2]>,
+    pub mcb_po: Option<[f32; 2]>, // derived: mcb_io * mcb_vo elementwise
 
     // ── Machine‐state + error codes ─────────────────────────────────────────
     // Single‐unit modules:
     pub mic_machine_state: Option<u8>,
-    pub mic_error_code:    Option<u8>,
+    pub mic_error_code: Option<u8>,
 
     pub mcs_machine_state: Option<u8>,
-    pub mcs_error_code:    Option<u8>,
+    pub mcs_error_code: Option<u8>,
 
     pub mam_machine_state: Option<u8>,
-    pub mam_error_code:    Option<u8>,
+    pub mam_error_code: Option<u8>,
 
     pub mac_machine_state: Option<u8>,
-    pub mac_error_code:    Option<u8>,
+    pub mac_error_code: Option<u8>,
 
     pub mde_machine_state: Option<u8>,
-    pub mde_error_code:    Option<u8>,
+    pub mde_error_code: Option<u8>,
 
     // Multi‐unit modules:
-    pub msc_machine_state:   Option<[u8; 5]>,
-    pub msc_error_code:      Option<[u8; 5]>,
+    pub msc_machine_state: Option<[u8; 5]>,
+    pub msc_error_code: Option<[u8; 5]>,
 
-    pub mcb_machine_state:   Option<[u8; 2]>,
-    pub mcb_error_code:      Option<[u8; 2]>,
+    pub mcb_machine_state: Option<[u8; 2]>,
+    pub mcb_error_code: Option<[u8; 2]>,
 
     // ───────────────────────────────────────────────────────────
     // ── NEW: MCS-19 “bat” fields ──
@@ -80,20 +80,17 @@ pub struct BoatData {
 impl From<BoatState> for BoatData {
     fn from(state: BoatState) -> Self {
         // booleans are never None
-        let boat_on   = Some(state.boat_on);
-        let motor_on  = Some(state.motor_on);
+        let boat_on = Some(state.boat_on);
+        let motor_on = Some(state.motor_on);
         let motor_rev = Some(state.motor_rev);
-        let dms_on    = Some(state.dms_on);
-        let pump      = Some(state.pump);
+        let dms_on = Some(state.dms_on);
+        let pump = Some(state.pump);
 
         // EMAs → actual values
-        let motor_d = Some([
-            state.motor_d[0].value(),
-            state.motor_d[1].value(),
-        ]);
+        let motor_d = Some([state.motor_d[0].value(), state.motor_d[1].value()]);
         let motor_rpm = Some(state.motor_rpm.value());
 
-        let bat_v      = Some(state.bat_v.value());
+        let bat_v = Some(state.bat_v.value());
         let bat_cell_v = Some([
             state.bat_cell_v[0].value(),
             state.bat_cell_v[1].value(),
@@ -101,18 +98,15 @@ impl From<BoatState> for BoatData {
         ]);
         let bat_ii = Some(state.bat_ii.value());
         let bat_io = Some(state.bat_io.value());
-        let bat_i  = Some(bat_ii.unwrap_or(0.0) - bat_io.unwrap_or(0.0));
-        let bat_p  = Some(bat_i.unwrap_or(0.0) * bat_v.unwrap_or(0.0));
+        let bat_i = Some(bat_ii.unwrap_or(0.0) - bat_io.unwrap_or(0.0));
+        let bat_p = Some(bat_i.unwrap_or(0.0) * bat_v.unwrap_or(0.0));
 
         let dir_bat_v = Some(state.dir_bat_v.value());
         let dir_bat_i = Some(state.dir_bat_i.value());
         let dir_bat_p = Some(dir_bat_v.unwrap_or(0.0) * dir_bat_i.unwrap_or(0.0));
-        let dir_pos   = Some([
-            state.dir_pos[0].value(),
-            state.dir_pos[1].value(),
-        ]);
+        let dir_pos = Some([state.dir_pos[0].value(), state.dir_pos[1].value()]);
 
-        let mcb_d  = Some([state.mcb_d[0].value(), state.mcb_d[1].value()]);
+        let mcb_d = Some([state.mcb_d[0].value(), state.mcb_d[1].value()]);
         let mcb_vi = Some([state.mcb_vi[0].value(), state.mcb_vi[1].value()]);
         let mcb_io = Some([state.mcb_io[0].value(), state.mcb_io[1].value()]);
         let mcb_vo = Some([state.mcb_vo[0].value(), state.mcb_vo[1].value()]);
@@ -133,19 +127,19 @@ impl From<BoatState> for BoatData {
 
         // Single‐unit machine states and errors (copy Option<u8>)
         let mic_machine_state = state.mic_machine_state;
-        let mic_error_code    = state.mic_error_code;
+        let mic_error_code = state.mic_error_code;
 
         let mcs_machine_state = state.mcs_machine_state;
-        let mcs_error_code    = state.mcs_error_code;
+        let mcs_error_code = state.mcs_error_code;
 
         let mam_machine_state = state.mam_machine_state;
-        let mam_error_code    = state.mam_error_code;
+        let mam_error_code = state.mam_error_code;
 
         let mac_machine_state = state.mac_machine_state;
-        let mac_error_code    = state.mac_error_code;
+        let mac_error_code = state.mac_error_code;
 
         let mde_machine_state = state.mde_machine_state;
-        let mde_error_code    = state.mde_error_code;
+        let mde_error_code = state.mde_error_code;
 
         // Multi‐unit: turn [Option<u8>; N] → Option<[u8; N]>
         let msc_machine_state = {
@@ -164,7 +158,7 @@ impl From<BoatState> for BoatData {
                 ])
             }
         };
-        
+
         let msc_error_code = {
             let arr_opt = state.msc_error_code;
             if arr_opt.iter().all(|&o| o.is_some()) {
