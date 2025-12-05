@@ -55,7 +55,7 @@
           :title="'ZENIRA'" 
           :titleColor="'bg-primary text-black'"
           :card-width="'260px'"
-          :zeniraEnabled="measurementCards['pump']?.data?.[0] as boolean"
+          :zeniraEnabled="(measurementCards['pump']?.data?.[0] as boolean | undefined) ?? null"
           :listeningState="measurementCards['mcv25_listening']?.data?.[0] as number | null ?? null"
           :errorCode="measurementCards['mcv25_error_code']?.data?.[0] as number | null ?? null"
         />

@@ -308,6 +308,12 @@ fn process_frame(frame: CANFrame) -> Result<()> {
             .map_err(anyhow::Error::from)
         }
 
+        // ── MCV25 (Voice Control) ──
+        modules::mcv25::messages::state::ID => read_message::<
+            modules::mcv25::messages::state::Message,
+        >(data, &modules::mcv25::SIGNATURE)
+        .map_err(anyhow::Error::from),
+
         other => {
             error!("Unknown CAN message ID: 0x{:X}", other); // ── ADDED LOG ──
             Err(anyhow!("Unknown CAN message ID: 0x{:X}", other))
