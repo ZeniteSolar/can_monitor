@@ -103,6 +103,11 @@ pub struct BoatState {
     pub mde_error_code: Option<u8>,
     pub mde_last_seen: Option<Instant>,
 
+    // MCV25 - Voice Control Module
+    pub mcv25_listening: Option<u8>,
+    pub mcv25_error_code: Option<u8>,
+    pub mcv25_last_seen: Option<Instant>,
+
     // Multi‐unit modules: MSC (3 slots), MCB (2 slots)
     pub msc_machine_state: [Option<u8>; 5],
     pub msc_error_code: [Option<u8>; 5],
@@ -173,6 +178,10 @@ impl Default for BoatState {
             mde_machine_state: None,
             mde_error_code: None,
             mde_last_seen: None,
+
+            mcv25_listening: None,
+            mcv25_error_code: None,
+            mcv25_last_seen: None,
 
             msc_machine_state: [None, None, None, None, None],
             msc_error_code: [None, None, None, None, None],
@@ -427,7 +436,6 @@ impl BoatStateVariable for modules::mic19::messages::pumps::Message {
 
         state.pump[0] = message.pumps.pump1();
         state.pump[1] = message.pumps.pump2();
-        state.pump[2] = message.pumps.pump3();
 
         state.mic_last_seen = Some(Instant::now());
     }
@@ -527,6 +535,18 @@ impl BoatStateVariable for modules::mcs19::messages::cap::Message {
         state.mcs_cap_max.update(max_v);
     }
 }
+
+// ----- MCV25 state message (listening state + error) -------
+impl BoatStateVariable for modules::mcv25::messages::state::Message {
+    fn update(message: Self) {
+        let mut state = BOAT_STATE.lock().unwrap();
+
+        state.mcv25_listening = Some(message.listening_state);
+        state.mcv25_error_code = Some(message.error);
+        state.mcv25_last_seen = Some(Instant::now());
+    }
+}
+
 // ── TODO: add any other `BoatStateVariable` impls for missing CAN messages ────
 // (e.g. MCS “bat” messages, etc.)
 // ----------------------------------------------------------------------------

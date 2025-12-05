@@ -1069,6 +1069,45 @@ pub mod modules {
             }
         }
     }
+
+    pub mod mcv25 {
+        use serde::{Deserialize, Serialize};
+
+        pub const SIGNATURE: u8 = 242u8;
+
+        #[derive(Debug, Clone, Serialize, Deserialize)]
+        #[serde(tag = "type", content = "content")]
+        pub enum Messages {
+            State(messages::state::Message),
+        }
+
+        pub mod messages {
+
+            pub mod state {
+                /// MCV25 State Message ID
+                pub const ID: u32 = 90u32;
+
+                use serde::{Deserialize, Serialize};
+
+                #[repr(C, packed)]
+                #[derive(Debug, Clone, Serialize, Deserialize)]
+                /// Module state report (listening state)
+                pub struct Message {
+                    /// Senders signature.
+                    pub signature: u8,
+                    /// Listening state (0 = not listening, 1 = listening)
+                    pub listening_state: u8,
+                    /// Error code
+                    pub error: u8,
+                }
+                impl crate::can_types::modules::CanMessageTrait for Message {
+                    fn signature(&self) -> u8 {
+                        self.signature
+                    }
+                }
+            }
+        }
+    }
 }
 
 // #[cfg(test)]

@@ -58,6 +58,10 @@ pub struct BoatData {
     pub mde_machine_state: Option<u8>,
     pub mde_error_code: Option<u8>,
 
+    // MCV25 - Voice Control Module
+    pub mcv25_listening: Option<u8>,
+    pub mcv25_error_code: Option<u8>,
+
     // Multi‐unit modules:
     pub msc_machine_state: Option<[u8; 5]>,
     pub msc_error_code: Option<[u8; 5]>,
@@ -140,6 +144,10 @@ impl From<BoatState> for BoatData {
 
         let mde_machine_state = state.mde_machine_state;
         let mde_error_code = state.mde_error_code;
+
+        // MCV25 - Voice Control Module
+        let mcv25_listening = state.mcv25_listening;
+        let mcv25_error_code = state.mcv25_error_code;
 
         // Multi‐unit: turn [Option<u8>; N] → Option<[u8; N]>
         let msc_machine_state = {
@@ -236,6 +244,8 @@ impl From<BoatState> for BoatData {
             mac_error_code,
             mde_machine_state,
             mde_error_code,
+            mcv25_listening,
+            mcv25_error_code,
             msc_machine_state,
             msc_error_code,
             mcb_machine_state,

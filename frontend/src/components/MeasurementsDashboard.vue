@@ -50,6 +50,16 @@
             ]" />
         </div>
 
+        <!-- VOICE CONTROL - MCV25 -->
+        <VoiceControlCard 
+          :title="'ZENIRA'" 
+          :titleColor="'bg-primary text-black'"
+          :card-width="'260px'"
+          :zeniraEnabled="measurementCards['pump']?.data?.[0] as boolean"
+          :listeningState="measurementCards['mcv25_listening']?.data?.[0] as number | null ?? null"
+          :errorCode="measurementCards['mcv25_error_code']?.data?.[0] as number | null ?? null"
+        />
+
       </v-col>
 
       <!-- MIDDLE COLUMN -->
@@ -196,6 +206,9 @@
             }
           ]" />
 
+        <v-card>
+          Last message at: {{ last_msg_time }}
+        </v-card>
       </v-col>
 
       <v-col class="ma-1">
@@ -205,7 +218,7 @@
           { value: measurementCards['motor_on']?.data[0] as boolean, label: 'MOTOR' },
           { value: measurementCards['motor_rev']?.data[0] as boolean, label: 'REV' },
           { value: measurementCards['dms_on']?.data[0] as boolean, label: 'DMS' },
-          { value: measurementCards['pump']?.data[0] as boolean, label: 'ZENIRA' },
+          // { value: measurementCards['pump']?.data[0] as boolean, label: 'ZENIRA' },
         ]" />
 
         <!-- MOTOR -->
@@ -240,10 +253,6 @@
     </v-row>
 
     <v-divider class="my-4"></v-divider>
-
-    <v-card>
-      Last message at: {{ last_msg_time }}
-    </v-card>
 
     <!-- <v-card>
       <v-card-title>Can Messages</v-card-title>
@@ -314,6 +323,8 @@ export const thresholds: Record<string, number> = {
   msc_error_code: 0,
   mcb_error_code: 0,
   mde_error_code: 0,
+  mcv25_listening: 0,
+  mcv25_error_code: 0,
 
   // battery block
   bat_v: 0.1,
@@ -349,6 +360,7 @@ import MultiStateCard from './MultiStateCard.vue';
 import SwitchDisplay from './SwitchCard.vue';
 import SteeringCard from './SteeringCard.vue';
 import Speedometer from './Speedometer.vue';
+import VoiceControlCard from './VoiceControlCard.vue';
 import { Orientation } from '@/types/index'
 import type { BoardState } from '@/types/index';
 import { GenericCardData } from '../measurement_types'
@@ -395,6 +407,12 @@ class WSConnection {
   }
 
   async processMessage(data: string) {
+    const debugWS = import.meta.env.VITE_SIM_WS_DEBUG === '1';
+
+    if (debugWS) {
+      console.log("[processMessage] raw:", data.slice(0, 120) + "...");
+    }
+
     const message = JSON.parse(data);
     const now = Date.now();
 
@@ -402,19 +420,39 @@ class WSConnection {
       if (
         typeof val === 'number' ||
         typeof val === 'boolean' ||
-        (Array.isArray(val) && val.every((v) => typeof v === 'number'))
+        (Array.isArray(val) && val.every((v) => typeof v === 'number' || typeof v === 'boolean'))
       ) {
-        // Store last update time for this key
         const card = measurementCards[key];
         if (card) card.__touched__ = now;
 
-        updateMetric(key, val);
+        if (debugWS) {
+          // console.log(`[processMessage] updateMetric(${key},`, val, ")");
+        }
+
+        try {
+          updateMetric(key, val as any);
+        } catch (err) {
+          console.error(
+            "[updateMetric ERROR]",
+            "key:", key,
+            "value:", val,
+            "error:", err
+          );
+        }
       } else {
-        console.warn(`Invalid data type for key "${key}":`, val);
+        // console.warn(`Invalid data for key "${key}":`, val);
       }
     });
 
     last_msg_time.value = now;
+
+    // NEW: increment counter
+    // processedCount++;
+
+    // NEW: single debug log
+    // console.log(
+    //   `[frame ${processedCount}] last_msg_time=${now}`
+    // );
   }
 }
 
@@ -507,6 +545,10 @@ const cardsToRegister: [string, string, string, string, number, number][] = [
   ['msc_error_code', 'MSC ERROR CODE', 'MSC Error Code', '', 0, 8],
   ['mcb_error_code', 'MCB ERROR CODE', 'MCB Error Code', '', 0, 8],
   ['mde_error_code', 'MDE ERROR CODE', 'MDE Error Code', '', 0, 8],
+
+  // MCV25 - Voice Control Module
+  ['mcv25_listening', 'MCV25 LISTENING', 'Voice Control Module Listening State', '', 0, 1],
+  ['mcv25_error_code', 'MCV25 ERROR CODE', 'Voice Control Module Error Code', '', 0, 8],
 ];
 
 cardsToRegister.forEach(([key, label, desc, units, min, max]) => {
